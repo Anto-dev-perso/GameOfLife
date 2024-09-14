@@ -21,7 +21,7 @@ tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc,
         return {false, "", 0, false};
     }
 
-    string_view path{};
+    string_view path{""};
     unsigned int iterations{0};
     bool inputsCorrect{true};
     bool outputAll{false};
@@ -76,11 +76,13 @@ optional<unsigned int> InputChecker::convertArgForIterations(std::string_view ar
         // Use stoi because it is easier to deal with the negative cases
         // Max positive value for the integer is OK (2 Billion) for the game of life
         // Workaround if the user want to do more than that : relaunch the program with the previous result as the new input
+        auto int_size = numeric_limits<int>::max();
         const auto convertedIteration{stoi(arg_path.data())};
         if (convertedIteration < 0) {
             cerr << "ERROR: Iterations " << arg_path
                  << " is a negative number. Please retry with a positive number"
                  << endl;
+            return {nullopt};
         }
         return {static_cast<unsigned int>(convertedIteration)};
     }

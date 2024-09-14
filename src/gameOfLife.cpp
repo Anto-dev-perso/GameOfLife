@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "InputChecker.hpp"
 #include "Game/Game.hpp"
 
