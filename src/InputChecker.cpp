@@ -1,54 +1,100 @@
 #include "InputChecker.hpp"
-#include <string>
-#include <unistd.h>
-#include <iostream>
 
-#include <optional>
+#include <iostream>
+#include <string>
 #include <tuple>
+#include <unistd.h>
 
 using namespace std;
 
+// TODO input could be an absolute path
+
 // Function to check the inputs arguments of the whole program
 // Return <false, "", 0, false> if one or multiple inputs are invalid
-tuple<bool, string, unsigned int, bool> InputChecker::checkInputs(int argc, char **argv) const {
+tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc, char *argv[]) const {
 
-    // Code copy/paste from https://stackoverflow.com/questions/865668/parsing-command-line-arguments-in-c
-    int opt;
-    string input = "";
-    bool flagA = false;
-    bool flagB = false;
-
-    // Retrieve the (non-option) argument:
-    if ((argc <= 1) || (argv[argc - 1] == NULL) || (argv[argc - 1][0] == '-')) {  // there is NO input...
-        cerr << "No argument provided!" << endl;
-        //return 1;
-    } else {  // there is an input...
-        input = argv[argc - 1];
+    // Check that at least one argument is given
+    if ((argc <= 1) || !argv[argc - 1]) {
+        cerr
+                << "ERROR: No argument provided !\nInputs are ['--input <RELATIVE_FILE_PATH>'; '--iterations <NUMBER_OF_ITERATIONS>' ; '--all' (optional)]"
+                << endl;
+        return {false, "", 0, false};
     }
 
-    // Debug:
-    cout << "input = " << input << endl;
+    string_view path{};
+    unsigned int iterations{0};
+    bool inputsCorrect{true};
+    bool outputAll{false};
 
-    // Shut GetOpt error messages down (return '?'):
-    opterr = 0;
+    const vector<string_view> args_view(argv + 1, argv + argc);
 
-    // Retrieve the options:
-    while ((opt = getopt(argc, argv, "ab")) != -1) {  // for each option...
-        switch (opt) {
-            case 'a':
-                flagA = true;
+    // Iterate by increments of 2 because at args_view[inputType] it is the argument type and at args_view[inputType+1] it is its value
+    for (size_t inputType = 0; inputType < args_view.size(); inputType += 2) {
+
+        string_view currentInput = args_view[inputType];
+
+        if (currentInput == "--input") {
+            path = args_view[inputType + 1];
+        } else if (currentInput == "--iterations") {
+            if (const auto iterationConverted = convertArgForIterations(
+                        args_view[inputType + 1]);iterationConverted.has_value()) {
+                iterations = iterationConverted.value();
+            } else {
+                inputsCorrect = false;
                 break;
-            case 'b':
-                flagB = true;
-                break;
-            default:  // unknown option...
-                cerr << "Unknown option: '" << char(optopt) << "'!" << endl;
-                break;
+            }
+        } else if (currentInput == "--all") {
+            // Decrement the counter because --all doesn't has a value
+            --inputType;
+            outputAll = true;
+        } else {
+            cerr << "ERROR: Argument " << currentInput
+                 << " isn't recognize.\n Allows input are ['--input <RELATIVE_FILE_PATH>'; '--iterations <NUMBER_OF_ITERATIONS>' ; '--all']"
+                 << endl;
+            inputsCorrect = false;
+            break; // Stop the loop because we know we have to stop
         }
     }
 
-    // Debug:
-    cout << "flagA = " << flagA << endl;
-    cout << "flagB = " << flagB << endl;
+    // Dealing with missing mandatory arguments
+    if (path.empty()) {
+        cerr << "ERROR: Missing mandatory argument : --input <RELATIVE_FILE_PATH>" << endl;
+        inputsCorrect = false;
+    }
+    if (iterations == 0) {
+        cerr << "ERROR: Missing mandatory argument : --iterations <NUMBER_OF_ITERATIONS>" << endl;
+        inputsCorrect = false;
+    }
 
+    return {inputsCorrect, path, iterations, outputAll};
+
+}
+
+// Due to the number of possible way to go wrong, isolate iteration conversion to a dedicated function
+optional<unsigned int> InputChecker::convertArgForIterations(std::string_view arg_path) {
+    try {
+        // Use stoi because it is easier to deal with the negative cases
+        // Max positive value for the integer is OK (2 Billion) for the game of life
+        // Workaround if the user want to do more than that : relaunch the program with the previous result as the new input
+        const auto convertedIteration{stoi(arg_path.data())};
+        if (convertedIteration < 0) {
+            cerr << "ERROR: Iterations " << arg_path
+                 << " is a negative number. Please retry with a positive number"
+                 << endl;
+        }
+        return {static_cast<unsigned int>(convertedIteration)};
+    }
+    catch (std::out_of_range &err) {
+        cerr << "ERROR: Iterations " << arg_path
+             << " is too high for a positive number. Please retry with a less higher number (lesser than "
+             << numeric_limits<int>::max() << "), keep the result and relaunch this program"
+             << endl;
+        return {nullopt};
+    }
+    catch (...) {
+        cerr << "ERROR: Iterations " << arg_path << " is not a number. Please retry with a positive number"
+             << endl;
+        return {nullopt};
+    }
+    return {nullopt};
 }

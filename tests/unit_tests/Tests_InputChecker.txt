@@ -1,0 +1,36 @@
+Nominal: argv=[--input initial.txt --iterations 2000 --all] => [true, initial.txt, 2000, true]
+Nominal: argv=[--input initial.txt --iterations 2000] => [true, initial.txt, 2000, false]
+Nominal: argv=[--iterations 2000 --input initial.txt --all] => [true, initial.txt, 2000, true]
+Nominal: argv=[--input initial.txt --all --iterations 2000] => [true, initial.txt, 2000, true]
+Nominal: argv=[--iterations 2000 --input initial.txt] => [true, initial.txt, 2000, false]
+Nominal: argv=[ --iterations 2000 --all --input initial.txt] => [true, initial.txt, 2000, false]
+
+Arg unknown: argv=[--input initial.txt --iterations 2000 --all --unknowArg] => [false, , 0, false]
+Arg unknown: argv=[--input initial.txt --iterations 2000 --all RandomString] => [false, , 0, false]
+Arg unknown: argv=[--input initial.txt --iterations 2000 --unknowArg] => [false, , 0, false]
+Arg unknown: argv=[--input initial.txt --iterations 2000 RandomString] => [false, , 0, false]
+
+
+Missing Mandatory: argv=[--iterations 2000] => [false, "", 0, false]
+Missing Mandatory: argv=[--iterations 2000 --all] => [false, "", 0, false]
+Missing Mandatory: argv=[--input initial.txt ] => [false, "", 0, false]
+Missing Mandatory: argv=[--input initial.txt --all] => [false, "", 0, false]
+Missing Mandatory: argv=[] => [false, "", 0, false]
+Missing Mandatory: argv=[--all] => [false, "", 0, false]
+
+
+
+Bad iteration: argv=[--input initial.txt --iterations 0] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations -1] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations AString] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations 2147483645] => [false, "", 0, false] // Limit -1
+Bad iteration: argv=[--input initial.txt --iterations 2147483646] => [false, "", 0, false] // Limit
+Bad iteration: argv=[--input initial.txt --iterations 2147483647] => [false, "", 0, false] // Limit +1
+Bad iteration: argv=[--input initial.txt --iterations 0 --all] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations -1 --all] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations AString --all] => [false, "", 0, false]
+Bad iteration: argv=[--input initial.txt --iterations 2147483645 --all] => [false, "", 0, false] // Limit -1
+Bad iteration: argv=[--input initial.txt --iterations 2147483646 --all] => [false, "", 0, false] // Limit
+Bad iteration: argv=[--input initial.txt --iterations 2147483647 --all] => [false, "", 0, false] // Limit +1
+
+18446744073709551615

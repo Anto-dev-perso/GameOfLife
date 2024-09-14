@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "Cell.hpp"
 #include <vector>
 

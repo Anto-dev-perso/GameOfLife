@@ -6,7 +6,7 @@
 class Game {
 
 public:
-    Game(const std::string &path, unsigned int iterations, bool all);
+    Game(const std::string_view &path, unsigned int iterations, bool all);
 
 private:
 
