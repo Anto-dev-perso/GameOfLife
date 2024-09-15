@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.22)
 project(GameOfLife)
+cmake_minimum_required(VERSION 3.22)
 
 enable_testing()
 
@@ -23,6 +23,7 @@ add_library(GameLib SHARED
         src/Game/Parser.hpp
         src/Game/OutputWriter.cpp
         src/Game/OutputWriter.hpp
+        src/Game/AllowedChar.hpp
         )
 
 add_executable(GameOfLife src/gameOfLife.cpp)
@@ -39,6 +40,7 @@ FetchContent_MakeAvailable(googletest)
 add_executable(GameOfLifeTests
         tests/test.cpp
         tests/unit_tests/InputChecker_Test.cpp
+        tests/unit_tests/OutputWriter_Test.cpp
         )
 
 target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib)

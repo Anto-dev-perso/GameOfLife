@@ -1,5 +1,3 @@
-//
-// Created by T0269417 on 11/09/2024.
-//
-
 #include "Board.hpp"
+
+const gridOfCells &Board::get_grid() const { return _grid; }

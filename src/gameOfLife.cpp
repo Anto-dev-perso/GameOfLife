@@ -12,5 +12,5 @@ int main(int argc, char *argv[]) {
 
     static Game gameOfLife(filePath, nbOfIterations, outputAllIterations);
 
-    return 0;
+    return gameOfLife.process();
 }

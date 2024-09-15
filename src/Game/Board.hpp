@@ -7,8 +7,11 @@ typedef std::vector<std::vector<Cell>> gridOfCells;
 
 class Board {
 public:
+
+    [[nodiscard]] const gridOfCells &get_grid() const;
+
 private:
 
-    gridOfCells _board;
+    gridOfCells _grid;
 
 };
