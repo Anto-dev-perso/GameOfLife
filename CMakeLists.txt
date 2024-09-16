@@ -1,11 +1,27 @@
-project(GameOfLife)
-cmake_minimum_required(VERSION 3.22)
+project(GameOfLife LANGUAGES CXX)
+cmake_minimum_required(VERSION 3.0)
 
 enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+add_compile_options(-Wall -Wextra)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+
+# Set flags or configurations specific to Debug and Release
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
+#set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address,undefined -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
+
+# Linker flags for Debug (with sanitizers)
+#set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address,undefined")
+
+
+# Set the default build type to Release if not specified
+if (NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug or Release" FORCE)
+endif ()
 
 add_library(InputCheckerLib SHARED
         src/InputChecker.cpp
@@ -29,21 +45,27 @@ add_library(GameLib SHARED
 add_executable(GameOfLife src/gameOfLife.cpp)
 target_link_libraries(GameOfLife InputCheckerLib GameLib)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  # Specify the commit you depend on and update it regularly.
-  URL https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip
-)
-FetchContent_MakeAvailable(googletest)
 
-add_executable(GameOfLifeTests
-        tests/test.cpp
-        tests/unit_tests/InputChecker_Test.cpp
-        tests/unit_tests/OutputWriter_Test.cpp
-        )
+# Register the test target with CTest (for Debug mode)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    include(FetchContent)
+    FetchContent_Declare(
+           googletest
+           # Specify the commit you depend on and update it regularly.
+           URL https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip
+    )
+    FetchContent_MakeAvailable(googletest)
 
-target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib)
-target_include_directories(GameOfLifeTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_executable(GameOfLifeTests
+            tests/test.cpp
+            tests/unit_tests/InputChecker_Test.cpp
+            tests/unit_tests/OutputWriter_Test.cpp
+            tests/unit_tests/Game_Test.cpp
+            tests/unit_tests/Board_Test.cpp
+            tests/tests_utilities.hpp 
+            tests/tests_utilities.cpp)
 
-add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests)
+    target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib)
+    target_include_directories(GameOfLifeTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests)
+endif ()

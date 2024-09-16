@@ -12,5 +12,6 @@ int main(int argc, char *argv[]) {
 
     static Game gameOfLife(filePath, nbOfIterations, outputAllIterations);
 
-    return gameOfLife.process();
+    // True==1 but 1 is an error return so return the opposite of the return
+    return !gameOfLife.process();
 }

@@ -17,6 +17,7 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteratio
                                                                                        to_string(iteration) + '.' +
                                                                                        _extension);
 
+    // TODO warn the user that a file with that name already exist and as been backup (eventually)
     ofstream file(outputFileName);
     if (!file.is_open()) {
         cerr << "ERROR: Failed to create file: " << outputFileName
@@ -25,7 +26,7 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteratio
     } else {
         for (const auto &line: grid) {
             for (const auto &column: line) {
-                file << boolToChar(column.get_isAlive());
+                file << boolToChar(column.get_isCurrentlyAlive());
             }
             file << "\n";
         }
