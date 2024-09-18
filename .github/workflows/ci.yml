@@ -22,7 +22,7 @@ jobs:
 
       - name: Build in Debug configuration
         run: |
-          mkdir -p  buid/build-debug
+          mkdir -p  build/build-debug
           cd build/build-debug
           cmake -DCMAKE_BUILD_TYPE=Debug ../..
           cmake --build .
@@ -40,7 +40,7 @@ jobs:
 
       - name: Run tests in Debug configuration
         run: |
-          cd build-debug
+          cd build/build-debug
           ctest --output-on-failure
 
   # Step 3: Build in RelWithDebInfo (only if tests passed)
