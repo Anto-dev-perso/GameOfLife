@@ -6,11 +6,10 @@ enable_testing()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-Wall -Wextra)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 # Set flags or configurations specific to Debug and Release
-
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
+# set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 
@@ -49,6 +48,8 @@ target_link_libraries(GameOfLife InputCheckerLib GameLib)
 # Register the test target with CTest (for Debug mode)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     include(FetchContent)
+
+
     FetchContent_Declare(
            googletest
            # Specify the commit you depend on and update it regularly.
@@ -65,7 +66,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             tests/tests_utilities.hpp 
             tests/tests_utilities.cpp)
 
-    target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib)
+    target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
     target_include_directories(GameOfLifeTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
-    add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests)
+
+    add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests --gtest_output=xml:junit_report.xml)
 endif ()
