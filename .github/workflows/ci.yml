@@ -82,7 +82,7 @@ jobs:
         with:
           name: Test Results
           path: junit_report.xml
-          format: junit
+          reporter: jest-junit
 
       # Generate coverage report using gcovr
       - name: Generate Coverage Report
