@@ -15,7 +15,32 @@ on:
       - main
 
 jobs:
-  # Step 1: Build Debug configuration
+
+  # Step 1: Run CodeQL static analysis
+  static-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v2
+        with:
+          languages: cpp
+
+      - name: Build the code (for analysis)
+        run: |
+          mkdir -p build
+          cd build
+          cmake -DCMAKE_BUILD_TYPE=Debug ..
+          cmake --build . -- -j
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: 'security'
+
+  # Step 1 bis: Build Debug configuration
   build-debug:
     runs-on: ubuntu-latest
     steps:
@@ -64,10 +89,23 @@ jobs:
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
-          ctest --output-on-failure || exit 0
+          ctest --output-on-failure --gtest_output=xml:../test_results.xml || exit 0
       # TODO fix all tests and remove the exit 1
 
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: test_results.xml
 
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test Results
+          path: test_results.xml
+          format: junit
+
+          
   # Step 3: Build in RelWithDebInfo (only if tests passed)
   build-relwithdebinfo:
     runs-on: ubuntu-latest
