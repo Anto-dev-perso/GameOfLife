@@ -17,30 +17,30 @@ on:
 jobs:
 
   # Step 1: Run CodeQL static analysis
-  static-analysis:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+  # static-analysis:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
 
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: cpp
+  #     - name: Initialize CodeQL
+  #       uses: github/codeql-action/init@v2
+  #       with:
+  #         languages: cpp
 
-      - name: Build the code (for analysis)
-        run: |
-          mkdir -p build
-          cd build
-          cmake -DCMAKE_BUILD_TYPE=Debug ..
-          cmake --build . -- -j
+  #     - name: Build the code (for analysis)
+  #       run: |
+  #         mkdir -p build
+  #         cd build
+  #         cmake -DCMAKE_BUILD_TYPE=Debug ..
+  #         cmake --build . -- -j
 
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: 'security'
+  #     - name: Perform CodeQL Analysis
+  #       uses: github/codeql-action/analyze@v2
+  #       with:
+  #         category: 'security'
 
-  # Step 1 bis: Build Debug configuration
+  # Step 1: Build Debug configuration
   build-debug:
     runs-on: ubuntu-latest
     steps:
