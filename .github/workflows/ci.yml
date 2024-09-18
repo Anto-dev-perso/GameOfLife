@@ -15,31 +15,6 @@ on:
       - main
 
 jobs:
-
-  # Step 1: Run CodeQL static analysis
-  # static-analysis:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout repository
-  #       uses: actions/checkout@v3
-
-  #     - name: Initialize CodeQL
-  #       uses: github/codeql-action/init@v2
-  #       with:
-  #         languages: cpp
-
-  #     - name: Build the code (for analysis)
-  #       run: |
-  #         mkdir -p build
-  #         cd build
-  #         cmake -DCMAKE_BUILD_TYPE=Debug ..
-  #         cmake --build . -- -j
-
-  #     - name: Perform CodeQL Analysis
-  #       uses: github/codeql-action/analyze@v2
-  #       with:
-  #         category: 'security'
-
   # Step 1: Build Debug configuration
   build-debug:
     runs-on: ubuntu-latest
@@ -50,11 +25,11 @@ jobs:
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v1
 
-      - name: Build in Debug configuration
+      - name: Build in Debug configuration with Clang-Tidy checks enabled
         run: |
-          mkdir -p build-debug
+          mkdir build-debug
           cd build-debug
-          cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev ..
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_CLANG_TIDY="clang-tidy;-checks=*,-clang-analyzer-alpha.*" -Wno-dev ..
           cmake --build . -- -j
 
       - name: Compress build-debug directory into tar.gz
@@ -105,7 +80,49 @@ jobs:
           path: test_results.xml
           format: junit
 
-          
+      # Generate coverage report using gcovr
+      - name: Generate Coverage Report
+        run: |
+          cd build-debug
+          gcovr --exclude-directories='test/*' --xml -o coverage.xml
+          gcovr --exclude-directories='test/*' --html --html-details -o coverage.html
+
+      # Upload coverage reports as artifacts
+      - name: Upload Coverage Report (XML)
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-xml
+          path: build-debug/coverage.xml
+
+      - name: Upload Coverage Report (HTML)
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-html
+          path: build-debug/coverage.html
+
+      # Optionally publish coverage report in PR
+      - name: Publish Coverage Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Coverage Results
+          path: build-debug/coverage.xml
+          format: cobertura
+
+  # Step 2bis: Static Analyzis with Clang-Tidy
+  static-analysis:
+    runs-on: ubuntu-latest
+    needs: build-debug
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build in Debug configuration with Clang-Tidy checks enabled
+        run: |
+          mkdir build-debug
+          cd build-debug
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_CLANG_TIDY="clang-tidy;-checks=*,-clang-analyzer-alpha.*" -Wno-dev ..
+          cmake --build . -- -j
+
   # Step 3: Build in RelWithDebInfo (only if tests passed)
   build-relwithdebinfo:
     runs-on: ubuntu-latest

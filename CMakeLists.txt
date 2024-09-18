@@ -9,8 +9,8 @@ add_compile_options(-Wall -Wextra)
 set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 
 # Set flags or configurations specific to Debug and Release
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-#set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address,undefined -fno-omit-frame-pointer")
+
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 
