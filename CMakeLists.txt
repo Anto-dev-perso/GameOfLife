@@ -15,6 +15,7 @@ set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 
 # Linker flags for Debug (with sanitizers)
 #set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address,undefined")
+set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-lprofiler")
 
 
 # Set the default build type to Release if not specified
@@ -70,4 +71,14 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_include_directories(GameOfLifeTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
 
     add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests --gtest_output=xml:junit_report.xml)
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+        find_library(PROFILER_LIB profiler)
+        if(PROFILER_LIB)
+                message(STATUS "Found gperftools: ${PROFILER_LIB}")
+        # Set the pre-compile variable for profiling and link to the profiler
+        target_compile_definitions(GameOfLife PRIVATE ENABLE_PROFILING=1)    
+        target_link_libraries(GameOfLife ${PROFILER_LIB})
+        else()
+        message(FATAL_ERROR "gperftools not found")
+endif()
 endif ()
