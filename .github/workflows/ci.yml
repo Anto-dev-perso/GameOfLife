@@ -1,5 +1,10 @@
 name: Game of Life Workflow
 
+# TODO add a script for building
+# TODO maybe add a report for test ?
+# TODO maybe add a coverage report data ?
+# TODO maybe add a static analyzer ?
+
 # Run the workflow on every push and pull request to the main branch
 on:
   push:
@@ -20,20 +25,21 @@ jobs:
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v1
 
-      - name: Cache CMake build directory
-        uses: actions/cache@v3
-        with:
-          path: build-debug
-          key: build-debug-${{ github.sha }}
-          restore-keys: |
-            build-debug-
-
       - name: Build in Debug configuration
         run: |
           mkdir -p build-debug
           cd build-debug
           cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev ..
           cmake --build . -- -j
+
+      - name: Compress build-debug directory into tar.gz
+        run: tar -czf build-debug.tar.gz build-debug
+
+      - name: Upload build-debug directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-debug-artifact
+          path: build-debug.tar.gz
 
   # Step 2: Run tests (only if Debug build succeeded)
   run-tests:
@@ -43,17 +49,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Download build-debug artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: build-debug-artifact
+          path: .
+
+      - name: Extract the tar.gz file
+        run: tar -xzf build-debug.tar.gz
+          
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v1
-
-      - name: Restore cached CMake build directory
-        uses: actions/cache@v3
-        with:
-          path: build-debug
-          key: build-debug-${{ github.sha }}
-          restore-keys: |
-            build-debug-
-
+      
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
@@ -79,6 +86,15 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo  -Wno-dev ..
           cmake --build . -- -j
 
+      - name: Compress build-relwithdebinfo directory into tar.gz
+        run: tar -czf build-relwithdebinfo.tar.gz build-relwithdebinfo
+
+      - name: Upload build-relwithdebinfo directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-relwithdebinfo-artifact
+          path: build-relwithdebinfo.tar.gz
+
   # Step 4: Build Release (only if all previous steps passed)
   build-release:
     runs-on: ubuntu-latest
@@ -96,3 +112,12 @@ jobs:
           cd build-release
           cmake -DCMAKE_BUILD_TYPE=Release  -Wno-dev ..
           cmake --build . -- -j
+
+      - name: Compress build-release directory into tar.gz
+        run: tar -czf build-release.tar.gz build-release
+
+      - name: Upload build-release directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-release-artifact
+          path: build-release.tar.gz
