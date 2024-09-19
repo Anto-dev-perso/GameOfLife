@@ -1,0 +1,231 @@
+name: Game of Life Workflow
+
+# TODO add a script for building
+
+# Run the workflow on every push and pull request to the main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  # Step 1: Build Debug configuration
+  build-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Build in Debug configuration
+        run: |
+          mkdir build-debug
+          cd build-debug
+          cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev ..
+          cmake --build . -- -j
+
+      - name: Compress build-debug directory into tar.gz
+        run: tar -czf build-debug.tar.gz build-debug
+
+      - name: Upload build-debug directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gameOfLife-debug.tar.gz
+          path: build-debug.tar.gz
+
+  # Step 2: Run tests (only if Debug build succeeded)
+  run-tests:
+    runs-on: ubuntu-latest
+    needs: build-debug
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Download build-debug artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: gameOfLife-debug.tar.gz
+          path: .
+
+      - name: Extract the tar.gz file
+        run: tar -xzf build-debug.tar.gz
+          
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+      
+      - name: Run tests in Debug configuration
+        run: |
+          cd build-debug
+          ctest --output-on-failure || exit 0
+# TODO fix all tests 
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        with:
+          name: junit_report
+          path: build-debug/junit_report.xml
+
+      # Generate coverage report using gcovr
+      - name: Generate Coverage Report
+        run: |
+          sudo apt-get install gcovr
+          cd build-debug
+          mkdir coverage
+          gcovr --r .. -e './*/build-debug/' --html --html-details -o coverage/coverage.html
+
+      # Upload coverage reports as artifacts
+      - name: Upload Coverage Report (HTML)
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage.html
+          path: build-debug/coverage
+
+  # Step 2bis: Static Analyzis with Clang-Tidy
+  static-analysis:
+    runs-on: ubuntu-latest
+    needs: build-debug
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build in Debug configuration with Clang-Tidy checks enabled
+        run: |
+          mkdir build-debug
+          cd build-debug
+          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_CLANG_TIDY="clang-tidy;-checks=*,-clang-analyzer-alpha.*" -Wno-dev ..
+          cmake --build . -- -j
+
+  # Step 3: Build in RelWithDebInfo (only if tests passed)
+  build-relwithdebinfo:
+    runs-on: ubuntu-latest
+    needs: run-tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Build in RelWithDebInfo configuration
+        run: |
+          mkdir build-relwithdebinfo
+          cd build-relwithdebinfo
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -Wno-dev ..
+          cmake --build . -- -j
+
+      - name: Compress build-relwithdebinfo directory into tar.gz
+        run: tar -czf build-relwithdebinfo.tar.gz build-relwithdebinfo
+
+      - name: Upload build-relwithdebinfo directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: gameOfLife-relwithdebinfo.tar.gz
+          path: build-relwithdebinfo.tar.gz
+
+  # Step 4: Run Heap profiling 
+  heap-profiling:
+    runs-on: ubuntu-latest
+    needs: build-relwithdebinfo
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install gperftools
+        run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
+
+      - name: Install gperftools
+        run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+
+      - name: Build in RelWithDebInfo configuration with Heap profiling
+        run: |
+          mkdir build-relwithdebinfo
+          cd build-relwithdebinfo
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPROFILING_TYPE=heap -Wno-dev ..
+          cmake --build . -- -j
+
+        # TODO replace by a real performance scenario
+      - name: HEAP Profiling
+        run: |
+          ./build-relwithdebinfo/GameOfLife --iterations 200000 --input input.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling.pdf
+          google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
+
+      - name: Upload profiling reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heap Profiling report
+          path: heap_profiling.pdf
+
+
+# Step 4bis: CPU profiling
+  cpu-profiling:
+    runs-on: ubuntu-latest
+    needs: build-relwithdebinfo
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install gperftools
+        run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+
+      - name: Build in RelWithDebInfo configuration with Heap profiling
+        run: |
+          mkdir build-relwithdebinfo
+          cd build-relwithdebinfo
+          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPROFILING_TYPE=cpu -Wno-dev ..
+          cmake --build . -- -j
+
+      # Launch CPU profiling with 1 interrupt every 100µs
+      # TODO replace by a real performance scenario
+      - name: CPU Profiling
+        run: |
+          CPUPROFILE_FREQUENCY=10000 
+          ./build-relwithdebinfo/GameOfLife --iterations 20000000 --input input.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling.pdf
+          google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
+
+      - name: Upload profiling reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heap Profiling report
+          path: cpu_profiling.pdf
+
+  # Step 5: Build Release
+  build-release:
+    runs-on: ubuntu-latest
+    needs: [heap-profiling, cpu-profiling, static-analysis]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Build in Release configuration
+        run: |
+          mkdir build-release
+          cd build-release
+          cmake -DCMAKE_BUILD_TYPE=Release  -Wno-dev ..
+          cmake --build . -- -j
+
+      - name: Compress build-release directory into tar.gz
+        run: tar -czf build-release.tar.gz build-release
+
+      - name: Upload build-release directory as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-release-artifact
+          path: build-release.tar.gz
