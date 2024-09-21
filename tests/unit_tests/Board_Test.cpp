@@ -4,17 +4,17 @@
 
 using namespace std;
 
-Board bordToTest;
+Board boardToTest;
 
 /****************************************  Tests Suite for fillNeighbour ***************************************/
 
 
 TEST(UTFillNeighbour, BlockPatternTest) {
 
-    bordToTest.set_grid(UTILITIES::blockPattern);
+    boardToTest.set_grid(UTILITIES::blockPattern);
 
     // First try at the center of the pattern
-    auto resultVec = bordToTest.fillNeighbour(2, 2);
+    auto resultVec = boardToTest.fillNeighbour(2, 2);
     ASSERT_EQ(resultVec.size(), 8);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -34,7 +34,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(7).get().get_isPreviouslyAlive(), true);
 
     // Then try at the top left corner
-    resultVec = bordToTest.fillNeighbour(0, 0);
+    resultVec = boardToTest.fillNeighbour(0, 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), true);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), true);
@@ -44,7 +44,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(1).get().get_isPreviouslyAlive(), false);
 
     // Try at the top right corner
-    resultVec = bordToTest.fillNeighbour(0, 3);
+    resultVec = boardToTest.fillNeighbour(0, 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -54,7 +54,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom left corner
-    resultVec = bordToTest.fillNeighbour(3, 0);
+    resultVec = boardToTest.fillNeighbour(3, 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -64,7 +64,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom right corner
-    resultVec = bordToTest.fillNeighbour(3, 3);
+    resultVec = boardToTest.fillNeighbour(3, 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -74,7 +74,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), true);
 
     // Try at one of the left border
-    resultVec = bordToTest.fillNeighbour(2, 0);
+    resultVec = boardToTest.fillNeighbour(2, 0);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -88,7 +88,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the right border
-    resultVec = bordToTest.fillNeighbour(1, 3);
+    resultVec = boardToTest.fillNeighbour(1, 3);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -102,7 +102,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the top border
-    resultVec = bordToTest.fillNeighbour(0, 2);
+    resultVec = boardToTest.fillNeighbour(0, 2);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -116,7 +116,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the bottom border
-    resultVec = bordToTest.fillNeighbour(3, 1);
+    resultVec = boardToTest.fillNeighbour(3, 1);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -136,28 +136,79 @@ TEST(UTFillNeighbour, BlockPatternTest) {
 TEST(UTFillNeighbour, RobustnessTest) {
 
     // grid empty
-    bordToTest.set_grid({});
-    auto resultVec = bordToTest.fillNeighbour(0, 0);
+    boardToTest.set_grid({});
+    auto resultVec = boardToTest.fillNeighbour(0, 0);
     ASSERT_EQ(resultVec.size(), 0);
 
-    bordToTest.set_grid(UTILITIES::blockPattern);
+    boardToTest.set_grid(UTILITIES::blockPattern);
 
     // line outside the possible indices
-    resultVec = bordToTest.fillNeighbour(9, 0);
+    resultVec = boardToTest.fillNeighbour(9, 0);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = bordToTest.fillNeighbour(4, 0);
+    resultVec = boardToTest.fillNeighbour(4, 0);
     ASSERT_EQ(resultVec.size(), 0);
 
     // column outside the possible indices
-    resultVec = bordToTest.fillNeighbour(0, 9);
+    resultVec = boardToTest.fillNeighbour(0, 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = bordToTest.fillNeighbour(0, 4);
+    resultVec = boardToTest.fillNeighbour(0, 4);
     ASSERT_EQ(resultVec.size(), 0);
 
     // line and column outside the possible indices
-    resultVec = bordToTest.fillNeighbour(9, 9);
+    resultVec = boardToTest.fillNeighbour(9, 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = bordToTest.fillNeighbour(4, 4);
+    resultVec = boardToTest.fillNeighbour(4, 4);
     ASSERT_EQ(resultVec.size(), 0);
 
+}
+
+
+/****************************************  Tests Suite for reduceBoard ***************************************/
+
+
+TEST(UTReduceBoard, TryToReduceBlock) {
+    boardToTest.set_grid(UTILITIES::blockPattern);
+
+    boardToTest.reduceBoard();
+    UTILITIES::compareGrid(boardToTest.get_grid_const(), UTILITIES::blockPattern);
+}
+
+TEST(UTReduceBoard, TryToReduceTub) {
+    boardToTest.set_grid(UTILITIES::tubPattern);
+
+    boardToTest.reduceBoard();
+    UTILITIES::compareGrid(boardToTest.get_grid_const(), UTILITIES::tubPattern);
+}
+
+
+
+/****************************************  Tests Suite for expandBoard ***************************************/
+
+TEST(UTExpandBoard, TryToExpandBlock) {
+    boardToTest.set_grid(UTILITIES::blockPattern);
+
+    boardToTest.expandBoard();
+    UTILITIES::compareGrid(boardToTest.get_grid_const(), {
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}}
+    });
+}
+
+TEST(UTExpandBoard, TryToExpandTub) {
+    boardToTest.set_grid(UTILITIES::tubPattern);
+
+    boardToTest.expandBoard();
+    UTILITIES::compareGrid(boardToTest.get_grid_const(), {
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'*'}, {'-'}, {'*'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
+            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}}
+    });
 }

@@ -81,7 +81,7 @@ TEST(FTSpaceshipPatterns, BlinkerPattern) {
 TEST(FTRandomPatterns, RandomPattern) {
     const unsigned int iteration{3};
     const string fileName{"../tests/input_files/random"};
-    const string resultExpected{"--**-\r\n--*-*\r\n-----\r\n-----\r\n--***\r\n"};
+    const string resultExpected{"-------\r\n---**--\r\n---*-*-\r\n-------\r\n-------\r\n---***-\r\n-------\r\n"};
 
     const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
 
@@ -137,7 +137,7 @@ TEST(FTLargePatterns, LargePattern) {
 TEST(FTPerformancePatterns, RPentominoPattern) {
     const unsigned int iteration{1000};
     const string fileName{"../tests/input_files/spaceship/rPentomino"};
-    const string resultExpected{"---\r\n---\r\n---\r\n"}; // TODO
+    const string resultExpected{UTILITIES::readFile(fileName + "G" + to_string(iteration) + ".txt")}; // TODO
 
     const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
 

@@ -6,7 +6,8 @@
 #include <vector>
 
 // TODO replace by a vector<Cell> for performance
-typedef std::vector<std::vector<Cell>> gridOfCells;
+typedef std::vector<Cell> lineOfGrid; // Define line type to use it
+typedef std::vector<lineOfGrid> gridOfCells;
 
 class Board {
 public:
@@ -34,6 +35,14 @@ public:
     void set_grid(gridOfCells &&newGrid);
 
     void set_grid(const gridOfCells &newGrid);
+
+    [[nodiscard]] bool isCellAtBorder(size_t line, size_t column) const;
+
+    [[nodiscard]] bool isCellBeforeTheBorder(size_t line, size_t column) const;
+
+    void expandBoard();
+
+    void reduceBoard();
 
 
 private:

@@ -20,7 +20,7 @@ public:
     [[nodiscard]] bool process();
 
 public:
-    void applyRulesToTheBoard(unsigned int onGoingIteration) const;
+    [[nodiscard]]  std::tuple<bool, bool> applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const;
 
     [[nodiscard]] const Board *get_board_const() const;
 

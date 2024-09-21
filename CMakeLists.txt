@@ -58,6 +58,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     add_executable(GameOfLifeUnitTests
             tests/unit_tests.cpp
+            tests/tests_utilities.hpp
+            tests/tests_utilities.cpp
             tests/unit_tests/InputChecker_Test.cpp
             tests/unit_tests/OutputWriter_Test.cpp
             tests/unit_tests/Game_Test.cpp
@@ -87,19 +89,19 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
                     target_compile_definitions(GameOfLife PRIVATE ENABLE_CPU_PROFILING=1) 
                     set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-lprofiler")
                     target_link_libraries(GameOfLife ${PROFILER_LIB})
-                    else()
+            else()
                     message(FATAL_ERROR "gperftools profiler not found")
-                    endif()
-                    elseif(PROFILING_TYPE STREQUAL "heap")
+            endif()
+    elseif(PROFILING_TYPE STREQUAL "heap")
                     find_library(TCMALLOC_LIB tcmalloc)
                     if(TCMALLOC_LIB)
-                    message(STATUS "Linking with gperftools tcmalloc for Heap profiling")
-                    target_compile_definitions(GameOfLife PRIVATE ENABLE_HEAP_PROFILING=1) 
-                    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-ltcmalloc")
-                    target_link_libraries(GameOfLife ${TCMALLOC_LIB})
-            else()
-                    message(FATAL_ERROR "gperftools tcmalloc not found")
-            endif()
+                        message(STATUS "Linking with gperftools tcmalloc for Heap profiling")
+                        target_compile_definitions(GameOfLife PRIVATE ENABLE_HEAP_PROFILING=1) 
+                        set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-ltcmalloc")
+                        target_link_libraries(GameOfLife ${TCMALLOC_LIB})
+                    else()
+                        message(FATAL_ERROR "gperftools tcmalloc not found")
+                    endif()
     elseif(PROFILING_TYPE STREQUAL "none")
             message(STATUS "No profiling library selected")
     else()

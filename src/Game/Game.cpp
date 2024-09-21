@@ -26,9 +26,9 @@ bool Game::process() {
     // Loop for iteration
     for (unsigned int currentIteration = 1; currentIteration <= _nbOfIterations; currentIteration++) {
 
-        applyRulesToTheBoard(currentIteration);
-        // TODO resize before write
-        // For the resize : keep one border of dead cells to be able to always extend the grid
+        const auto [expand, reduce] = applyRulesToTheBoardForIteration(currentIteration);
+        if (expand) { _board->expandBoard(); }
+        else if (reduce) { _board->reduceBoard(); }
 
         if (_outputAllIterations) {
             processOK = _outputWriter->writeIteration(_board->get_grid_const(), currentIteration) &&
@@ -36,8 +36,8 @@ bool Game::process() {
         }
     }
 
-
     processOK = _outputWriter->writeIteration(_board->get_grid_const()) && processOK;
+
     return processOK;
 }
 
@@ -45,28 +45,53 @@ bool Game::process() {
 // To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value and we memorize the old one
 // Memmrize also the last iteration at which we modify the value of the cells to avoid using the memrization instead of the actual value
 // So the loop use the memory value to the rules and set the values directly
-void Game::applyRulesToTheBoard(unsigned int onGoingIteration) const {
-    vector<reference_wrapper<Cell>> neighbours;
-    neighbours.reserve(8); // Reserve maximum possible number of neighbours to avoid multiple allocation/deallocation
+std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const {
+    bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
+    bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduce
 
-    auto &grid = _board->get_grid();
-    for (size_t line = 0; line < grid.size(); line++) {
-        for (size_t column = 0; column < grid[line].size(); column++) {
-            Cell &cellToApply{grid[line][column]};
 
-            neighbours = _board->fillNeighbour(line, column);
+    // Put the loop in a scope to not keep all of these when we will resize the board
+    // We avoid keeping a reference to the grid while this object change (resize)
+    {
+        vector<reference_wrapper<Cell>> neighbours;
+        neighbours.reserve(
+                8); // Reserve maximum possible number of neighbours to avoid multiple allocation/deallocation
 
-            cellToApply.memorizePreviousAliveValue();
+        // TODO this loop could be multi-threaded
+        auto &grid = _board->get_grid();
+        for (size_t line = 0; line < grid.size(); line++) {
+            for (size_t column = 0; column < grid[line].size(); column++) {
+                Cell &cellToApply{grid[line][column]};
 
-            const bool rule1 = applyRule1(cellToApply, neighbours, onGoingIteration);
-            const bool rule2 = applyRule2(cellToApply, neighbours, onGoingIteration);
+                neighbours = _board->fillNeighbour(line, column);
 
-            cellToApply.set_isCurrentlyAlive((rule1 && rule2) || applyRule3());
-            cellToApply.set_lastIterationWhichModif(onGoingIteration);
+                cellToApply.memorizePreviousAliveValue();
 
-            neighbours.clear();
+                const bool rule1{applyRule1(cellToApply, neighbours, onGoingIteration)};
+                const bool rule2{applyRule2(cellToApply, neighbours, onGoingIteration)};
+                const bool resultOfRules{(rule1 && rule2) || applyRule3()};
+
+                cellToApply.set_isCurrentlyAlive(resultOfRules);
+                cellToApply.set_lastIterationWhichModif(onGoingIteration);
+
+                neighbours.clear();
+
+                //Before to continue the loop, check if we are at the border of the board and if so, if we have to expand or reduce
+                if (_board->isCellAtBorder(line, column)) {
+                    // expand means that at least one cell at the border is alive
+                    expandSizeOfGrid = expandSizeOfGrid || resultOfRules;
+
+                    // reduce means that all cells at the border are dead (resultOfRules==false)
+                    reduceSizeOfGrid = reduceSizeOfGrid && !resultOfRules;
+
+                } else if (_board->isCellBeforeTheBorder(line, column)) {
+                    // reduce means that all cells at before border are dead (resultOfRules==false)
+                    reduceSizeOfGrid = reduceSizeOfGrid && !resultOfRules;
+                }
+            }
         }
     }
+    return {expandSizeOfGrid, reduceSizeOfGrid};
 }
 
 

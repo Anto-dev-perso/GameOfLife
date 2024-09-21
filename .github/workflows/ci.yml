@@ -155,15 +155,25 @@ jobs:
         # TODO replace by a real performance scenario
       - name: HEAP Profiling
         run: |
-          ./build-relwithdebinfo/GameOfLife --iterations 200000 --input input.txt
-          google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling.pdf
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_pentomino.pdf
+          google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
+          rm heap_profiling.prof*
+          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
 
-      - name: Upload profiling reports
+      - name: Upload profiling reports Gosper
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling report
-          path: heap_profiling.pdf
+          name: Heap Profiling Gosper report
+          path: heap_profiling_gosper.pdf
+
+      - name: Upload profiling reports Pentomino
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heap Profiling Pentomino report
+          path: heap_profiling_pentomino.pdf
 
 
 # Step 4bis: CPU profiling
@@ -193,15 +203,25 @@ jobs:
       - name: CPU Profiling
         run: |
           CPUPROFILE_FREQUENCY=10000 
-          ./build-relwithdebinfo/GameOfLife --iterations 20000000 --input input.txt
-          google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling.pdf
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_pentomino.pdf
+          google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
+          rm cpu_profiling.prof
+          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt
+          google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
 
-      - name: Upload profiling reports
+      - name: Upload profiling reports Gosper
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling report
-          path: cpu_profiling.pdf
+          name: Heap Profiling Gosper report
+          path: cpu_profiling_gosper.pdf
+
+      - name: Upload profiling reports Pentomino
+        uses: actions/upload-artifact@v3
+        with:
+          name: Heap Profiling Pentomino report
+          path: cpu_profiling_pentomino.pdf
 
   # Step 5: Build Release
   build-release:
