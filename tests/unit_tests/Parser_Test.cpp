@@ -4,56 +4,54 @@
 
 using namespace std;
 
-static const std::string toto{"../tests/input_files/"};
-
 /****************************************  Tests Suite for all reading the input files  ***************************************/
 
-TEST(ParseInputFile, ParseBlockPattern) {
+TEST(UTParseInputFile, ParseBlockPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/block.txt").parseInputFile(),
                            UTILITIES::blockPattern);
 }
 
-TEST(ParseInputFile, BeeHivePattern) {
+TEST(UTParseInputFile, BeeHivePattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/beeHive.txt").parseInputFile(),
                            UTILITIES::beeHivePattern);
 }
 
-TEST(ParseInputFile, LoafPattern) {
+TEST(UTParseInputFile, LoafPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/loaf.txt").parseInputFile(),
                            UTILITIES::loafPattern);
 }
 
-TEST(ParseInputFile, BoatPattern) {
+TEST(UTParseInputFile, BoatPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/boat.txt").parseInputFile(),
                            UTILITIES::boatPattern);
 }
 
-TEST(ParseInputFile, TubPattern) {
+TEST(UTParseInputFile, TubPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/tub.txt").parseInputFile(), UTILITIES::tubPattern);
 }
 
-TEST(ParseInputFile, BlinkerPattern) {
+TEST(UTParseInputFile, BlinkerPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/blinkerG1.txt").parseInputFile(),
                            UTILITIES::blinkerPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/blinkerG2.txt").parseInputFile(),
                            UTILITIES::blinkerPatternG2);
 }
 
-TEST(ParseInputFile, ToadPattern) {
+TEST(UTParseInputFile, ToadPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/toadG1.txt").parseInputFile(),
                            UTILITIES::toadPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/toadG2.txt").parseInputFile(),
                            UTILITIES::toadPatternG2);
 }
 
-TEST(ParseInputFile, BeaconPattern) {
+TEST(UTParseInputFile, BeaconPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/beaconG1.txt").parseInputFile(),
                            UTILITIES::beaconPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/beaconG2.txt").parseInputFile(),
                            UTILITIES::beaconPatternG2);
 }
 
-TEST(ParseInputFile, PulsarPattern) {
+TEST(UTParseInputFile, PulsarPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pulsarG1.txt").parseInputFile(),
                            UTILITIES::pulsarPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pulsarG2.txt").parseInputFile(),
@@ -61,7 +59,7 @@ TEST(ParseInputFile, PulsarPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/pulsarG3.txt").parseInputFile(), UTILITIES::pulsarPatternG3);
 }
 
-TEST(ParseInputFile, PentaDecathlonPattern) {
+TEST(UTParseInputFile, PentaDecathlonPattern) {
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG1.txt").parseInputFile(),
                            UTILITIES::pentaDecathlonPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG2.txt").parseInputFile(),
@@ -96,21 +94,21 @@ TEST(ParseInputFile, PentaDecathlonPattern) {
 
 /****************************************  Tests Suite for robustness in parsing input file  ***************************************/
 
-TEST(RobustnessInput, EmptyFileName) {
+TEST(UTRobustnessInput, EmptyFileName) {
     UTILITIES::compareGrid(Parser("").parseInputFile(), {});
 }
 
-TEST(RobustnessInput, BadPath) {
+TEST(UTRobustnessInput, BadPath) {
     UTILITIES::compareGrid(Parser("tests/input_files/block.txt").parseInputFile(), {});
 }
 
-TEST(RobustnessInput, BadLengthOfLines) {
+TEST(UTRobustnessInput, BadLengthOfLines) {
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile1.txt").parseInputFile(), {});
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile2.txt").parseInputFile(), {});
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile3.txt").parseInputFile(), {});
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile4.txt").parseInputFile(), {});
 }
 
-TEST(RobustnessInput, BadCharacter) {
+TEST(UTRobustnessInput, BadCharacter) {
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile5.txt").parseInputFile(), {});
 }

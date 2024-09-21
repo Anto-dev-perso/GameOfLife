@@ -9,7 +9,7 @@ static Game game;
 
 
 /****************************************  Tests Suite for applyRulesToTheGame with some 'still lifes' structures ***************************************/
-TEST(ApplyRulesStillLifePatterns, BlockPattern) {
+TEST(UTApplyRulesStillLifePatterns, BlockPattern) {
     game.set_board(UTILITIES::blockPattern);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blockPattern);
@@ -17,7 +17,7 @@ TEST(ApplyRulesStillLifePatterns, BlockPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blockPattern);
 }
 
-TEST(ApplyRulesStillLifePatterns, BeeHivePattern) {
+TEST(UTApplyRulesStillLifePatterns, BeeHivePattern) {
     game.set_board(UTILITIES::beeHivePattern);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beeHivePattern);
@@ -25,7 +25,7 @@ TEST(ApplyRulesStillLifePatterns, BeeHivePattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beeHivePattern);
 }
 
-TEST(ApplyRulesStillLifePatterns, LoafPattern) {
+TEST(UTApplyRulesStillLifePatterns, LoafPattern) {
     game.set_board(UTILITIES::loafPattern);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::loafPattern);
@@ -33,7 +33,7 @@ TEST(ApplyRulesStillLifePatterns, LoafPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::loafPattern);
 }
 
-TEST(ApplyRulesStillLifePatterns, BoatPattern) {
+TEST(UTApplyRulesStillLifePatterns, BoatPattern) {
     game.set_board(UTILITIES::boatPattern);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::boatPattern);
@@ -41,7 +41,7 @@ TEST(ApplyRulesStillLifePatterns, BoatPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::boatPattern);
 }
 
-TEST(ApplyRulesStillLifePatterns, tubPattern) {
+TEST(UTApplyRulesStillLifePatterns, tubPattern) {
     game.set_board(UTILITIES::tubPattern);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::tubPattern);
@@ -50,7 +50,7 @@ TEST(ApplyRulesStillLifePatterns, tubPattern) {
 }
 
 /****************************************  Tests Suite for applyRulesToTheGame with some 'oscillators' structures ***************************************/
-TEST(ApplyRulesOscillatorsPatterns, BlinkerPattern) {
+TEST(UTApplyRulesOscillatorsPatterns, BlinkerPattern) {
     game.set_board(UTILITIES::blinkerPatternG1);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternG2);
@@ -59,7 +59,7 @@ TEST(ApplyRulesOscillatorsPatterns, BlinkerPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternG1);
 }
 
-TEST(ApplyRulesOscillatorsPatterns, ToadPattern) {
+TEST(UTApplyRulesOscillatorsPatterns, ToadPattern) {
     game.set_board(UTILITIES::toadPatternG2);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternG1);
@@ -67,7 +67,7 @@ TEST(ApplyRulesOscillatorsPatterns, ToadPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternG2);
 }
 
-TEST(ApplyRulesOscillatorsPatterns, BeaconPattern) {
+TEST(UTApplyRulesOscillatorsPatterns, BeaconPattern) {
     game.set_board(UTILITIES::beaconPatternG1);
     game.applyRulesToTheBoard(1);
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternG2);
@@ -75,7 +75,7 @@ TEST(ApplyRulesOscillatorsPatterns, BeaconPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternG1);
 }
 
-TEST(ApplyRulesOscillatorsPatterns, PulsarPattern) {
+TEST(UTApplyRulesOscillatorsPatterns, PulsarPattern) {
     game.set_board(UTILITIES::pulsarPatternG1);
     game.applyRulesToTheBoard(1);
 
@@ -88,7 +88,7 @@ TEST(ApplyRulesOscillatorsPatterns, PulsarPattern) {
     UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternG1);
 }
 
-TEST(ApplyRulesOscillatorsPatterns, PentaDecathlonPattern) {
+TEST(UTApplyRulesOscillatorsPatterns, PentaDecathlonPattern) {
     game.set_board(UTILITIES::pentaDecathlonPatternG1);
 
     game.applyRulesToTheBoard(1);
@@ -155,7 +155,7 @@ TEST(ApplyRulesOscillatorsPatterns, PentaDecathlonPattern) {
 
 /****************************************  Tests Suite for applyRulesToTheGame robustness ***************************************/
 
-TEST(ApplyRulesRobustness, RobustnessTests) {
+TEST(UTApplyRulesRobustness, RobustnessTests) {
     Game emptyGame;
     {
         // Board empty

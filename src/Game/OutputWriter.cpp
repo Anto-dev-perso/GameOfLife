@@ -28,7 +28,7 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteratio
             for (const auto &column: line) {
                 file << boolToChar(column.get_isCurrentlyAlive());
             }
-            file << "\n";
+            file << "\r\n";
         }
         file.close();
         cout << "File created successfully: " << outputFileName << endl;

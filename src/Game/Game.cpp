@@ -26,7 +26,7 @@ bool Game::process() {
     // Loop for iteration
     for (unsigned int currentIteration = 1; currentIteration <= _nbOfIterations; currentIteration++) {
 
-        applyRulesToTheBoard(0);
+        applyRulesToTheBoard(currentIteration);
         // TODO resize before write
         // For the resize : keep one border of dead cells to be able to always extend the grid
 

@@ -9,7 +9,7 @@ Board bordToTest;
 /****************************************  Tests Suite for fillNeighbour ***************************************/
 
 
-TEST(FillNeighbour, BlockPatternTest) {
+TEST(UTFillNeighbour, BlockPatternTest) {
 
     bordToTest.set_grid(UTILITIES::blockPattern);
 
@@ -133,7 +133,7 @@ TEST(FillNeighbour, BlockPatternTest) {
 
 // Do not test the negative indices because it can't happen in current implementation
 // TODO consider adding this check
-TEST(FillNeighbour, RobustnessTest) {
+TEST(UTFillNeighbour, RobustnessTest) {
 
     // grid empty
     bordToTest.set_grid({});

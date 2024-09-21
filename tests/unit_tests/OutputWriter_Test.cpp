@@ -12,7 +12,7 @@ gridOfCells grid;
 
 /****************************************  Tests Suite for all instantiations of OutputWriter ***************************************/
 
-TEST(OutputWriterInstanciantion, IntantiateWithInitial) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithInitial) {
 
     const OutputWriter writer{"initial.txt"};
 
@@ -20,7 +20,7 @@ TEST(OutputWriterInstanciantion, IntantiateWithInitial) {
     EXPECT_EQ(writer.get_extension(), "res");
 }
 
-TEST(OutputWriterInstanciantion, IntantiateWithUpperCase) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithUpperCase) {
 
     const OutputWriter writer{"UPPER.txt"};
 
@@ -28,7 +28,7 @@ TEST(OutputWriterInstanciantion, IntantiateWithUpperCase) {
     EXPECT_EQ(writer.get_extension(), "res");
 }
 
-TEST(OutputWriterInstanciantion, IntantiateWithLongName) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithLongName) {
 
     const OutputWriter writer{"very_very_very_long_name_input.txt"};
 
@@ -38,7 +38,7 @@ TEST(OutputWriterInstanciantion, IntantiateWithLongName) {
 
 /****************************************  Tests Suite for writeIteration function without the optional iteration argument ***************************************/
 
-TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
+TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
 
     OutputWriter writer{"first_and_last_columns.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
@@ -70,16 +70,16 @@ TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n");
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n");
 
     // Clean up the generated file
     std::remove(outputFileName.c_str());
@@ -87,7 +87,7 @@ TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
     grid.clear();
 }
 
-TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
+TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
 
     OutputWriter writer{"first_and_last_lines.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
@@ -130,23 +130,23 @@ TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "**********\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "**********\n");
+              "**********\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "**********\r\n");
 
     std::remove(outputFileName.c_str());
 
     grid.clear();
 }
 
-TEST(WriteIterationWithoutOptionalArgument, AllDeadCells) {
+TEST(UTWriteIterationWithoutOptionalArgument, AllDeadCells) {
 
     OutputWriter writer{"all_cells_are_dead.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
@@ -179,23 +179,23 @@ TEST(WriteIterationWithoutOptionalArgument, AllDeadCells) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n");
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n");
 
     std::remove(outputFileName.c_str());
 
     grid.clear();
 }
 
-TEST(WriteIterationWithoutOptionalArgument, AllLivingCells) {
+TEST(UTWriteIterationWithoutOptionalArgument, AllLivingCells) {
 
     OutputWriter writer{"all_cells_are_alive.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
@@ -228,16 +228,16 @@ TEST(WriteIterationWithoutOptionalArgument, AllLivingCells) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n");
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n");
 
     std::remove(outputFileName.c_str());
 
@@ -247,7 +247,7 @@ TEST(WriteIterationWithoutOptionalArgument, AllLivingCells) {
 /****************************************  Tests Suite for writeIteration function with the optional iteration argument set ***************************************/
 
 
-TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
+TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
 
     OutputWriter writer{"first_and_last_columns.txt"};
     const unsigned int iteration{10};
@@ -282,23 +282,23 @@ TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n"
-              "*--------*\n");
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n"
+              "*--------*\r\n");
 
     std::remove(outputFileName.c_str());
 
     grid.clear();
 }
 
-TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
+TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
 
     OutputWriter writer{"first_and_last_lines.txt"};
     const unsigned int iteration{111};
@@ -343,23 +343,23 @@ TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "**********\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "**********\n");
+              "**********\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "**********\r\n");
 
     std::remove(outputFileName.c_str());
 
     grid.clear();
 }
 
-TEST(WriteIterationWithOptionalArgument, AllDeadCells) {
+TEST(UTWriteIterationWithOptionalArgument, AllDeadCells) {
 
     OutputWriter writer{"all_cells_are_dead.txt"};
     const unsigned int iteration{123456789};
@@ -394,23 +394,23 @@ TEST(WriteIterationWithOptionalArgument, AllDeadCells) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n"
-              "----------\n");
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n"
+              "----------\r\n");
 
     std::remove(outputFileName.c_str());
 
     grid.clear();
 }
 
-TEST(WriteIterationWithOptionalArgument, AllLivingCells) {
+TEST(UTWriteIterationWithOptionalArgument, AllLivingCells) {
 
     OutputWriter writer{"all_cells_are_alive.txt"};
     const unsigned int iteration{0};
@@ -445,16 +445,16 @@ TEST(WriteIterationWithOptionalArgument, AllLivingCells) {
 
     EXPECT_EQ(result, true);
     EXPECT_EQ(fileOutput,
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n"
-              "**********\n");
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n"
+              "**********\r\n");
 
     std::remove(outputFileName.c_str());
 

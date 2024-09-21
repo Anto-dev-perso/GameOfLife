@@ -56,46 +56,53 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
     FetchContent_MakeAvailable(googletest)
 
-    add_executable(GameOfLifeTests
-            tests/test.cpp
+    add_executable(GameOfLifeUnitTests
+            tests/unit_tests.cpp
             tests/unit_tests/InputChecker_Test.cpp
             tests/unit_tests/OutputWriter_Test.cpp
             tests/unit_tests/Game_Test.cpp
             tests/unit_tests/Board_Test.cpp
             tests/unit_tests/Parser_Test.cpp
-            tests/tests_utilities.hpp 
-            tests/tests_utilities.cpp)
+            )
+    target_link_libraries(GameOfLifeUnitTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
+    target_include_directories(GameOfLifeUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_test(NAME GameOfLifeUnitTests COMMAND GameOfLifeUnitTests)
 
-    target_link_libraries(GameOfLifeTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
-    target_include_directories(GameOfLifeTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_executable(GameOfLifeFunctionalTests
+            tests/functional_tests.cpp
+            tests/tests_utilities.hpp
+            tests/tests_utilities.cpp
+            )
 
-    add_test(NAME GameOfLifeTests COMMAND GameOfLifeTests --gtest_output=xml:junit_report.xml)
-elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-        option(PROFILING_TYPE "Select which profiler to use (none, cpu, heap)" "none")
+    target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
+    target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_test(NAME GameOfLifeFunctionalTests COMMAND GameOfLifeFunctionalTests)
+    elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    option(PROFILING_TYPE "Select which profiler to use (none, cpu, heap)" "none")
 
-        if(PROFILING_TYPE STREQUAL "cpu")
-                find_library(PROFILER_LIB profiler)
-                if(PROFILER_LIB)
-                        message(STATUS "Linking with gperftools profiler for CPU profiling")
-                        target_compile_definitions(GameOfLife PRIVATE ENABLE_CPU_PROFILING=1) 
-                        set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-lprofiler")
-                        target_link_libraries(GameOfLife ${PROFILER_LIB})
-                        else()
-                        message(FATAL_ERROR "gperftools profiler not found")
-                        endif()
-                        elseif(PROFILING_TYPE STREQUAL "heap")
-                        find_library(TCMALLOC_LIB tcmalloc)
-                        if(TCMALLOC_LIB)
-                        message(STATUS "Linking with gperftools tcmalloc for Heap profiling")
-                        target_compile_definitions(GameOfLife PRIVATE ENABLE_HEAP_PROFILING=1) 
-                        set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-ltcmalloc")
-                        target_link_libraries(GameOfLife ${TCMALLOC_LIB})
-                else()
-                        message(FATAL_ERROR "gperftools tcmalloc not found")
-                endif()
-        elseif(PROFILING_TYPE STREQUAL "none")
-                message(STATUS "No profiling library selected")
-        else()
-                message(STATUS "Option PROFILING_TYPE not fulfilled, consider none (no profiling)")
-        endif()
+    if(PROFILING_TYPE STREQUAL "cpu")
+            find_library(PROFILER_LIB profiler)
+            if(PROFILER_LIB)
+                    message(STATUS "Linking with gperftools profiler for CPU profiling")
+                    target_compile_definitions(GameOfLife PRIVATE ENABLE_CPU_PROFILING=1) 
+                    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-lprofiler")
+                    target_link_libraries(GameOfLife ${PROFILER_LIB})
+                    else()
+                    message(FATAL_ERROR "gperftools profiler not found")
+                    endif()
+                    elseif(PROFILING_TYPE STREQUAL "heap")
+                    find_library(TCMALLOC_LIB tcmalloc)
+                    if(TCMALLOC_LIB)
+                    message(STATUS "Linking with gperftools tcmalloc for Heap profiling")
+                    target_compile_definitions(GameOfLife PRIVATE ENABLE_HEAP_PROFILING=1) 
+                    set(CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO "-ltcmalloc")
+                    target_link_libraries(GameOfLife ${TCMALLOC_LIB})
+            else()
+                    message(FATAL_ERROR "gperftools tcmalloc not found")
+            endif()
+    elseif(PROFILING_TYPE STREQUAL "none")
+            message(STATUS "No profiling library selected")
+    else()
+            message(STATUS "Option PROFILING_TYPE not fulfilled, consider none (no profiling)")
+    endif()
 endif()

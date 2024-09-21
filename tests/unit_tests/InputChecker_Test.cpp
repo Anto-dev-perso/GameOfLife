@@ -10,7 +10,7 @@ InputChecker checker;
 /****************************************  Tests Suite for valid inputs only  ***************************************/
 
 
-TEST(ValidInputs, AllInputsPresentsAndValids) {
+TEST(UTValidInputs, AllInputsPresentsAndValids) {
     const int argc{6};
     char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
                      string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
@@ -23,7 +23,7 @@ TEST(ValidInputs, AllInputsPresentsAndValids) {
     EXPECT_EQ(outputAllIterations, true);
 }
 
-TEST(ValidInputs, InputsPresentsAndValidsWithoutAll) {
+TEST(UTValidInputs, InputsPresentsAndValidsWithoutAll) {
     const int argc{5};
     char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
                      string("initial.txt").data(), string("--iterations").data(), string("2000").data()};
@@ -35,7 +35,7 @@ TEST(ValidInputs, InputsPresentsAndValidsWithoutAll) {
     EXPECT_EQ(outputAllIterations, false);
 }
 
-TEST(ValidInputs, VerifyOrderWithAll) {
+TEST(UTValidInputs, VerifyOrderWithAll) {
     const int argc{6};
     {
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -66,7 +66,7 @@ TEST(ValidInputs, VerifyOrderWithAll) {
     }
 }
 
-TEST(ValidInputs, VerifyOrderWithoutAll) {
+TEST(UTValidInputs, VerifyOrderWithoutAll) {
     const int argc{5};
     char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--iterations").data(), string("2000").data(),
                      string("--input").data(), string("initial.txt").data()};
@@ -81,7 +81,7 @@ TEST(ValidInputs, VerifyOrderWithoutAll) {
 
 /****************************************  Tests Suite for unrecognized   arguments  ***************************************/
 
-TEST(ArgumentsUnknown, ArgumentsUnknownWithAll) {
+TEST(UTArgumentsUnknown, ArgumentsUnknownWithAll) {
     {
         const int argc{7};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -108,7 +108,7 @@ TEST(ArgumentsUnknown, ArgumentsUnknownWithAll) {
     }
 }
 
-TEST(ArgumentsUnknown, ArgumentsUnknownWithoutAll) {
+TEST(UTArgumentsUnknown, ArgumentsUnknownWithoutAll) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -137,7 +137,7 @@ TEST(ArgumentsUnknown, ArgumentsUnknownWithoutAll) {
 
 /****************************************  Tests Suite for mandatory inputs missing  ***************************************/
 
-TEST(MissingMandatory, MissingIteration) {
+TEST(UTMissingMandatory, MissingIteration) {
     {
         const int argc{4};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -162,7 +162,7 @@ TEST(MissingMandatory, MissingIteration) {
     }
 }
 
-TEST(MissingMandatory, MissingInputFile) {
+TEST(UTMissingMandatory, MissingInputFile) {
     {
         const int argc{4};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--iterations").data(),
@@ -187,7 +187,7 @@ TEST(MissingMandatory, MissingInputFile) {
     }
 }
 
-TEST(MissingMandatory, MissingAllMandatory) {
+TEST(UTMissingMandatory, MissingAllMandatory) {
     {
         const int argc{2};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--all").data()};
@@ -214,7 +214,7 @@ TEST(MissingMandatory, MissingAllMandatory) {
 
 /****************************************  Tests Suite for invalid iterations value  ***************************************/
 
-TEST(BadIteration, IterationIsString) {
+TEST(UTBadIteration, IterationIsString) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -240,7 +240,7 @@ TEST(BadIteration, IterationIsString) {
     }
 }
 
-TEST(BadIteration, IterationIsNull) {
+TEST(UTBadIteration, IterationIsNull) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -266,7 +266,7 @@ TEST(BadIteration, IterationIsNull) {
     }
 }
 
-TEST(BadIteration, IterationIsNegative) {
+TEST(UTBadIteration, IterationIsNegative) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -292,7 +292,7 @@ TEST(BadIteration, IterationIsNegative) {
     }
 }
 
-TEST(BadIteration, IterationIsOneValueBeforeTheIntLimit) {
+TEST(UTBadIteration, IterationIsOneValueBeforeTheIntLimit) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -318,7 +318,7 @@ TEST(BadIteration, IterationIsOneValueBeforeTheIntLimit) {
     }
 }
 
-TEST(BadIteration, IterationAtTheIntLimit) {
+TEST(UTBadIteration, IterationAtTheIntLimit) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
@@ -344,7 +344,7 @@ TEST(BadIteration, IterationAtTheIntLimit) {
     }
 }
 
-TEST(BadIteration, IterationIsOneValueAfterTheIntLimit) {
+TEST(UTBadIteration, IterationIsOneValueAfterTheIntLimit) {
     {
         const int argc{6};
         char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),

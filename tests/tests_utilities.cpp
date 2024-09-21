@@ -14,7 +14,7 @@ namespace UTILITIES {
         for (size_t line = 0; line < grid.size(); line++) {
             for (size_t column = 0; column < grid[line].size(); column++) {
                 EXPECT_EQ(grid[line][column].get_isCurrentlyAlive(), expected[line][column].get_isCurrentlyAlive())
-                                    << "Board incorrect on line " << line << " and column " << column;
+                        << "Board incorrect on line " << line << " and column " << column;
             }
         }
     }

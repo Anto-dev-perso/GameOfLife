@@ -25,12 +25,10 @@ int main(int argc, char *argv[])
     static InputChecker checker;
     const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
-    if (!inputsValids)
-    {
-        return 1;
-    }
+    if (!inputsValids) { return 1; }
 
     static Game gameOfLife(filePath, nbOfIterations, outputAllIterations);
+    if (!gameOfLife.init()) { return 1; }
 
     const bool processReturn = gameOfLife.process();
 #ifdef ENABLE_CPU_PROFILING

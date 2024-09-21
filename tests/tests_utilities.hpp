@@ -475,6 +475,8 @@ namespace UTILITIES {
     // Helper function to dump the content of the gridOfCells for debugging
     void dumpGrid(const gridOfCells &grid);
 
-    // Helper function to read the content of a file into a string
+    // Utility function to read the content of a file into a string
     [[nodiscard]] std::string readFile(const std::string &filename);
+
+
 };

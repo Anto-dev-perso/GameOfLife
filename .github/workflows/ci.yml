@@ -61,7 +61,7 @@ jobs:
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
-          ctest --output-on-failure || exit 0
+          ctest --output-on-failure --gtest_output=xml:junit_report.xml || exit 0
 # TODO fix all tests 
 
       - name: Upload test results
