@@ -14,7 +14,7 @@ public:
 
     [[nodiscard]] bool writeIteration(const gridOfCells &grid, unsigned int iteration = 0);
 
-    [[nodiscard]] std::string get_fileName() const;
+    [[nodiscard]] std::string_view get_fileName() const;
 
     [[nodiscard]] std::string_view get_extension() const;
 

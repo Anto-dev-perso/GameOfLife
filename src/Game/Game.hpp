@@ -22,15 +22,17 @@ public:
 private:
 
 
-    [[nodiscard]] static bool
-    applyRule1(Cell &currentCell, const std::vector <std::reference_wrapper<Cell>> &neighbours,
-               unsigned int onGoingIteration);
+    [[nodiscard]] static bool applyRule1(Cell &currentCell, const std::vector<std::reference_wrapper<Cell>> &neighbours,
+                                         unsigned int onGoingIteration);
 
-    [[nodiscard]] static bool
-    applyRule2(Cell &currentCell, const std::vector <std::reference_wrapper<Cell>> &neighbours,
-               unsigned int onGoingIteration);
+    [[nodiscard]] static bool applyRule2(Cell &currentCell, const std::vector<std::reference_wrapper<Cell>> &neighbours,
+                                         unsigned int onGoingIteration);
 
-    [[nodiscard]] static bool applyRule3();
+    // Rule 3 of the Game : All other live cells die in the next generation and all other dead cells stay dead
+    // Return false directly because a living cell shall die and a dead cell shall stay dead
+    // Keep a function for this rule for consistency and understanding
+    // If the rule change, the function can be useful
+    [[nodiscard]] static constexpr bool applyRule3() { return false; }
 
     std::string_view _filePath{};
     unsigned int _nbOfIterations{0};

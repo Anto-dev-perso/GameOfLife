@@ -37,6 +37,6 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteratio
 
 }
 
-std::string OutputWriter::get_fileName() const { return _fileName; }
+std::string_view OutputWriter::get_fileName() const { return _fileName; }
 
 std::string_view OutputWriter::get_extension() const { return _extension; }

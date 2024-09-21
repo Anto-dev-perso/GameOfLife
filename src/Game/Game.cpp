@@ -88,13 +88,6 @@ bool Game::applyRule2(Cell &currentCell, const vector<std::reference_wrapper<Cel
     return livingNeighbours == 3;
 }
 
-// Rule 3 of the Game : All other live cells die in the next generation and all other dead cells stay dead
-// Return false directly because a living cell shall die and a dead cell shall stay dead
-// Keep a function for this rule for consistency and understanding
-// If the rule change, the function can be useful
-bool Game::applyRule3() {
-    return false;
-}
 
 const Board *Game::get_board_const() const { return _board.get(); }
 

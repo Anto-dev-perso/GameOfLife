@@ -12,7 +12,7 @@ using namespace std;
 
 // Function to check the inputs arguments of the whole program
 // Return <false, "", 0, false> if one or multiple inputs are invalid
-tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc, char *argv[]) const {
+tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc, char *argv[]) {
 
     // Check that at least one argument is given
     if ((argc <= 1) || !argv[argc - 1]) {

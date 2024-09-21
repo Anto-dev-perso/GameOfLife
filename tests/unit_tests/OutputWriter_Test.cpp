@@ -85,7 +85,7 @@ TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
               "*--------*\n"
               "*--------*\n");
 
-    // Clean up the generated file (if needed)
+    // Clean up the generated file
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -145,7 +145,6 @@ TEST(WriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
               "----------\n"
               "**********\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -195,7 +194,6 @@ TEST(WriteIterationWithoutOptionalArgument, AllDeadCells) {
               "----------\n"
               "----------\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -245,7 +243,6 @@ TEST(WriteIterationWithoutOptionalArgument, AllLivingCells) {
               "**********\n"
               "**********\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -300,7 +297,6 @@ TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
               "*--------*\n"
               "*--------*\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -362,7 +358,6 @@ TEST(WriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
               "----------\n"
               "**********\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -414,7 +409,6 @@ TEST(WriteIterationWithOptionalArgument, AllDeadCells) {
               "----------\n"
               "----------\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();
@@ -466,7 +460,6 @@ TEST(WriteIterationWithOptionalArgument, AllLivingCells) {
               "**********\n"
               "**********\n");
 
-    // Clean up the generated file (if needed)
     std::remove(outputFileName.c_str());
 
     grid.clear();

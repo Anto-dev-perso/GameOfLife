@@ -2,11 +2,6 @@
 
 using namespace std;
 
-const gridOfCells &Board::get_grid_const() const { return _grid; }
-
-gridOfCells &Board::get_grid() { return _grid; }
-
-
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column) {
 

@@ -32,7 +32,6 @@ add_library(GameLib SHARED
         src/Game/Game.hpp
         src/Game/Board.cpp
         src/Game/Board.hpp
-        src/Game/Cell.cpp
         src/Game/Cell.hpp
         src/Game/Parser.cpp
         src/Game/Parser.hpp

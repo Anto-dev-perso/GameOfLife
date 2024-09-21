@@ -11,9 +11,9 @@ typedef std::vector<std::vector<Cell>> gridOfCells;
 class Board {
 public:
 
-    [[nodiscard]] const gridOfCells &get_grid_const() const;
+    [[nodiscard]] constexpr const gridOfCells &get_grid_const() const { return _grid; }
 
-    [[nodiscard]] gridOfCells &get_grid();
+    [[nodiscard]] constexpr gridOfCells &get_grid() { return _grid; }
 
     [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column);
 
