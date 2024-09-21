@@ -12,7 +12,7 @@ Board::Board(gridOfCells &&readGrid) : _grid(std::move(readGrid)) {}
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column) {
 
-    if (line >= _grid.size() || column >= _grid.size()) { return {}; }
+    if (line >= _grid.size() || column >= _grid.begin()->size()) { return {}; }
 
     const bool lineAtUpLimit{line + 1 == _grid.size()};
     const bool columnAtUpLimit{column + 1 == _grid[line].size()};

@@ -76,7 +76,7 @@ jobs:
           sudo apt-get install gcovr
           cd build-debug
           mkdir coverage
-          gcovr --r .. -e './*/build-debug/' --html --html-details -o coverage/coverage.html
+          gcovr --r .. -e '/.*/(build-debug|tests)/' --html --html-details -o coverage/coverage.html
 
       # Upload coverage reports as artifacts
       - name: Upload Coverage Report (HTML)
@@ -155,11 +155,11 @@ jobs:
         # TODO replace by a real performance scenario
       - name: HEAP Profiling
         run: |
-          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt
+          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/rPentomino.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_pentomino.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
           rm heap_profiling.prof*
-          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt
+          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
 
@@ -203,11 +203,11 @@ jobs:
       - name: CPU Profiling
         run: |
           CPUPROFILE_FREQUENCY=10000 
-          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_pentomino.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
           rm cpu_profiling.prof
-          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/gosperGliderGun.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
 
