@@ -5,8 +5,7 @@
 
 using namespace std;
 
-// Set iteration to 1 for speed and to test oscillators
-static Game game("Dummy", 1, false);
+static Game game;
 
 
 /****************************************  Tests Suite for applyRulesToTheGame with some 'still lifes' structures ***************************************/
@@ -52,52 +51,120 @@ TEST(ApplyRulesStillLifePatterns, tubPattern) {
 
 /****************************************  Tests Suite for applyRulesToTheGame with some 'oscillators' structures ***************************************/
 TEST(ApplyRulesOscillatorsPatterns, BlinkerPattern) {
-    game.set_board(UTILITIES::blinkerPatternP1);
+    game.set_board(UTILITIES::blinkerPatternG1);
     game.applyRulesToTheBoard(1);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternP2);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternG2);
 
     game.applyRulesToTheBoard(2);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternP1);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::blinkerPatternG1);
 }
 
 TEST(ApplyRulesOscillatorsPatterns, ToadPattern) {
-    game.set_board(UTILITIES::toadPatternP1);
+    game.set_board(UTILITIES::toadPatternG2);
     game.applyRulesToTheBoard(1);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternP2);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternG1);
     game.applyRulesToTheBoard(2);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternP1);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::toadPatternG2);
 }
 
 TEST(ApplyRulesOscillatorsPatterns, BeaconPattern) {
-    game.set_board(UTILITIES::beaconPatternP1);
+    game.set_board(UTILITIES::beaconPatternG1);
     game.applyRulesToTheBoard(1);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternP2);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternG2);
     game.applyRulesToTheBoard(2);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternP1);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::beaconPatternG1);
 }
 
 TEST(ApplyRulesOscillatorsPatterns, PulsarPattern) {
-    game.set_board(UTILITIES::pulsarPatternP1);
+    game.set_board(UTILITIES::pulsarPatternG1);
     game.applyRulesToTheBoard(1);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternP2);
+
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternG2);
 
     game.applyRulesToTheBoard(2);
-    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternP3);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternG3);
+
+    game.applyRulesToTheBoard(3);
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pulsarPatternG1);
+}
+
+TEST(ApplyRulesOscillatorsPatterns, PentaDecathlonPattern) {
+    game.set_board(UTILITIES::pentaDecathlonPatternG1);
+
+    game.applyRulesToTheBoard(1);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG2.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG2);
+
+    game.applyRulesToTheBoard(2);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG3.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG3);
+
+    game.applyRulesToTheBoard(3);
+
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG4.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG4);
+
+    game.applyRulesToTheBoard(4);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG5.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG5);
+
+    game.applyRulesToTheBoard(5);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG6.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG6);
+
+    game.applyRulesToTheBoard(6);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG7.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG7);
+
+    game.applyRulesToTheBoard(7);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG8.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG8);
+
+    game.applyRulesToTheBoard(8);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG9.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG9);
+
+    game.applyRulesToTheBoard(9);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG10.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG10);
+
+    game.applyRulesToTheBoard(10);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG11.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG11);
+
+    game.applyRulesToTheBoard(11);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG12.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG12);
+
+    game.applyRulesToTheBoard(12);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG13.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG13);
+
+    game.applyRulesToTheBoard(13);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG14.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG14);
+
+    game.applyRulesToTheBoard(14);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG15.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG15);
+
+    game.applyRulesToTheBoard(15);
+    EXPECT_EQ(game.get_board_const()->get_grid_const().size(), UTILITIES::pentaDecathlonPatternG2.size());
+    UTILITIES::compareGrid(game.get_board_const()->get_grid_const(), UTILITIES::pentaDecathlonPatternG1);
 }
 
 /****************************************  Tests Suite for applyRulesToTheGame robustness ***************************************/
 
 TEST(ApplyRulesRobustness, RobustnessTests) {
+    Game emptyGame;
     {
         // Board empty
-        Game emptyGame("", 1, false);
         emptyGame.applyRulesToTheBoard(1);
 
         UTILITIES::compareGrid(emptyGame.get_board_const()->get_grid_const(), {});
     }
     {
         // No iteration
-        Game emptyGame("", 0, false);
         emptyGame.set_board(UTILITIES::blockPattern);
         emptyGame.applyRulesToTheBoard(0);
 

@@ -3,6 +3,7 @@
 #include "Game/AllowedChar.hpp"
 
 #include <algorithm>
+#include <fstream>
 
 
 namespace UTILITIES {
@@ -25,5 +26,11 @@ namespace UTILITIES {
             }
             cout << endl;
         }
+    }
+
+
+    string readFile(const std::string &filename) {
+        ifstream infile(filename);
+        return {istreambuf_iterator<char>(infile), istreambuf_iterator<char>()};
     }
 };

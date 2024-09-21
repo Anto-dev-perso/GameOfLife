@@ -62,6 +62,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             tests/unit_tests/OutputWriter_Test.cpp
             tests/unit_tests/Game_Test.cpp
             tests/unit_tests/Board_Test.cpp
+            tests/unit_tests/Parser_Test.cpp
             tests/tests_utilities.hpp 
             tests/tests_utilities.cpp)
 

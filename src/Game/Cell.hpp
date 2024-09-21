@@ -1,11 +1,14 @@
 #pragma once
 
+#include "AllowedChar.hpp"
 
 class Cell {
 public:
 
+    Cell(char alive) : Cell(charToBool(alive)) {};
+
     // Set the two alive booleans to the same value because we don't really needs to memory anything at first
-    constexpr explicit Cell(bool alive) : _isPreviouslyAlive(alive), _isCurrentlyAlive(alive) {};
+    constexpr Cell(bool alive) : _isPreviouslyAlive(alive), _isCurrentlyAlive(alive) {};
 
     [[nodiscard]] constexpr bool get_isPreviouslyAlive() const { return _isPreviouslyAlive; }
 

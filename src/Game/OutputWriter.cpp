@@ -13,12 +13,12 @@ OutputWriter::OutputWriter(std::string_view nameWithExtension) : _fileName(
 // The function take an optional int value corresponding to the iteration wanted in case of --all
 bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteration) {
 
-    const string outputFileName = (iteration == 0) ? (_fileName + '.' + _extension) : (_fileName + '_' +
-                                                                                       to_string(iteration) + '.' +
-                                                                                       _extension);
+    const string outputFileName = (iteration == 0) ? (string(_fileName) + '.' + _extension) : (string(_fileName) + '_' +
+                                                                                               to_string(iteration) +
+                                                                                               '.' + _extension);
 
-    // TODO warn the user that a file with that name already exist and as been backup (eventually)
-    ofstream file(outputFileName);
+    // TODO warn the user that a file with that name already exist and has been backup (eventually)
+    ofstream file{outputFileName};
     if (!file.is_open()) {
         cerr << "ERROR: Failed to create file: " << outputFileName
              << endl;

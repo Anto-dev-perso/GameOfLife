@@ -5,8 +5,18 @@ using namespace std;
 Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path),
                                                                   _nbOfIterations(iterations),
                                                                   _outputAllIterations(all),
-                                                                  _board(make_unique<Board>()),
-                                                                  _outputWriter(make_unique<OutputWriter>(_filePath)) {}
+                                                                  _fileParser(Parser(_filePath)),
+                                                                  _outputWriter(make_unique<OutputWriter>(
+                                                                          _filePath)) {}
+
+bool Game::init() {
+    // Use NRVO to avoid copy
+    // Another possibility would be to return an optional (with std::move) but it makes the binary heavier for a non-significant gain
+    _board = make_unique<Board>(_fileParser.parseInputFile());
+
+    // If parsing fail, grid is empty. In this case, return that it failed
+    return !_board->get_grid_const().empty();
+}
 
 bool Game::process() {
 

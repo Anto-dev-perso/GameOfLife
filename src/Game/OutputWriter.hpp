@@ -20,7 +20,7 @@ public:
 
 private:
 
-    std::string _fileName{};
+    std::string_view _fileName{};
     const std::string _extension{"res"};
 
 

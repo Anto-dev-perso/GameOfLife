@@ -11,6 +11,20 @@ typedef std::vector<std::vector<Cell>> gridOfCells;
 class Board {
 public:
 
+    Board() = default;
+
+    Board(const Board &other) = delete;
+
+    Board &operator=(const Board &other) = delete;
+
+    Board(const Board &&other) = delete;
+
+    Board &operator=(const Board &&other) = delete;
+
+    ~Board() = default;
+
+    Board(gridOfCells &&readGrid);
+
     [[nodiscard]] constexpr const gridOfCells &get_grid_const() const { return _grid; }
 
     [[nodiscard]] constexpr gridOfCells &get_grid() { return _grid; }
@@ -24,6 +38,6 @@ public:
 
 private:
 
-    gridOfCells _grid;
+    gridOfCells _grid{};
 
 };

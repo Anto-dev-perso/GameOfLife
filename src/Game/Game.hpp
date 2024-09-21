@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Parser.hpp"
 #include "OutputWriter.hpp"
 
 #include <string>
@@ -9,6 +10,12 @@ class Game {
 
 public:
     Game(std::string_view path, unsigned int iterations, bool all);
+
+    // TODO
+    //For debug only, add another constructor for testing
+    Game() : _fileParser(Parser("")), _board(std::make_unique<Board>()) {};
+
+    [[nodiscard]] bool init();
 
     [[nodiscard]] bool process();
 
@@ -38,6 +45,7 @@ private:
     unsigned int _nbOfIterations{0};
     bool _outputAllIterations{false};
 
+    Parser _fileParser;
     std::unique_ptr<Board> _board;
     std::unique_ptr<OutputWriter> _outputWriter;
 

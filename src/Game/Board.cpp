@@ -1,6 +1,10 @@
 #include "Board.hpp"
 
+#include <utility>
+
 using namespace std;
+
+Board::Board(gridOfCells &&readGrid) : _grid(std::move(readGrid)) {}
 
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column) {
