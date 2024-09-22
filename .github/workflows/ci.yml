@@ -1,7 +1,5 @@
 name: Game of Life Workflow
 
-# TODO add a script for building
-
 # Run the workflow on every push and pull request to the main branch
 on:
   push:
@@ -24,10 +22,7 @@ jobs:
 
       - name: Build in Debug configuration
         run: |
-          mkdir build-debug
-          cd build-debug
-          cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh -c Debug
 
       - name: Compress build-debug directory into tar.gz
         run: tar -czf build-debug.tar.gz build-debug
@@ -94,10 +89,7 @@ jobs:
 
       - name: Build in Debug configuration with Clang-Tidy checks enabled
         run: |
-          mkdir build-debug
-          cd build-debug
-          cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_CLANG_TIDY="clang-tidy;-checks=*,-clang-analyzer-alpha.*" -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh -c Debug -s
 
   # Step 3: Build in RelWithDebInfo (only if tests passed)
   build-relwithdebinfo:
@@ -112,10 +104,7 @@ jobs:
 
       - name: Build in RelWithDebInfo configuration
         run: |
-          mkdir build-relwithdebinfo
-          cd build-relwithdebinfo
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh -c RelWithDebInfo
 
       - name: Compress build-relwithdebinfo directory into tar.gz
         run: tar -czf build-relwithdebinfo.tar.gz build-relwithdebinfo
@@ -146,10 +135,7 @@ jobs:
 
       - name: Build in RelWithDebInfo configuration with Heap profiling
         run: |
-          mkdir build-relwithdebinfo
-          cd build-relwithdebinfo
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPROFILING_TYPE=heap -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh -c RelWithDebInfo -p heap
 
       - name: HEAP Profiling
         run: |
@@ -191,10 +177,7 @@ jobs:
 
       - name: Build in RelWithDebInfo configuration with Heap profiling
         run: |
-          mkdir build-relwithdebinfo
-          cd build-relwithdebinfo
-          cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPROFILING_TYPE=cpu -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh -c RelWithDebInfo -p cpu
 
       # Launch CPU profiling with 1 interrupt every 100µs
       - name: CPU Profiling
@@ -233,10 +216,7 @@ jobs:
 
       - name: Build in Release configuration
         run: |
-          mkdir build-release
-          cd build-release
-          cmake -DCMAKE_BUILD_TYPE=Release  -Wno-dev ..
-          cmake --build . -- -j
+          ./build.sh
 
       - name: Compress build-release directory into tar.gz
         run: tar -czf build-release.tar.gz build-release
