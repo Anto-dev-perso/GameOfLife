@@ -61,8 +61,7 @@ jobs:
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
-          ctest --output-on-failure --gtest_output=xml:junit_report.xml || exit 0
-# TODO fix all tests 
+          ctest --output-on-failure
 
       - name: Upload test results
         uses: actions/upload-artifact@v3
@@ -152,7 +151,6 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DPROFILING_TYPE=heap -Wno-dev ..
           cmake --build . -- -j
 
-        # TODO replace by a real performance scenario
       - name: HEAP Profiling
         run: |
           ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/rPentomino.txt --all
@@ -166,13 +164,13 @@ jobs:
       - name: Upload profiling reports Gosper
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling Gosper report
+          name: Profiling reports
           path: heap_profiling_gosper.pdf
 
       - name: Upload profiling reports Pentomino
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling Pentomino report
+          name: Profiling reports
           path: heap_profiling_pentomino.pdf
 
 
@@ -199,7 +197,6 @@ jobs:
           cmake --build . -- -j
 
       # Launch CPU profiling with 1 interrupt every 100µs
-      # TODO replace by a real performance scenario
       - name: CPU Profiling
         run: |
           CPUPROFILE_FREQUENCY=10000 
@@ -214,13 +211,13 @@ jobs:
       - name: Upload profiling reports Gosper
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling Gosper report
+          name: Profiling reports
           path: cpu_profiling_gosper.pdf
 
       - name: Upload profiling reports Pentomino
         uses: actions/upload-artifact@v3
         with:
-          name: Heap Profiling Pentomino report
+          name: Profiling reports
           path: cpu_profiling_pentomino.pdf
 
   # Step 5: Build Release

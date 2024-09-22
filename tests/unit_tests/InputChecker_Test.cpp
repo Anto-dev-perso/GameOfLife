@@ -9,127 +9,121 @@ InputChecker checker;
 
 /****************************************  Tests Suite for valid inputs only  ***************************************/
 
-
-TEST(UTValidInputs, AllInputsPresentsAndValids) {
+TEST(UTValidInputs, AllInputsPresentsAndValids)
+{
     const int argc{6};
-    char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                     string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
-                     string("--all").data()};
+    char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                     (char *)"initial.txt", (char *)"--iterations", (char *)"2000",
+                     (char *)"--all"};
+
     const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
     EXPECT_EQ(inputsValids, true);
-    EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+    EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
     EXPECT_EQ(nbOfIterations, 2000);
     EXPECT_EQ(outputAllIterations, true);
 }
 
-TEST(UTValidInputs, InputsPresentsAndValidsWithoutAll) {
+TEST(UTValidInputs, InputsPresentsAndValidsWithoutAll)
+{
     const int argc{5};
-    char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                     string("initial.txt").data(), string("--iterations").data(), string("2000").data()};
+    char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                     (char *)"initial.txt", (char *)"--iterations", (char *)"2000"};
     const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
     EXPECT_EQ(inputsValids, true);
-    EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+    EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
     EXPECT_EQ(nbOfIterations, 2000);
     EXPECT_EQ(outputAllIterations, false);
 }
 
-TEST(UTValidInputs, VerifyOrderWithAll) {
+TEST(UTValidInputs, VerifyOrderWithAll)
+{
     const int argc{6};
     {
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--all").data(), string("--iterations").data(),
-                         string("2000").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--all", (char *)"--iterations", (char *)"2000"};
 
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, true);
     }
 
     {
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(),
-                         string("--iterations").data(),
-                         string("2000").data(),
-                         string("--all").data(),
-                         string("--input").data(), string("initial.txt").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--iterations", (char *)"2000", (char *)"--all", (char *)"--input", (char *)"initial.txt"};
 
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, true);
     }
 }
 
-TEST(UTValidInputs, VerifyOrderWithoutAll) {
+TEST(UTValidInputs, VerifyOrderWithoutAll)
+{
     const int argc{5};
-    char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--iterations").data(), string("2000").data(),
-                     string("--input").data(), string("initial.txt").data()};
+    char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--iterations", (char *)"2000",
+                     (char *)"--input", (char *)"initial.txt"};
 
     const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
     EXPECT_EQ(inputsValids, true);
-    EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+    EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
     EXPECT_EQ(nbOfIterations, 2000);
     EXPECT_EQ(outputAllIterations, false);
 }
 
 /****************************************  Tests Suite for unrecognized   arguments  ***************************************/
 
-TEST(UTArgumentsUnknown, ArgumentsUnknownWithAll) {
+TEST(UTArgumentsUnknown, ArgumentsUnknownWithAll)
+{
     {
         const int argc{7};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
-                         string("--all").data(), string("--unknownArg").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2000", (char *)"--all", (char *)"--unknownArg"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{7};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
-                         string("--all").data(), string("RandomString").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2000", (char *)"--all", (char *)"RandomString"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, true);
     }
 }
 
-TEST(UTArgumentsUnknown, ArgumentsUnknownWithoutAll) {
+TEST(UTArgumentsUnknown, ArgumentsUnknownWithoutAll)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
-                         string("--unknownArg").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2000", (char *)"--unknownArg"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, false);
     }
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2000").data(),
-                         string("RandomString").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                         (char *)"initial.txt", (char *)"--iterations", (char *)"2000",
+                         (char *)"RandomString"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, false);
     }
@@ -137,234 +131,225 @@ TEST(UTArgumentsUnknown, ArgumentsUnknownWithoutAll) {
 
 /****************************************  Tests Suite for mandatory inputs missing  ***************************************/
 
-TEST(UTMissingMandatory, MissingIteration) {
+TEST(UTMissingMandatory, MissingIteration)
+{
     {
         const int argc{4};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                         (char *)"initial.txt", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{3};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                         (char *)"initial.txt"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTMissingMandatory, MissingInputFile) {
+TEST(UTMissingMandatory, MissingInputFile)
+{
     {
         const int argc{4};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--iterations").data(),
-                         string("2000").data(), string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--iterations",
+                         (char *)"2000", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("").data());
+        EXPECT_STREQ(filePath.data(), (char *)"");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{3};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--iterations").data(),
-                         string("2000").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--iterations",
+                         (char *)"2000"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("").data());
+        EXPECT_STREQ(filePath.data(), (char *)"");
         EXPECT_EQ(nbOfIterations, 2000);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTMissingMandatory, MissingAllMandatory) {
+TEST(UTMissingMandatory, MissingAllMandatory)
+{
     {
         const int argc{2};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("").data());
+        EXPECT_STREQ(filePath.data(), (char *)"");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{1};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("").data());
+        EXPECT_STREQ(filePath.data(), (char *)"");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
-
-
 
 /****************************************  Tests Suite for invalid iterations value  ***************************************/
 
-TEST(UTBadIteration, IterationIsString) {
+TEST(UTBadIteration, IterationIsString)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("AString").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input",
+                         (char *)"initial.txt", (char *)"--iterations", (char *)"AString",
+                         (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("AString").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"AString"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTBadIteration, IterationIsNull) {
+TEST(UTBadIteration, IterationIsNull)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("0").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"0", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("0").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"0"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTBadIteration, IterationIsNegative) {
+TEST(UTBadIteration, IterationIsNegative)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("-1").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"-1", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("-1").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"-1"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTBadIteration, IterationIsOneValueBeforeTheIntLimit) {
+TEST(UTBadIteration, IterationIsOneValueBeforeTheIntLimit)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483646").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483646", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2147483646);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483646").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483646"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2147483646);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTBadIteration, IterationAtTheIntLimit) {
+TEST(UTBadIteration, IterationAtTheIntLimit)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483647").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483647", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2147483647);
         EXPECT_EQ(outputAllIterations, true);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483647").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483647"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, true);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 2147483647);
         EXPECT_EQ(outputAllIterations, false);
     }
 }
 
-TEST(UTBadIteration, IterationIsOneValueAfterTheIntLimit) {
+TEST(UTBadIteration, IterationIsOneValueAfterTheIntLimit)
+{
     {
         const int argc{6};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483648").data(),
-                         string("--all").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483648", (char *)"--all"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
     {
         const int argc{5};
-        char *argv[argc]{string("Dummy/File/Path/To/Binary").data(), string("--input").data(),
-                         string("initial.txt").data(), string("--iterations").data(), string("2147483648").data()};
+        char *argv[argc]{(char *)"Dummy/File/Path/To/Binary", (char *)"--input", (char *)"initial.txt", (char *)"--iterations", (char *)"2147483648"};
         const auto [inputsValids, filePath, nbOfIterations, outputAllIterations] = checker.checkInputs(argc, argv);
 
         EXPECT_EQ(inputsValids, false);
-        EXPECT_STREQ(filePath.data(), string("initial.txt").data());
+        EXPECT_STREQ(filePath.data(), (char *)"initial.txt");
         EXPECT_EQ(nbOfIterations, 0);
         EXPECT_EQ(outputAllIterations, false);
     }
