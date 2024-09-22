@@ -2,17 +2,15 @@
 #include "Game/OutputWriter.hpp"
 #include "../tests/tests_utilities.hpp"
 
-
 using namespace std;
-
 
 // Declare the grid globally to keep the memory allocated by the first test to be played
 gridOfCells grid;
 
-
 /****************************************  Tests Suite for all instantiations of OutputWriter ***************************************/
 
-TEST(UTOutputWriterInstanciantion, IntantiateWithInitial) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithInitial)
+{
 
     const OutputWriter writer{"initial.txt"};
 
@@ -20,7 +18,8 @@ TEST(UTOutputWriterInstanciantion, IntantiateWithInitial) {
     EXPECT_EQ(writer.get_extension(), "res");
 }
 
-TEST(UTOutputWriterInstanciantion, IntantiateWithUpperCase) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithUpperCase)
+{
 
     const OutputWriter writer{"UPPER.txt"};
 
@@ -28,7 +27,8 @@ TEST(UTOutputWriterInstanciantion, IntantiateWithUpperCase) {
     EXPECT_EQ(writer.get_extension(), "res");
 }
 
-TEST(UTOutputWriterInstanciantion, IntantiateWithLongName) {
+TEST(UTOutputWriterInstanciantion, IntantiateWithLongName)
+{
 
     const OutputWriter writer{"very_very_very_long_name_input.txt"};
 
@@ -38,32 +38,25 @@ TEST(UTOutputWriterInstanciantion, IntantiateWithLongName) {
 
 /****************************************  Tests Suite for writeIteration function without the optional iteration argument ***************************************/
 
-TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) {
+TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns)
+{
 
     OutputWriter writer{"first_and_last_columns.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
 
     // Fill the grid with alive cells only in first and last columns
-    const vector<Cell> cellValues = {{'*'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'*'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues = {{'*'},{'-'},{'-'},{'-'},{'-'},{'-'},{'-'},{'-'},{'-'},{'*'},
+    };
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -87,45 +80,27 @@ TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastColumns) 
     grid.clear();
 }
 
-TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
+TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines)
+{
 
     OutputWriter writer{"first_and_last_lines.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
 
-
     // Fill the grid with alive cells only in first and last lines
-    const vector<Cell> cellAliveValues = {{'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'}};
-    const vector<Cell> cellDeadValues = {{'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'}};
-    grid.emplace_back(cellAliveValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellAliveValues);
+    const vector<Cell> cellAliveValues = {{'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}};
+    const vector<Cell> cellDeadValues = {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}};
+    grid.insert(grid.end(),cellAliveValues.begin(),cellAliveValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellAliveValues.begin(),cellAliveValues.end());
 
-    const bool result{writer.writeIteration(grid)};
+    const bool result{writer.writeIteration(grid)}; // Alive and Dead cells share the same column size
     const string fileOutput{UTILITIES::readFile(outputFileName)};
 
     EXPECT_EQ(result, true);
@@ -146,33 +121,24 @@ TEST(UTWriteIterationWithoutOptionalArgument, LivingCellsInFirstAndLastLines) {
     grid.clear();
 }
 
-TEST(UTWriteIterationWithoutOptionalArgument, AllDeadCells) {
+TEST(UTWriteIterationWithoutOptionalArgument, AllDeadCells)
+{
 
     OutputWriter writer{"all_cells_are_dead.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
 
-
     // Fill the grid with only dead cells
-    const vector<Cell> cellValues = {{'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues = {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}};
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -195,33 +161,24 @@ TEST(UTWriteIterationWithoutOptionalArgument, AllDeadCells) {
     grid.clear();
 }
 
-TEST(UTWriteIterationWithoutOptionalArgument, AllLivingCells) {
+TEST(UTWriteIterationWithoutOptionalArgument, AllLivingCells)
+{
 
     OutputWriter writer{"all_cells_are_alive.txt"};
     const string outputFileName = string(writer.get_fileName()) + '.' + string(writer.get_extension());
 
-
     // Fill the grid with only dead cells
-    const vector<Cell> cellValues = {{'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues = {{'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}};
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -246,36 +203,26 @@ TEST(UTWriteIterationWithoutOptionalArgument, AllLivingCells) {
 
 /****************************************  Tests Suite for writeIteration function with the optional iteration argument set ***************************************/
 
-
-TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
+TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns)
+{
 
     OutputWriter writer{"first_and_last_columns.txt"};
     const unsigned int iteration{10};
     const string outputFileName =
-            string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
-
+        string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
 
     // Fill the grid with alive cells only in first and last columns
-    const vector<Cell> cellValues = {{'*'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'*'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues{{'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}};
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid, iteration)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -298,45 +245,27 @@ TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastColumns) {
     grid.clear();
 }
 
-TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
+TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines)
+{
 
     OutputWriter writer{"first_and_last_lines.txt"};
     const unsigned int iteration{111};
     const string outputFileName =
-            string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
-
+        string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
 
     // Fill the grid with alive cells only in first and last lines
-    const vector<Cell> cellAliveValues = {{'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'},
-                                          {'*'}};
-    const vector<Cell> cellDeadValues = {{'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'},
-                                         {'-'}};
-    grid.emplace_back(cellAliveValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellDeadValues);
-    grid.emplace_back(cellAliveValues);
+    const vector<Cell> cellAliveValues = {{'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}};
+    const vector<Cell> cellDeadValues = {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}};
+    grid.insert(grid.end(),cellAliveValues.begin(),cellAliveValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellDeadValues.begin(),cellDeadValues.end());
+    grid.insert(grid.end(),cellAliveValues.begin(),cellAliveValues.end());
 
     const bool result{writer.writeIteration(grid, iteration)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -359,35 +288,26 @@ TEST(UTWriteIterationWithOptionalArgument, LivingCellsInFirstAndLastLines) {
     grid.clear();
 }
 
-TEST(UTWriteIterationWithOptionalArgument, AllDeadCells) {
+TEST(UTWriteIterationWithOptionalArgument, AllDeadCells)
+{
 
     OutputWriter writer{"all_cells_are_dead.txt"};
     const unsigned int iteration{123456789};
     const string outputFileName =
-            string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
-
+        string(writer.get_fileName()) + '_' + to_string(iteration) + '.' + string(writer.get_extension());
 
     // Fill the grid with only dead cells
-    const vector<Cell> cellValues = {{'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'},
-                                     {'-'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues = {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}};
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid, iteration)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};
@@ -410,35 +330,26 @@ TEST(UTWriteIterationWithOptionalArgument, AllDeadCells) {
     grid.clear();
 }
 
-TEST(UTWriteIterationWithOptionalArgument, AllLivingCells) {
+TEST(UTWriteIterationWithOptionalArgument, AllLivingCells)
+{
 
     OutputWriter writer{"all_cells_are_alive.txt"};
     const unsigned int iteration{0};
     const string outputFileName =
-            string(writer.get_fileName()) + '.' + string(writer.get_extension());
-
+        string(writer.get_fileName()) + '.' + string(writer.get_extension());
 
     // Fill the grid with only dead cells
-    const vector<Cell> cellValues = {{'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'},
-                                     {'*'}};
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
-    grid.emplace_back(cellValues);
+    const vector<Cell> cellValues = {{'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}, {'*'}};
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
+    grid.insert(grid.end(),cellValues.begin(),cellValues.end());
 
     const bool result{writer.writeIteration(grid, iteration)};
     const string fileOutput{UTILITIES::readFile(outputFileName)};

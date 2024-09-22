@@ -6,29 +6,32 @@
 #include <string>
 #include <memory>
 
-class Game {
+class Game
+{
 
 public:
     Game(std::string_view path, unsigned int iterations, bool all);
 
-    // TODO
-    //For debug only, add another constructor for testing
+#ifdef ENABLE_DEBUG
     Game() : _fileParser(Parser("")), _board(std::make_unique<Board>()) {};
+    void updateBoard(const gridOfCells &newGrid, std::size_t lineLength, std::size_t columnLength)
+    {
+        _board->update(newGrid,lineLength,columnLength);
+    }
+
+    [[nodiscard]] auto retrieveBoardDataForTest() { return _board->retrieveDataForTest(); }
+#endif
 
     [[nodiscard]] bool init();
 
     [[nodiscard]] bool process();
 
 public:
-    [[nodiscard]]  std::tuple<bool, bool> applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const;
+    [[nodiscard]] std::tuple<bool, bool> applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const;
 
     [[nodiscard]] const Board *get_board_const() const;
 
-    void set_board(const gridOfCells &newGrid);
-
 private:
-
-
     [[nodiscard]] static bool applyRule1(Cell &currentCell, const std::vector<std::reference_wrapper<Cell>> &neighbours,
                                          unsigned int onGoingIteration);
 
@@ -48,5 +51,4 @@ private:
     Parser _fileParser;
     std::unique_ptr<Board> _board;
     std::unique_ptr<OutputWriter> _outputWriter;
-
 };

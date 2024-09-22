@@ -8,13 +8,13 @@ Board boardToTest;
 
 /****************************************  Tests Suite for fillNeighbour ***************************************/
 
+TEST(UTFillNeighbour, BlockPatternTest)
+{
 
-TEST(UTFillNeighbour, BlockPatternTest) {
-
-    boardToTest.set_grid(UTILITIES::blockPattern);
+    boardToTest.update(UTILITIES::blockPattern,UTILITIES::blockColumnLength,UTILITIES::blockColumnLength);
 
     // First try at the center of the pattern
-    auto resultVec = boardToTest.fillNeighbour(2, 2);
+    auto resultVec = boardToTest.fillNeighbour(2*boardToTest.get_lineLength(), 2);
     ASSERT_EQ(resultVec.size(), 8);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -34,7 +34,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(7).get().get_isPreviouslyAlive(), true);
 
     // Then try at the top left corner
-    resultVec = boardToTest.fillNeighbour(0, 0);
+    resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), true);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), true);
@@ -44,7 +44,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(1).get().get_isPreviouslyAlive(), false);
 
     // Try at the top right corner
-    resultVec = boardToTest.fillNeighbour(0, 3);
+    resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -54,7 +54,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom left corner
-    resultVec = boardToTest.fillNeighbour(3, 0);
+    resultVec = boardToTest.fillNeighbour(3*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -64,7 +64,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom right corner
-    resultVec = boardToTest.fillNeighbour(3, 3);
+    resultVec = boardToTest.fillNeighbour(3*boardToTest.get_lineLength(), 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -74,7 +74,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), true);
 
     // Try at one of the left border
-    resultVec = boardToTest.fillNeighbour(2, 0);
+    resultVec = boardToTest.fillNeighbour(2*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -88,7 +88,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the right border
-    resultVec = boardToTest.fillNeighbour(1, 3);
+    resultVec = boardToTest.fillNeighbour(1*boardToTest.get_lineLength(), 3);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -102,7 +102,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the top border
-    resultVec = boardToTest.fillNeighbour(0, 2);
+    resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 2);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -116,7 +116,7 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the bottom border
-    resultVec = boardToTest.fillNeighbour(3, 1);
+    resultVec = boardToTest.fillNeighbour(3*boardToTest.get_lineLength(), 1);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -128,87 +128,83 @@ TEST(UTFillNeighbour, BlockPatternTest) {
     EXPECT_EQ(resultVec.at(3).get().get_isPreviouslyAlive(), false);
     EXPECT_EQ(resultVec.at(4).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
-
 }
 
 // Do not test the negative indices because it can't happen in current implementation
 // TODO consider adding this check
-TEST(UTFillNeighbour, RobustnessTest) {
+TEST(UTFillNeighbour, RobustnessTest)
+{
 
     // grid empty
-    boardToTest.set_grid({});
-    auto resultVec = boardToTest.fillNeighbour(0, 0);
+    boardToTest.update({}, 0, 0);
+    auto resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 0);
 
-    boardToTest.set_grid(UTILITIES::blockPattern);
+    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength,UTILITIES::blockColumnLength);
 
     // line outside the possible indices
-    resultVec = boardToTest.fillNeighbour(9, 0);
+    resultVec = boardToTest.fillNeighbour(9*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(4, 0);
+    resultVec = boardToTest.fillNeighbour(4*boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 0);
 
     // column outside the possible indices
-    resultVec = boardToTest.fillNeighbour(0, 9);
+    resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(0, 4);
+    resultVec = boardToTest.fillNeighbour(0*boardToTest.get_lineLength(), 4);
     ASSERT_EQ(resultVec.size(), 0);
 
     // line and column outside the possible indices
-    resultVec = boardToTest.fillNeighbour(9, 9);
+    resultVec = boardToTest.fillNeighbour(9*boardToTest.get_lineLength(), 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(4, 4);
+    resultVec = boardToTest.fillNeighbour(4*boardToTest.get_lineLength(), 4);
     ASSERT_EQ(resultVec.size(), 0);
-
 }
-
 
 /****************************************  Tests Suite for reduceBoard ***************************************/
 
-
-TEST(UTReduceBoard, TryToReduceBlock) {
-    boardToTest.set_grid(UTILITIES::blockPattern);
-
-    boardToTest.reduceBoard();
-    UTILITIES::compareGrid(boardToTest.get_grid_const(), UTILITIES::blockPattern);
-}
-
-TEST(UTReduceBoard, TryToReduceTub) {
-    boardToTest.set_grid(UTILITIES::tubPattern);
+TEST(UTReduceBoard, TryToReduceBlock)
+{
+    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
 
     boardToTest.reduceBoard();
-    UTILITIES::compareGrid(boardToTest.get_grid_const(), UTILITIES::tubPattern);
+    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, UTILITIES::blockPattern);
 }
 
+TEST(UTReduceBoard, TryToReduceTub)
+{
+    boardToTest.update(UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength);
 
+    boardToTest.reduceBoard();
+    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, UTILITIES::tubPattern);
+}
 
 /****************************************  Tests Suite for expandBoard ***************************************/
 
-TEST(UTExpandBoard, TryToExpandBlock) {
-    boardToTest.set_grid(UTILITIES::blockPattern);
+TEST(UTExpandBoard, TryToExpandBlock)
+{
+    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
 
     boardToTest.expandBoard();
-    UTILITIES::compareGrid(boardToTest.get_grid_const(), {
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}}
-    });
+    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}});
 }
 
-TEST(UTExpandBoard, TryToExpandTub) {
-    boardToTest.set_grid(UTILITIES::tubPattern);
+TEST(UTExpandBoard, TryToExpandTub)
+{
+    boardToTest.update(UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength);
 
     boardToTest.expandBoard();
-    UTILITIES::compareGrid(boardToTest.get_grid_const(), {
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'*'}, {'-'}, {'*'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}},
-            {{'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}}
-    });
+    UTILITIES::dumpGrid(boardToTest.get_grid_const(),boardToTest.get_colLength());
+    cout<<endl;
+    UTILITIES::dumpGrid(UTILITIES::tubPattern,UTILITIES::tubColumnLength);
+    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, {
+                                        {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  {'-'},
+                                        {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  {'-'},
+                                        {'-'}, {'-'}, {'-'}, {'*'}, {'-'},{'-'},  {'-'},
+                                        {'-'}, {'-'}, {'*'}, {'-'}, {'*'},{'-'},  {'-' },
+                                        {'-'}, {'-'}, {'-'}, {'*'}, {'-'},{'-'},  { '-' },
+                                        {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  { '-' },
+                                        {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  {'-'},
+                                        }
+        );
 }

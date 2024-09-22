@@ -10,9 +10,8 @@ Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path
                                                                           _filePath)) {}
 
 bool Game::init() {
-    // Use NRVO to avoid copy
-    // Another possibility would be to return an optional (with std::move) but it makes the binary heavier for a non-significant gain
-    _board = make_unique<Board>(_fileParser.parseInputFile());
+    auto [grid, lineLength, columnLength]=_fileParser.parseInputFile();
+    _board = make_unique<Board>(std::move(grid),lineLength,columnLength);
 
     // If parsing fail, grid is empty. In this case, return that it failed
     return !_board->get_grid_const().empty();
@@ -58,10 +57,11 @@ std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoi
                 8); // Reserve maximum possible number of neighbours to avoid multiple allocation/deallocation
 
         // TODO this loop could be multi-threaded
-        auto &grid = _board->get_grid();
-        for (size_t line = 0; line < grid.size(); line++) {
-            for (size_t column = 0; column < grid[line].size(); column++) {
-                Cell &cellToApply{grid[line][column]};
+        auto &grid{_board->get_grid()};
+        const auto& numColumn{_board->get_colLength()};
+        for (size_t line = 0; line < grid.size(); line+=numColumn) {
+            for (size_t column = 0; column < numColumn; column++) {
+                Cell &cellToApply{grid[line+column]};
 
                 neighbours = _board->fillNeighbour(line, column);
 
@@ -125,7 +125,3 @@ bool Game::applyRule2(Cell &currentCell, const vector<std::reference_wrapper<Cel
 
 
 const Board *Game::get_board_const() const { return _board.get(); }
-
-void Game::set_board(const gridOfCells &newGrid) {
-    _board->set_grid(newGrid);
-}

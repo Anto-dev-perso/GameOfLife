@@ -132,6 +132,7 @@ TEST(FTLargePatterns, LargePattern)
     ASSERT_EQ(exitCode, 0);
 
     const string iterFile{fileName + ".res"};
+    string expected{UTILITIES::readFile(iterFile)};
     EXPECT_EQ(inputFile, UTILITIES::readFile(iterFile));
     remove(iterFile.c_str());
 }

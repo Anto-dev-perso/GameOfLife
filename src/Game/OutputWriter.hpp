@@ -4,7 +4,8 @@
 
 #include <fstream>
 
-class OutputWriter {
+class OutputWriter
+{
 
     // TODO output file can be at another location
     // TODO file extension can be configurable
@@ -16,12 +17,9 @@ public:
 
     [[nodiscard]] std::string_view get_fileName() const;
 
-    [[nodiscard]] std::string_view get_extension() const;
+    [[nodiscard]] std::string get_extension() const;
 
 private:
-
     std::string_view _fileName{};
     const std::string _extension{"res"};
-
-
 };
