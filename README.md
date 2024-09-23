@@ -53,6 +53,21 @@ As explain in Depandancies part, this project can also be built with profiling. 
  -  `none` to not use a profiler
 
 Please note that run any program with profiling will drastically impact the overall performance of the program. Do not run this project in this mode except for deep investigation about memory or performance.
+---
+### Launch the tests
+
+First, make sure to have build this project in Debug mode. If the build is successfull, you should see multiple binaries inside the build-debug directory:
+- `GameOfLife` which the base binary of the game
+- `GameOfLifeUnitTests` which is a binary dedicated to the unit tests
+- `GameOfLifeFunctionalTests` which is a binary dedicated to the functional tests
+
+These different binaries serve the purpose to launch only one type of test. If you just want to launch all the tests, you can run the command 
+```bash
+cd build-debug
+ctest --output-on-failure
+```
+
+Otherwise, simply run the binary you want and it will run all the tests of this type (unit or functional)
 
 ---
 ### Run the Game
