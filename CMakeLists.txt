@@ -8,14 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 add_compile_options(-Wall -Wextra)
 
 # Set flags or configurations specific to Debug and Release
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
-# set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
-
-# Linker flags for Debug (with sanitizers)
-#set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address,undefined")
-
 
 # Set the default build type to Release if not specified
 if (NOT CMAKE_BUILD_TYPE)
