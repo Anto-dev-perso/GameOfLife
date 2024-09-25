@@ -91,6 +91,51 @@ jobs:
         run: |
           ./build.sh -c Debug -s
 
+      # Step 2bis: Memcheck with valgrind
+  heap-analysis:
+    runs-on: ubuntu-latest
+    needs: build-debug
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install valgrind
+        run: |
+          sudo apt-get update && sudo apt-get install -y valgrind python3 python3-pip
+          pip3 install ValgrindCI
+
+
+      - name: Download build-debug artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: gameOfLife-debug.tar.gz
+          path: .
+
+      - name: Extract the tar.gz file
+        run: tar -xzf build-debug.tar.gz
+      
+      - name: Run valgrind with memcheck
+        run: |
+          mkdir valgrind-report
+          valgrind --tool=memcheck --xml=yes --xml-file=valgrind-report/heap_analyzis.xml -v --leak-check=full --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
+          valgrind --tool=memcheck  -v --leak-check=full --log-file=valgrind-report/heap_analyzis.valg --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
+
+      - name: Generate HTML report
+        run: |
+          cd valgrind-report
+          valgrind-ci heap_analyzis.xml --source-dir=../ --output-dir=.
+
+      - name: Upload valgrind report
+        uses: actions/upload-artifact@v3
+        with:
+          name: valgrind-report.zip
+          path: valgrind-report
+
+      - name: Check if valgrind found a leak
+        run: |
+          cd valgrind-report
+          valgrind-ci heap_analyzis.xml --abort-on-errors
+
   # Step 3: Build in RelWithDebInfo (only if tests passed)
   build-relwithdebinfo:
     runs-on: ubuntu-latest
@@ -203,10 +248,10 @@ jobs:
           name: Profiling reports
           path: cpu_profiling_pentomino.pdf
 
-  # Step 5: Build Release
+# Step 5: Build Release
   build-release:
     runs-on: ubuntu-latest
-    needs: [heap-profiling, cpu-profiling, static-analysis]
+    needs: [heap-analysis, heap-profiling, cpu-profiling, static-analysis]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
