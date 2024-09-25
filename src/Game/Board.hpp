@@ -8,17 +8,30 @@
 
 typedef std::vector<Cell> gridOfCells;
 
-class Board
-{
+class Board {
 public:
 #ifdef ENABLE_DEBUG
-    [[nodiscard]] std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() { return {_grid, _lineLength, _colLength}; }
-    void update(const gridOfCells &newGrid, std::size_t lineLength, std::size_t columnLength)
-    {
+
+    [[nodiscard]] std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() {
+        return {_grid, _lineLength, _colLength};
+    }
+
+    void update(const gridOfCells &newGrid, std::size_t lineLength, std::size_t columnLength) {
         _grid = newGrid;
         set_lineLength(lineLength);
         set_colLength(columnLength);
     }
+
+    void dumpGrid() {
+        for (size_t line = 0; line < _grid.size(); line += _colLength) {
+            for (size_t column = 0; column < _colLength; column++) {
+                std::cout << boolToChar(_grid[line + column].get_isCurrentlyAlive());
+            }
+            std::cout << std::endl;
+        }
+        std::cout << std::endl;
+    }
+
 #endif
 
     Board() = default;
@@ -50,10 +63,12 @@ public:
     void reduceBoard();
 
     [[nodiscard]] size_t get_lineLength() const;
+
     [[nodiscard]] size_t get_colLength() const;
 
 private:
     void set_colLength(size_t newLength);
+
     void set_lineLength(size_t newLength);
 
     gridOfCells _grid{};

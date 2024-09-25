@@ -470,9 +470,6 @@ namespace UTILITIES
     // Helper function to compare the content of the gridOfCells between the actual one and the expected one
     void compareGrid(std::tuple<gridOfCells, std::size_t, std::size_t> board, const gridOfCells &expected);
 
-    // Helper function to dump the content of the gridOfCells for debugging
-    void dumpGrid(const gridOfCells &grid, size_t numColumn);
-
     // Utility function to read the content of a file into a string
     [[nodiscard]] std::string readFile(const std::string &filename);
     }

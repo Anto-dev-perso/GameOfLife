@@ -24,18 +24,6 @@ namespace UTILITIES
         }
     }
 
-    void dumpGrid(const gridOfCells &grid, size_t numColumn)
-    {
-        for (size_t line = 0; line < grid.size(); line += numColumn)
-        {
-            for (size_t column = 0; column < numColumn; column++)
-            {
-                cout << boolToChar(grid[line + column].get_isCurrentlyAlive());
-            }
-            cout << endl;
-        }
-    }
-
     string readFile(const std::string &filename)
     {
         ifstream infile(filename);

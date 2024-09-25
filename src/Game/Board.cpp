@@ -7,7 +7,9 @@ using namespace std;
 // Define a minimum size for the line or column
 static constexpr size_t minSize{5};
 
-Board::Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(std::move(readGrid)), _lineLength(numberOfLines), _colLength(numberOfColumn) {}
+Board::Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(std::move(readGrid)),
+                                                                                    _lineLength(numberOfLines),
+                                                                                    _colLength(numberOfColumn) {}
 
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column)
@@ -113,19 +115,18 @@ bool Board::isCellAtBorder(size_t line, size_t column) const
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the first or the last one (idem for column)
-    return (((column == 0) || (column == _colLength - 1)) || ((line == 0) || (line == _lineLength - 1)));
+    return ((column == 0 || column == _colLength - 1) || ((line < _colLength ||
+                                                              (_grid.size() - _colLength <= line &&
+                                                               line < _grid.size()))));
 }
 
 bool Board::isCellBeforeTheBorder(size_t line, size_t column) const
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the second or the penultimate (idem for column)
-    bool res = (((column == 1) || (column == _colLength - 2)) || ((_colLength <= line) && (line < 2 * _colLength)));
-    if (res)
-    {
-        cout << "stop on column " << column << " line " << line<<endl;
-    }
-    return res;
+    return ((column == 1 || column == _colLength - 2) || ((_colLength <= line && line < 2 * _colLength) ||
+                                                              (((_grid.size() - (2 * _colLength)) <= line) &&
+                                                               (line < _grid.size() - _colLength))));
 }
 
 // To expand the board, we have to add one line at beginning and end and for each line, add one column at beginning and end
@@ -172,32 +173,35 @@ void Board::reduceBoard()
         return;
     }
 
+    const size_t oldSize{_grid.size()};
+    const size_t oldColLength{_colLength};
+    const size_t oldLineLength{_lineLength};
+
+    set_lineLength(oldLineLength - 2);
+    set_colLength(oldColLength - 2);
+
     // Remove the last line + penultimate line last column
     // Reminder: erase is exclusive on the last iterator
-    _grid.erase(_grid.begin() + ((_lineLength * _colLength) - _colLength), _grid.end());
+    _grid.erase(_grid.begin() + ((oldLineLength * oldColLength) - oldColLength + 1), _grid.end());
 
     // Loop through every lines and erase the columns
     // Erase at first the last elements to reduce the swapping time
     // Stop at the frst line because we know we will delete it entirely
-    for (size_t line = _grid.size() - _colLength; line < _colLength; line -= _colLength)
+    for (size_t line = oldSize - oldColLength; line > oldColLength; line -= oldColLength)
     {
         // Remove 2 elements (last column of previous line + first colmun of current line)
-        if (line > _colLength)
-        {
-            _grid.erase(_grid.begin() + line - 1, _grid.begin() + line + 1);
-        }
+        _grid.erase(_grid.begin() + line - 1, _grid.begin() + line + 1);
     }
 
     // Remove the first line + first column of second line
-    _grid.erase(_grid.begin(), _grid.begin() + _colLength + 1);
-
-    // Finally, set the new length of the column and line
-    set_lineLength(_lineLength - 2);
-    set_colLength(_colLength - 2);
+    _grid.erase(_grid.begin(),
+                _grid.begin() + _colLength + 2 + 1); // +1 because erase is exclusive on the last parameter
 }
 
 size_t Board::get_lineLength() const { return _lineLength; }
+
 size_t Board::get_colLength() const { return _colLength; }
 
 void Board::set_lineLength(size_t newLength) { _lineLength = newLength; }
+
 void Board::set_colLength(size_t newLength) { _colLength = newLength; }

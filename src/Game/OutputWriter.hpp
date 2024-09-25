@@ -4,8 +4,7 @@
 
 #include <fstream>
 
-class OutputWriter
-{
+class OutputWriter {
 
     // TODO output file can be at another location
     // TODO file extension can be configurable
@@ -13,7 +12,7 @@ class OutputWriter
 public:
     explicit OutputWriter(std::string_view nameWithExtension);
 
-    [[nodiscard]] bool writeIteration(const gridOfCells &grid, unsigned int iteration = 0);
+    [[nodiscard]] bool writeIteration(const gridOfCells &grid, size_t numColumn, unsigned int iteration = 0);
 
     [[nodiscard]] std::string_view get_fileName() const;
 

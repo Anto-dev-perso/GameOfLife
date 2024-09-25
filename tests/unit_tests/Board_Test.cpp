@@ -194,9 +194,6 @@ TEST(UTExpandBoard, TryToExpandTub)
     boardToTest.update(UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength);
 
     boardToTest.expandBoard();
-    UTILITIES::dumpGrid(boardToTest.get_grid_const(),boardToTest.get_colLength());
-    cout<<endl;
-    UTILITIES::dumpGrid(UTILITIES::tubPattern,UTILITIES::tubColumnLength);
     UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, {
                                         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  {'-'},
                                         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},{'-'},  {'-'},
