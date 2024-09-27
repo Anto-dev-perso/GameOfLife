@@ -138,6 +138,23 @@ TEST(FTLargePatterns, LargePattern)
 
 /****************************************  Tests Suite for performance scenario ***************************************/
 
+TEST(FTPerformancePatterns, BigGridStable)
+{
+    const unsigned int iteration{2};
+    const string fileName{"../tests/input_files/bigStable"};
+    const string resultExpected{UTILITIES::readFile(fileName + ".txt")};
+
+    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+
+    const int exitCode = std::system(cmd.c_str());
+
+    ASSERT_EQ(exitCode, 0);
+
+    const string iterFile{fileName + ".res"};
+    EXPECT_EQ(resultExpected, UTILITIES::readFile(iterFile));
+    remove(iterFile.c_str());
+}
+
 TEST(FTPerformancePatterns, RPentominoPattern)
 {
     const unsigned int iteration{1000};
