@@ -11,7 +11,7 @@ OutputWriter::OutputWriter(std::string_view nameWithExtension) : _fileName(
 // This method is in charge of writing the output file
 // It needs to take the gridOfCells as inputs
 // The function take an optional int value corresponding to the iteration wanted in case of --all
-bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteration) {
+bool OutputWriter::writeIteration(const gridOfCells &grid, size_t numColumn, unsigned int iteration) {
 
     const string outputFileName = (iteration == 0) ? (string(_fileName) + '.' + _extension) : (string(_fileName) + '_' +
                                                                                                to_string(iteration) +
@@ -24,19 +24,18 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, unsigned int iteratio
              << endl;
         return false;
     } else {
-        for (const auto &line: grid) {
-            for (const auto &column: line) {
-                file << boolToChar(column.get_isCurrentlyAlive());
+        for (size_t line = 0; line < grid.size(); line += numColumn) {
+            for (size_t column = 0; column < numColumn; column++) {
+                file << boolToChar(grid[line + column].get_isCurrentlyAlive());
             }
             file << "\r\n";
         }
-        file.close();
-        cout << "File created successfully: " << outputFileName << endl;
-        return true;
     }
-
+    file.close();
+    cout << "File created successfully: " << outputFileName << endl;
+    return true;
 }
 
 std::string_view OutputWriter::get_fileName() const { return _fileName; }
 
-std::string_view OutputWriter::get_extension() const { return _extension; }
+std::string OutputWriter::get_extension() const { return _extension; }
