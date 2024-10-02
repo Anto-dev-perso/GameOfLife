@@ -9,13 +9,8 @@ add_compile_options(-Wall -Wextra)
 
 # Set flags or configurations specific to Debug and Release
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
-# set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage -fsanitize=address,undefined -fno-omit-frame-pointer")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
-
-# Linker flags for Debug (with sanitizers)
-#set(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fsanitize=address,undefined")
-
 
 # Set the default build type to Release if not specified
 if (NOT CMAKE_BUILD_TYPE)
@@ -42,6 +37,9 @@ add_library(GameLib SHARED
 
 add_executable(GameOfLife src/gameOfLife.cpp)
 target_link_libraries(GameOfLife InputCheckerLib GameLib)
+
+
+option(ENABLE_ASAN "Enable AddressSanitizer with ON" OFF)
 
 
 # Register the test target with CTest (for Debug mode)
@@ -80,7 +78,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
     target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
     add_test(NAME GameOfLifeFunctionalTests COMMAND GameOfLifeFunctionalTests)
-    elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     option(PROFILING_TYPE "Select which profiler to use (none, cpu, heap)" "none")
 
     if(PROFILING_TYPE STREQUAL "cpu")
@@ -108,4 +106,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     else()
             message(STATUS "Option PROFILING_TYPE not fulfilled, consider none (no profiling)")
     endif()
+endif()
+
+if(ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo") )
+    message(STATUS "Enable Address Sanitizer")   
+    set(CMAKE_CXX_FLAGS "-fsanitize=address,undefined,leak,bounds -fsanitize-address-use-after-scope -fno-omit-frame-pointer") 
 endif()

@@ -6,12 +6,12 @@ BUILD_DIR="build-release"
 
 # Parse command-line options
 usage() {
-    echo "ERROR in arguments. Please use one of the following: $0 [-c <Debug|Release|RelWithDebInfo> for the configuration you want for the binary] [-p <heap|cpu|none> for choosing the profiling binary you want] [-s for static analysis]"
+    echo "ERROR in arguments. Please use one of the following: $0 [-c <Debug|Release|RelWithDebInfo> for the configuration you want for the binary] [-p <heap|cpu|none> for choosing the profiling binary you want] [-a for enabling address sanitizer ] [-s for static analysis]"
     exit 1
 }
 
 
-while getopts ":c:p:s" opt; do
+while getopts ":c:p:as" opt; do
     case ${opt} in
         c)
             BUILD_TYPE=$OPTARG
@@ -21,6 +21,9 @@ while getopts ":c:p:s" opt; do
             ;;
         p)
             PROFILING_TYPE="-DPROFILING_TYPE=$OPTARG"
+            ;;
+        a)
+            ASAN="-DENABLE_ASAN=ON"
             ;;
         *)
             usage
@@ -41,5 +44,5 @@ fi
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 
-cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $PROFILING_TYPE -Wno-dev .. 
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $PROFILING_TYPE $ASAN -Wno-dev .. 
 cmake --build . -- -j
