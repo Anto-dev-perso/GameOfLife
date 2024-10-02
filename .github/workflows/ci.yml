@@ -20,9 +20,9 @@ jobs:
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v1
 
-      - name: Build in Debug configuration
+      - name: Build in Debug configuration with sanitizer
         run: |
-          ./build.sh -c Debug
+          ./build.sh -c Debug -a
 
       - name: Compress build-debug directory into tar.gz
         run: tar -czf build-debug.tar.gz build-debug
@@ -105,14 +105,9 @@ jobs:
           pip3 install ValgrindCI
 
 
-      - name: Download build-debug artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: gameOfLife-debug.tar.gz
-          path: .
-
-      - name: Extract the tar.gz file
-        run: tar -xzf build-debug.tar.gz
+      - name: Build in Debug configuration without sanitizer
+        run: |
+          ./build.sh -c Debug
       
       - name: Run valgrind with memcheck
         run: |

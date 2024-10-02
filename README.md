@@ -46,6 +46,10 @@ If one want to build in another mode (Debug or RelWithDebInfo), he or she can pa
 ```
 Caraful though, this script is case sensitive.
 
+For Debug and RelWithDebInfo configuration, address sanitizers can be added to the binary. To do so, add `-a` to build.sh: 
+```bash
+./build.sh -c Debug -a
+```
 
 As explain in Depandancies part, this project can also be built with profiling. There are 3 possibilities :
  - `heap` will link with `tcmalloc` and add a heap dump at the end of the execution.
