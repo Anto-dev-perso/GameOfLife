@@ -17,6 +17,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Conan
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install conan
+        
+      - name: Configure Conan profile
+        run: |
+          conan profile detect --force
+
       - name: Set up CMake
         uses: jwlawson/actions-setup-cmake@v1
 
@@ -87,6 +97,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Install Conan
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install conan
+        
+      - name: Configure Conan profile
+        run: |
+          conan profile detect --force
+
       - name: Build in Debug configuration with Clang-Tidy checks enabled
         run: |
           ./build.sh -c Debug -s
@@ -104,7 +124,16 @@ jobs:
           sudo apt-get update && sudo apt-get install -y valgrind python3 python3-pip
           pip3 install ValgrindCI
 
-
+      - name: Install Conan
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install conan
+          
+      - name: Configure Conan profile
+        run: |
+          conan profile detect --force
+  
       - name: Build in Debug configuration without sanitizer
         run: |
           ./build.sh -c Debug

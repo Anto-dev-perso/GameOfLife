@@ -79,10 +79,7 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        mkdir build-debug
-        cd build-debug
-        cmake -DCMAKE_BUILD_TYPE=Debug -Wno-dev ..
-        cmake --build . -- -j
+        ./build.sh
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
