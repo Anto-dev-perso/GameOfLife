@@ -1,5 +1,5 @@
+cmake_minimum_required(VERSION 3.15)
 project(GameOfLife LANGUAGES CXX)
-cmake_minimum_required(VERSION 3.0)
 
 enable_testing()
 
@@ -45,15 +45,9 @@ option(ENABLE_ASAN "Enable AddressSanitizer with ON" OFF)
 # Register the test target with CTest (for Debug mode)
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_compile_definitions(ENABLE_DEBUG)
-    include(FetchContent)
 
-
-    FetchContent_Declare(
-           googletest
-           # Specify the commit you depend on and update it regularly.
-           URL https://github.com/google/googletest/archive/5376968f6948923e2411081fd9372e71a59d8e77.zip
-    )
-    FetchContent_MakeAvailable(googletest)
+    include(${CMAKE_BINARY_DIR}/_deps/conan_toolchain.cmake)
+    find_package(GTest REQUIRED CONFIG)
 
     add_executable(GameOfLifeUnitTests
             tests/unit_tests.cpp
@@ -65,8 +59,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             tests/unit_tests/Board_Test.cpp
             tests/unit_tests/Parser_Test.cpp
             )
-    target_link_libraries(GameOfLifeUnitTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
-    target_include_directories(GameOfLifeUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib gcov)
+    target_include_directories(GameOfLifeUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src) 
+
     add_test(NAME GameOfLifeUnitTests COMMAND GameOfLifeUnitTests)
 
     add_executable(GameOfLifeFunctionalTests
@@ -75,7 +70,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
             tests/tests_utilities.cpp
             )
 
-    target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest_main InputCheckerLib GameLib gcov)
+    target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib gcov)
     target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
     add_test(NAME GameOfLifeFunctionalTests COMMAND GameOfLifeFunctionalTests)
 elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
