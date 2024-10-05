@@ -1,0 +1,51 @@
+name: Auto Tag
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  auto-tag:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install conventional-recommended-bump and other tools
+        run: npm install -g conventional-recommended-bump standard-version
+
+      - name: Get the latest tag
+        id: get_latest_tag
+        run: |
+          # Fetch all tags and get the latest tag
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "Latest tag is $LATEST_TAG"
+          echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV
+
+      - name: Bump version based on Conventional Commits
+        id: bump_version
+        run: |
+          # Determine the next version based on conventional commits
+          recommended_bump=$(conventional-recommended-bump -p angular)
+          echo "Recommended version bump: $recommended_bump"
+          NEW_VERSION=$(npx semver ${latest_tag#v} -i $recommended_bump)
+          echo "New version is $NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_ENV
+
+      - name: Set up git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create new tag
+        run: |
+          git tag "v${{ env.new_version }}"
+          git push origin "v${{ env.new_version }}"
