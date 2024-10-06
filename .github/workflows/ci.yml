@@ -27,9 +27,6 @@ jobs:
         run: |
           conan profile detect --force
 
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-
       - name: Build in Debug configuration with sanitizer
         run: |
           ./build.sh -c Debug -a
@@ -60,9 +57,6 @@ jobs:
       - name: Extract the tar.gz file
         run: tar -xzf build-debug.tar.gz
           
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-      
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
@@ -168,9 +162,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-
       - name: Build in RelWithDebInfo configuration
         run: |
           ./build.sh -c RelWithDebInfo
@@ -197,10 +188,6 @@ jobs:
 
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
-
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-
 
       - name: Build in RelWithDebInfo configuration with Heap profiling
         run: |
@@ -239,7 +226,7 @@ jobs:
           path: heap_profiling_pentomino.pdf
 
 
-# Step 4bis: CPU profiling
+  # Step 4bis: CPU profiling
   cpu-profiling:
     runs-on: ubuntu-latest
     needs: build-relwithdebinfo
@@ -249,10 +236,6 @@ jobs:
 
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
-
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
-
 
       - name: Build in RelWithDebInfo configuration with Heap profiling
         run: |
@@ -292,16 +275,13 @@ jobs:
           name: Profiling reports
           path: cpu_profiling_pentomino.pdf
 
-# Step 5: Build Release
+  # Step 5: Build Release
   build-release:
     runs-on: ubuntu-latest
     needs: [heap-analysis, heap-profiling, cpu-profiling, static-analysis]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Set up CMake
-        uses: jwlawson/actions-setup-cmake@v1
 
       - name: Build in Release configuration
         run: |
