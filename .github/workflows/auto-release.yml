@@ -1,0 +1,53 @@
+name: Generate Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  auto-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+  
+      - name: Build the project
+        run: |
+          ./build.sh
+
+      - name: Package the binary
+        run: |
+          mkdir -p output
+          cp ./build-release/GameOfLife output/
+          
+      - name: Install changelog generator
+        run: npm install -g conventional-changelog-cli
+  
+      - name: Generate release notes
+        id: changelog
+        run: |
+            conventional-changelog --preset conventionalcommits --release-count 1 --outfile release_notes.md --config .versionrc.json
+  
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body_path: ./release_notes.md
+          draft: false
+          prerelease: false
+
+      - name: Upload Linux binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output/GameOfLife
+          asset_name: GameOfLife
+          asset_content_type: application/octet-stream
