@@ -33,8 +33,8 @@ jobs:
 
       - name: Configure and Build
         run: |
-          cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -Wno-dev . 
-          cmake --build . -- -j
+          cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -Wno-dev . 
+          cmake --build . --config Release
 
       - name: Run exe
         run: 
