@@ -28,12 +28,12 @@ if (NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build: Debug or Release" FORCE)
 endif ()
 
-add_library(InputCheckerLib SHARED
+add_library(InputCheckerLib STATIC
         src/InputChecker.cpp
         src/InputChecker.hpp
-        )
+        )       
 
-add_library(GameLib SHARED
+add_library(GameLib STATIC
         src/Game/Game.cpp
         src/Game/Game.hpp
         src/Game/Board.cpp
@@ -47,7 +47,7 @@ add_library(GameLib SHARED
         )
 
 add_executable(GameOfLife src/gameOfLife.cpp)
-target_link_libraries(GameOfLife InputCheckerLib GameLib)
+target_link_libraries(GameOfLife PRIVATE GameLib InputCheckerLib)
 
 
 option(ENABLE_ASAN "Enable AddressSanitizer with ON" OFF)
