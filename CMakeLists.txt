@@ -5,12 +5,23 @@ enable_testing()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-add_compile_options(-Wall -Wextra)
 
 # Set flags or configurations specific to Debug and Release
-set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
+# Detect the compiler and apply specific flags
+if(MSVC)
+    # MSVC-specific flags
+    add_compile_options(/W4)  # This is roughly equivalent to -Wall and -Wextra in GCC/Clang
+    set(CMAKE_CXX_FLAGS_DEBUG "/DEBUG /O0")
+    set(CMAKE_CXX_FLAGS_RELEASE "/O2")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/DEBUG /O2")
+else()
+    # GCC/Clang specific flags
+    add_compile_options(-Wall -Wextra)
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+    set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
+endif()
+
 
 # Set the default build type to Release if not specified
 if (NOT CMAKE_BUILD_TYPE)
