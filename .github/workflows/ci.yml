@@ -17,19 +17,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install MSYS2
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
+      # - name: Install MSYS2
+      #   uses: msys2/setup-msys2@v2
+      #   with:
+      #     update: true
 
-      - name: Install dependencies
-        run: |
-          pacman -S --noconfirm mingw-w64-x86_64-toolchain
-          pacman -S --noconfirm mingw-w64-x86_64-cmake
+      # - name: Install dependencies
+      #   run: |
+      #     pacman -S --noconfirm mingw-w64-x86_64-toolchain
+      #     pacman -S --noconfirm mingw-w64-x86_64-cmake
 
       - name: Configure and Build
         run: |
-          cmake -DCMAKE_BUILD_TYPE=Release -Wno-dev .. 
+          cmake -DCMAKE_BUILD_TYPE=Release -Wno-dev . 
           cmake --build . -- -j
 
       # - name: Run tests
