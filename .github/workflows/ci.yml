@@ -17,20 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # - name: Install MSYS2
-      #   uses: msys2/setup-msys2@v2
-      #   with:
-      #     update: true
-
-      # - name: Install dependencies
-      #   run: |
-      #     pacman -S --noconfirm mingw-w64-x86_64-toolchain
-      #     pacman -S --noconfirm mingw-w64-x86_64-cmake
-
-      - name: Install dependencies
-        run: |
-          choco install mingw -y
-
       - name: Configure and Build
         run: |
           cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -Wno-dev . 
@@ -38,7 +24,7 @@ jobs:
 
       - name: Run exe
         run: 
-          .\GameOfLife.exe --iterations 2 --input tests\input_files\still_lifes\block.txt
+          .\Release\GameOfLife.exe --iterations 2 --input tests\input_files\still_lifes\block.txt
 
       # - name: Run tests
       #   run: |

@@ -1,5 +1,7 @@
 #include "Game.hpp"
 
+#include<algorithm>
+
 using namespace std;
 
 Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path),

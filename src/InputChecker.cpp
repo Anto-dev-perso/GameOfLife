@@ -4,7 +4,6 @@
 #include <limits>
 #include <string>
 #include <tuple>
-#include <unistd.h>
 
 using namespace std;
 
@@ -87,7 +86,7 @@ optional<unsigned int> InputChecker::convertArgForIterations(std::string_view ar
         return {static_cast<unsigned int>(convertedIteration)};
     }
     catch (std::out_of_range &err) {
-        cerr << "ERROR: Iterations " << arg_path
+        cerr << "ERROR "<< err.what() <<": Iterations " << arg_path
              << " is too high for a positive number. Please retry with a less higher number (lesser than "
              << numeric_limits<int>::max() << "), keep the result and relaunch this program"
              << endl;
