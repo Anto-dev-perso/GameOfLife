@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Conan
         run: |
@@ -37,7 +37,7 @@ jobs:
         run: tar -czf build-debug-unix.tar.gz build-debug
 
       - name: Upload build-debug directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-debug-unix.tar.gz
           path: build-debug-unix.tar.gz
@@ -47,10 +47,10 @@ jobs:
     needs: build-debug-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Download build-debug artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: build-debug-unix.tar.gz
           path: .
@@ -64,7 +64,7 @@ jobs:
           ctest --output-on-failure
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: junit_report
           path: build-debug/junit_report.xml
@@ -79,7 +79,7 @@ jobs:
 
       # Upload coverage reports as artifacts
       - name: Upload Coverage Report (HTML)
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage.html
           path: build-debug/coverage
@@ -89,7 +89,7 @@ jobs:
     needs: run-tests-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Conan
         run: |
@@ -111,7 +111,7 @@ jobs:
     needs: build-debug-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install valgrind
         run: |
@@ -144,7 +144,7 @@ jobs:
           valgrind-ci heap_analyzis.xml --source-dir=../ --output-dir=.
 
       - name: Upload valgrind report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: valgrind-report.zip
           path: valgrind-report
@@ -160,7 +160,7 @@ jobs:
     needs: run-tests-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build in RelWithDebInfo configuration
         run: |
@@ -170,7 +170,7 @@ jobs:
         run: tar -czf build-relwithdebinfo-unix.tar.gz build-relwithdebinfo
 
       - name: Upload build-relwithdebinfo directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gameOfLife-relwithdebinfo.tar.gz
           path: build-relwithdebinfo-unix.tar.gz
@@ -180,7 +180,7 @@ jobs:
     needs: build-relwithdebinfo-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
@@ -204,21 +204,21 @@ jobs:
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
 
       - name: Upload profiling reports Big Stable
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
+          name: heap_profiling_bigStable.pdf
           path: heap_profiling_bigStable.pdf
 
       - name: Upload profiling reports Gosper
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
+          name: heap_profiling_gosper.pdf
           path: heap_profiling_gosper.pdf
 
       - name: Upload profiling reports Pentomino
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
+          name: heap_profiling_pentomino.pdf
           path: heap_profiling_pentomino.pdf
 
 
@@ -227,7 +227,7 @@ jobs:
     needs: build-relwithdebinfo-unix
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
@@ -253,21 +253,21 @@ jobs:
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
 
       - name: Upload profiling reports Bit Stable
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
-          path: heap_profiling_bigStable.pdf
+          name: cpu_rofiling_bigStable.pdf
+          path: cpu_profiling_bigStable.pdf
 
       - name: Upload profiling reports Gosper
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
+          name: cpu_profiling_gosper.pdf
           path: cpu_profiling_gosper.pdf
 
       - name: Upload profiling reports Pentomino
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: Profiling reports
+          name: cpu_profiling_pentomino.pdf
           path: cpu_profiling_pentomino.pdf
 
   build-release-unix:
@@ -275,7 +275,7 @@ jobs:
     needs: [ heap-analysis, heap-profiling, cpu-profiling, static-analysis ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build in Release configuration
         run: |
@@ -285,7 +285,7 @@ jobs:
         run: tar -czf build-release-unix.tar.gz build-release
 
       - name: Upload build-release directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-release-unix.tar.gz
           path: build-release-unix.tar.gz
@@ -296,10 +296,10 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -326,7 +326,7 @@ jobs:
           Compress-Archive -Path build-debug -DestinationPath build-debug-windows.zip
 
       - name: Upload build directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-debug-windows.zip
           path: build-debug-windows.zip
@@ -336,7 +336,7 @@ jobs:
   #    needs: build-debug-windows
   #    steps:
   #      - name: Checkout repository
-  #        uses: actions/checkout@v3
+  #        uses: actions/checkout@v4
   #
   #      - name: Download build-debug artifact
   #        uses: actions/download-artifact@v3
@@ -363,7 +363,7 @@ jobs:
     needs: build-debug-windows
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Build in RelWithDebInfo configuration
         shell: pwsh
@@ -376,7 +376,7 @@ jobs:
           Compress-Archive -Path build-relwithdebinfo -DestinationPath build-relwithdebinfo-windows.zip
 
       - name: Upload build-relwithdebinfo directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-relwithdebinfo-windows.zip
           path: build-relwithdebinfo-windows.zip
@@ -386,7 +386,7 @@ jobs:
     needs: build-relwithdebinfo-windows
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Build in Release configuration
         shell: pwsh
@@ -399,7 +399,7 @@ jobs:
           Compress-Archive -Path build-release -DestinationPath build-release-windows.zip
 
       - name: Upload build-release directory as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-release-windows.zip
           path: build-release-windows.zip
