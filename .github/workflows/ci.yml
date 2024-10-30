@@ -17,14 +17,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Configure and Build
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Conan
+        run: pip install conan
+
+      - name: Configure Conan profile
         run: |
-          cmake -G "Visual Studio 17 2022" -A x64 -DCMAKE_BUILD_TYPE=Release -Wno-dev . 
-          cmake --build . --config Release
+          conan profile detect --force
+
+      - name: Configure and Build
+        shell: pwsh
+        run: |
+          .\build.ps1 -Config Debug
 
       - name: Run exe
-        run: 
-          .\Release\GameOfLife.exe --iterations 2 --input tests\input_files\still_lifes\block.txt
+        run:
+          .\build-debug\Debug\GameOfLife.exe --iterations 2 --input tests\input_files\still_lifes\block.txt
 
       # - name: Run tests
       #   run: |
@@ -43,7 +55,7 @@ jobs:
           sudo apt update
           sudo apt install -y python3-pip
           pip install conan
-        
+
       - name: Configure Conan profile
         run: |
           conan profile detect --force
@@ -77,7 +89,7 @@ jobs:
 
       - name: Extract the tar.gz file
         run: tar -xzf build-debug.tar.gz
-          
+
       - name: Run tests in Debug configuration
         run: |
           cd build-debug
@@ -117,7 +129,7 @@ jobs:
           sudo apt update
           sudo apt install -y python3-pip
           pip install conan
-        
+
       - name: Configure Conan profile
         run: |
           conan profile detect --force
@@ -144,15 +156,15 @@ jobs:
           sudo apt update
           sudo apt install -y python3-pip
           pip install conan
-          
+
       - name: Configure Conan profile
         run: |
           conan profile detect --force
-  
+
       - name: Build in Debug configuration without sanitizer
         run: |
           ./build.sh -c Debug
-      
+
       - name: Run valgrind with memcheck
         run: |
           mkdir valgrind-report
@@ -216,15 +228,15 @@ jobs:
 
       - name: HEAP Profiling
         run: |
-          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/bigStable.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/bigStable.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_bigStable.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
           rm heap_profiling.prof*
-          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/rPentomino.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_pentomino.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
           rm heap_profiling.prof*
-          ./build-relwithdebinfo/GameOfLife --iterations 500 --input tests/input_files/spaceship/gosperGliderGun.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/spaceship/gosperGliderGun.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
 
@@ -299,7 +311,7 @@ jobs:
   # Step 5: Build Release
   build-release:
     runs-on: ubuntu-latest
-    needs: [heap-analysis, heap-profiling, cpu-profiling, static-analysis]
+    needs: [ heap-analysis, heap-profiling, cpu-profiling, static-analysis ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
