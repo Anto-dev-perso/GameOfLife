@@ -3,3 +3,4 @@
 **/*.res
 venv
 CMakeUserPresets.json
+.idea/*

@@ -45,11 +45,11 @@ Set-Location -Path $BUILD_DIR
 # Install dependencies if in Debug mode
 if ($BUILD_TYPE -eq "Debug")
 {
-    & conan install .. --output-folder=_deps --build=missing -s build_type=Debug
+    & conan install .. --output-folder=_deps --build=missing -s build_type=Debug -s compiler.cppstd=17
 }
 
-# Run CMake to configure the project
-& cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev ..
+# Run CMake to configure the project (with Start-Process otherwise BUILD_TYPE value is not used)
+Start-Process cmake -ArgumentList "-DCMAKE_BUILD_TYPE=$BUILD_TYPE  -Wno-dev .." -NoNewWindow -Wait
 
 # Build the project
 & cmake --build . --config $BUILD_TYPE
