@@ -25,13 +25,20 @@ std::tuple<gridOfCells, std::size_t, std::size_t> Parser::parseInputFile()
         while (getline(file, line))
         {
             lineLength++;
+            // Check if the last character is '\r' and remove it if present (for Windows compatibility)
+            if (!line.empty() && line.back() == '\r')
+            {
+                line.pop_back();
+            }
 
             if (columnLength > 0)
             {
                 // Force all the line to have the same length (nb of column)
                 if (line.size() != columnLength)
                 {
-                    cerr << "ERROR in parsing of file " << _file << ", length of current line is " << line.size() << " but previous lines was " << columnLength << " .Be consistent with the length between all the lines !" << endl;
+                    cerr << "ERROR in parsing of file " << _file << ", length of current line is " << line.size() <<
+                        " but previous lines was " << columnLength <<
+                        " .Be consistent with the length between all the lines !" << endl;
                     readGrid.clear();
                     break;
                 }
@@ -42,17 +49,17 @@ std::tuple<gridOfCells, std::size_t, std::size_t> Parser::parseInputFile()
             }
 
             // Fill directly the line of the vector
-            // Use end()-1 because we won't parse the end line string
             try
             {
-                readGrid.insert(readGrid.end(), line.begin(), line.end() - 1);
+                readGrid.insert(readGrid.end(), line.begin(), line.end());
             }
-            catch (const invalid_argument &e)
+            catch (const invalid_argument& e)
             {
-                cerr << "ERROR " << e.what() << " in parsing of following line : '" << line << "'. Allows characters are "
-                     << getAliveChar()
-                     << " for alive cells and " << getDeadChar() << " for dead cells.\nPlease correct the file "
-                     << _file << " with these characters" << endl;
+                cerr << "ERROR " << e.what() << " in parsing of following line : '" << line <<
+                    "'. Allows characters are "
+                    << getAliveChar()
+                    << " for alive cells and " << getDeadChar() << " for dead cells.\nPlease correct the file "
+                    << _file << " with these characters" << endl;
                 readGrid.clear();
                 break;
             }
@@ -60,7 +67,6 @@ std::tuple<gridOfCells, std::size_t, std::size_t> Parser::parseInputFile()
     }
     file.close();
 
-    // Reduce by 1 the column length because we didn't keep the \r column
-    columnLength--;
+    columnLength;
     return {readGrid, lineLength, columnLength};
 }

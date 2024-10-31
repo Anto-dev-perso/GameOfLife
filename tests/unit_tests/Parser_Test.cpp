@@ -8,6 +8,10 @@ using namespace std;
 
 TEST(UTParseInputFile, ParseBlockPattern)
 {
+    auto [grid, line, column] = Parser("../tests/input_files/still_lifes/block.txt").parseInputFile();
+    auto board = make_unique<Board>(std::move(grid), line, column);
+    board->dumpGrid();
+
     UTILITIES::compareGrid(Parser("../tests/input_files/still_lifes/block.txt").parseInputFile(),
                            UTILITIES::blockPattern);
 }
