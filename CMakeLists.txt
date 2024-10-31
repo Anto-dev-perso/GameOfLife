@@ -14,7 +14,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/DEBUG /O2")
 else ()
     # GCC/Clang specific flags
-    add_compile_options(-Wall -Wextra)
+    add_compile_options(-Wall -Wextra -ltbb)
     set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
