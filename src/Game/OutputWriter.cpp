@@ -33,7 +33,7 @@ bool OutputWriter::writeIteration(const gridOfCells &grid, size_t numColumn, uns
             {
                 file << boolToChar(grid[line + column].get_isCurrentlyAlive());
             }
-            file << "\r\n";
+            file << "\n";
         }
     }
     file.close();

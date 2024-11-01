@@ -4,25 +4,39 @@
 
 #include "../tests/tests_utilities.hpp"
 
+#include <filesystem>
+
 using namespace std;
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     // Run only tests beginning by FT (Functional Tests)
     ::testing::GTEST_FLAG(filter) = "FT*";
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }
+#ifdef WIN32
+    const string exe{std::filesystem::absolute("Debug/GameOfLife.exe").string()};
+#else
+const string exe{"./GameOfLife"};
+#endif
+
+const string inputPath{filesystem::canonical("../tests/input_files").string()};
+const string stillLifePath{filesystem::path(inputPath + "/still_lifes").string()};
+const string oscillatorsPath{filesystem::path(inputPath + "/oscillators").string()};
+const string spaceshipPath{filesystem::path(inputPath + "/spaceship").string()};
+
 
 /****************************************  Tests Suite for static patterns ***************************************/
 
 TEST(FTStaticPatterns, BlockPattern)
 {
-    const unsigned int iteration{5};
-    const string fileName{"../tests/input_files/still_lifes/block"};
+    constexpr unsigned int iteration{5};
+    const filesystem::path filePath{stillLifePath + "/block"};
+    const string fileName{filePath.string()};
     const string inputFile{UTILITIES::readFile(fileName + ".txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -40,13 +54,14 @@ TEST(FTStaticPatterns, BlockPattern)
 /****************************************  Tests Suite for oscillators patterns ***************************************/
 TEST(FTOscillatorPatterns, BlinkerPattern)
 {
-    const unsigned int iteration{4};
-    const string fileName{"../tests/input_files/oscillators/blinkerG"};
+    constexpr unsigned int iteration{4};
+    const filesystem::path filePath{oscillatorsPath + "/blinkerG"};
+    const string fileName{filePath.string()};
 
     const string inputFileOdd{UTILITIES::readFile(fileName + "2.txt")};
     const string inputFileEven{UTILITIES::readFile(fileName + "1.txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + "1.txt --iterations " + to_string(iteration) + " --all"};
+    const string cmd{exe + " --input " + fileName + "1.txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -66,11 +81,12 @@ TEST(FTOscillatorPatterns, BlinkerPattern)
 
 TEST(FTSpaceshipPatterns, BlinkerPattern)
 {
-    const unsigned int iteration{4};
-    const string fileName{"../tests/input_files/spaceship/gliderG"};
+    constexpr unsigned int iteration{4};
+    const filesystem::path filePath{spaceshipPath + "/gliderG"};
+    const string fileName{filePath.string()};
     const string inputFile{UTILITIES::readFile(fileName + "5.txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + "1.txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + "1.txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -84,11 +100,12 @@ TEST(FTSpaceshipPatterns, BlinkerPattern)
 
 TEST(FTRandomPatterns, RandomPattern)
 {
-    const unsigned int iteration{3};
-    const string fileName{"../tests/input_files/random"};
-    const string resultExpected{"-------\r\n---**--\r\n---*-*-\r\n-------\r\n-------\r\n---***-\r\n-------\r\n"};
+    constexpr unsigned int iteration{3};
+    const filesystem::path filePath{inputPath + "/random"};
+    const string fileName{filePath.string()};
+    const string resultExpected{"-------\n---**--\n---*-*-\n-------\n-------\n---***-\n-------\n"};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -98,15 +115,17 @@ TEST(FTRandomPatterns, RandomPattern)
     EXPECT_EQ(resultExpected, UTILITIES::readFile(iterFile));
     remove(iterFile.c_str());
 }
+
 /****************************************  Tests Suite for single linging cell ***************************************/
 
 TEST(FTSingleCell, SingleLinvingCell)
 {
-    const unsigned int iteration{2};
-    const string fileName{"../tests/input_files/single"};
-    const string resultExpected{"---\r\n---\r\n---\r\n"};
+    constexpr unsigned int iteration{2};
+    const filesystem::path filePath{inputPath + "/single"};
+    const string fileName{filePath.string()};
+    const string resultExpected{"---\n---\n---\n"};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -121,11 +140,12 @@ TEST(FTSingleCell, SingleLinvingCell)
 
 TEST(FTLargePatterns, LargePattern)
 {
-    const unsigned int iteration{3};
-    const string fileName{"../tests/input_files/large"};
+    constexpr unsigned int iteration{3};
+    const filesystem::path filePath{inputPath + "/large"};
+    const string fileName{filePath.string()};
     const string inputFile{UTILITIES::readFile(fileName + ".txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -141,11 +161,12 @@ TEST(FTLargePatterns, LargePattern)
 
 TEST(FTPerformancePatterns, BigGridStable)
 {
-    const unsigned int iteration{2};
-    const string fileName{"../tests/input_files/bigStable"};
+    constexpr unsigned int iteration{2};
+    const filesystem::path filePath{inputPath + "/bigStable"};
+    const string fileName{filePath.string()};
     const string resultExpected{UTILITIES::readFile(fileName + ".txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -158,11 +179,12 @@ TEST(FTPerformancePatterns, BigGridStable)
 
 TEST(FTPerformancePatterns, RPentominoPattern)
 {
-    const unsigned int iteration{1000};
-    const string fileName{"../tests/input_files/spaceship/rPentomino"};
+    constexpr unsigned int iteration{1000};
+    const filesystem::path filePath{spaceshipPath + "/rPentomino"};
+    const string fileName{filePath.string()};
     const string resultExpected{UTILITIES::readFile(fileName + "G" + to_string(iteration) + ".txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
@@ -175,11 +197,12 @@ TEST(FTPerformancePatterns, RPentominoPattern)
 
 TEST(FTPerformancePatterns, GosperGliderGunPattern)
 {
-    const unsigned int iteration{500};
-    const string fileName{"../tests/input_files/spaceship/gosperGliderGun"};
+    constexpr unsigned int iteration{500};
+    const filesystem::path filePath{spaceshipPath + "/gosperGliderGun"};
+    const string fileName{filePath.string()};
     const string resultExpected{UTILITIES::readFile(fileName + "G" + to_string(iteration) + ".txt")};
 
-    const string cmd{"./GameOfLife --input " + fileName + ".txt --iterations " + to_string(iteration)};
+    const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());
 
