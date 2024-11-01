@@ -331,59 +331,9 @@ jobs:
           name: build-debug-windows.zip
           path: build-debug-windows.zip
 
-  #  run-tests-windows:
-  #    runs-on: ubuntu-latest
-  #    needs: build-debug-windows
-  #    steps:
-  #      - name: Checkout repository
-  #        uses: actions/checkout@v4
-  #
-  #      - name: Download build-debug artifact
-  #        uses: actions/download-artifact@v3
-  #        with:
-  #          name: build-debug-windows.zip
-  #          path: .
-  #
-  #      - name: Extract the zip file
-  #        run: unzip build-debug-windows.zip
-  #
-  #      - name: Run tests in Debug configuration
-  #        shell: pwsh
-  #        run: |
-  #          Start-Process -FilePath "build-debug\Debug\GameOfLifeUnitTests.exe" -NoNewWindow -Wait
-  #          Start-Process -FilePath "build-debug\Debug\GameOfLifeFunctionalTests.exe" -NoNewWindow -Wait
-  #  #          cd build-debug\Debug
-  #  #          .\GameOfLifeUnitTests.exe
-  #  #          .\GameOfLifeFunctionalTests.exe
-  #  #          cd ..
-  #  #          .\ctest --output-on-failure -C Debug
-  #
-  build-relwithdebinfo-windows:
-    runs-on: windows-latest
-    needs: build-debug-windows
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Build in RelWithDebInfo configuration
-        shell: pwsh
-        run: |
-          .\build.ps1 -Config RelWithDebInfo
-
-      - name: Compress build-relwithdebinfo directory into zip
-        shell: pwsh
-        run: |
-          Compress-Archive -Path build-relwithdebinfo -DestinationPath build-relwithdebinfo-windows.zip
-
-      - name: Upload build-relwithdebinfo directory as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-relwithdebinfo-windows.zip
-          path: build-relwithdebinfo-windows.zip
-
   build-release-windows:
     runs-on: ubuntu-latest
-    needs: build-relwithdebinfo-windows
+    needs: build-debug-windows
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
