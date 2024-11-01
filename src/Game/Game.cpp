@@ -18,8 +18,6 @@ bool Game::init()
     auto [grid, lineLength, columnLength] = _fileParser.parseInputFile();
     _board = make_unique<Board>(std::move(grid), lineLength, columnLength);
 
-    cout << "Printing read grid " << endl;
-    _board->dumpGrid();
     // If parsing fail, grid is empty. In this case, return that it failed
     return !_board->get_grid_const().empty();
 }
