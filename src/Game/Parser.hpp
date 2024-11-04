@@ -8,7 +8,7 @@ class Parser {
 public:
     constexpr explicit Parser(std::string_view inputFile) : _file(inputFile) {};
 
-    [[nodiscard]] std::tuple<gridOfCells, std::size_t,std::size_t> parseInputFile();
+    [[nodiscard]] std::tuple<gridOfCells, std::size_t,std::size_t> parseInputFile()const noexcept;
 
 private:
 

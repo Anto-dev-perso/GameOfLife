@@ -12,11 +12,11 @@ class OutputWriter {
 public:
     explicit OutputWriter(std::string_view nameWithExtension);
 
-    [[nodiscard]] bool writeIteration(const gridOfCells &grid, size_t numColumn, unsigned int iteration = 0);
+    [[nodiscard]] bool writeIteration(const gridOfCells &grid, size_t numColumn, unsigned int iteration = 0) const noexcept;
 
-    [[nodiscard]] std::string_view get_fileName() const;
+    [[nodiscard]] inline std::string_view get_fileName() const noexcept{ return _fileName; }
 
-    [[nodiscard]] std::string get_extension() const;
+    [[nodiscard]] inline std::string get_extension() const noexcept{ return _extension; }
 
 private:
     std::string_view _fileName{};

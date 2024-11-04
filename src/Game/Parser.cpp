@@ -8,7 +8,7 @@
 using namespace std;
 
 // Another possibility would be to return an optional (with std::move) but it makes the binary heavier for a non-significant gain
-std::tuple<gridOfCells, std::size_t, std::size_t> Parser::parseInputFile()
+std::tuple<gridOfCells, std::size_t, std::size_t> Parser::parseInputFile() const noexcept
 {
     gridOfCells readGrid;
     size_t lineLength{0};
