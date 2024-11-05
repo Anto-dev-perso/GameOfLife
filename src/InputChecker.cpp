@@ -83,8 +83,10 @@ optional<unsigned int> InputChecker::convertArgForIterations(std::string_view ar
             cerr << "ERROR: Iterations " << arg_path
                  << " is a negative number. Please retry with a positive number"
                  << endl;
+        }else{
+            retIter=static_cast<unsigned int>(convertedIteration);
         }
-        retIter=static_cast<unsigned int>(convertedIteration);
+        
     }
     catch (std::out_of_range &err) {
         cerr << "ERROR "<< err.what() <<": Iterations " << arg_path
