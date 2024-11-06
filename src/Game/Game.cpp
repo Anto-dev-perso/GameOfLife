@@ -13,7 +13,7 @@ Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path
 {
 }
 
-bool Game::init()
+bool Game::init()noexcept
 {
     auto [grid, lineLength, columnLength] = _fileParser.parseInputFile();
     _board = make_unique<Board>(std::move(grid), lineLength, columnLength);
@@ -22,7 +22,7 @@ bool Game::init()
     return !_board->get_grid_const().empty();
 }
 
-bool Game::process()
+bool Game::process() noexcept
 {
     bool processOK{true};
 
@@ -56,7 +56,7 @@ bool Game::process()
 // To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value and we memorize the old one
 // Memmrize also the last iteration at which we modify the value of the cells to avoid using the memrization instead of the actual value
 // So the loop use the memory value to the rules and set the values directly
-std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const
+std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const noexcept
 {
     bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
     bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduce
@@ -111,7 +111,7 @@ std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoi
 
 // Rule 1 of the Game : Any living cell with two or three living neighbours survives
 bool Game::applyRule1(Cell& currentCell, const std::vector<std::reference_wrapper<Cell>>& neighbours,
-                      unsigned int onGoingIteration)
+                      unsigned int onGoingIteration) const noexcept
 {
     if (!currentCell.isCellAlive(onGoingIteration))
     {
@@ -131,7 +131,7 @@ bool Game::applyRule1(Cell& currentCell, const std::vector<std::reference_wrappe
 
 // Rule 2 of the Game : Any dead cell with three living neighbours survives
 bool Game::applyRule2(Cell& currentCell, const vector<std::reference_wrapper<Cell>>& neighbours,
-                      unsigned int onGoingIteration)
+                      unsigned int onGoingIteration) const noexcept
 {
     if (currentCell.isCellAlive(onGoingIteration))
     {
@@ -148,5 +148,3 @@ bool Game::applyRule2(Cell& currentCell, const vector<std::reference_wrapper<Cel
     }
     return livingNeighbours == 3;
 }
-
-const Board* Game::get_board_const() const { return _board.get(); }

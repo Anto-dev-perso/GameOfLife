@@ -10,15 +10,16 @@ public:
     // Set the two alive booleans to the same value because we don't really needs to memory anything at first
     constexpr Cell(bool alive) : _isPreviouslyAlive(alive), _isCurrentlyAlive(alive) {};
 
-    [[nodiscard]] constexpr bool get_isPreviouslyAlive() const { return _isPreviouslyAlive; }
+    [[nodiscard]] constexpr bool get_isPreviouslyAlive() const noexcept { return _isPreviouslyAlive; }
 
-    [[nodiscard]] constexpr bool get_isCurrentlyAlive() const { return _isCurrentlyAlive; }
+    [[nodiscard]] constexpr bool get_isCurrentlyAlive() const noexcept { return _isCurrentlyAlive; }
 
-    constexpr void memorizePreviousAliveValue() { _isPreviouslyAlive = _isCurrentlyAlive; }
+    constexpr void memorizePreviousAliveValue() noexcept { _isPreviouslyAlive = _isCurrentlyAlive; }
 
-    constexpr void set_isCurrentlyAlive(bool newAlive) { _isCurrentlyAlive = newAlive; }
+    constexpr void set_isCurrentlyAlive(bool newAlive) noexcept { _isCurrentlyAlive = newAlive; }
 
-    constexpr void set_lastIterationWhichModif(unsigned int iteration) { _lastIterationWhichModif = iteration; }
+    constexpr void
+    set_lastIterationWhichModif(unsigned int iteration) noexcept { _lastIterationWhichModif = iteration; }
 
     [[nodiscard]] constexpr bool isCellAlive(unsigned int iteration) {
         // If we modif on the current iteration, it means that we are looking for an already processed cell

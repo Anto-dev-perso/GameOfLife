@@ -12,7 +12,7 @@ Board::Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn
                                                                                     _colLength(numberOfColumn) {}
 
 std::vector<std::reference_wrapper<Cell>>
-Board::fillNeighbour(size_t line, size_t column)
+Board::fillNeighbour(size_t line, size_t column) noexcept
 {
 
     if (line >= _grid.size() || column >= _colLength)
@@ -111,7 +111,7 @@ Board::fillNeighbour(size_t line, size_t column)
     return {};
 }
 
-bool Board::isCellAtBorder(size_t line, size_t column) const
+bool Board::isCellAtBorder(size_t line, size_t column) const noexcept
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the first or the last one (idem for column)
@@ -120,7 +120,7 @@ bool Board::isCellAtBorder(size_t line, size_t column) const
                                                                line < _grid.size()))));
 }
 
-bool Board::isCellBeforeTheBorder(size_t line, size_t column) const
+bool Board::isCellBeforeTheBorder(size_t line, size_t column) const noexcept
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the second or the penultimate (idem for column)
@@ -130,7 +130,7 @@ bool Board::isCellBeforeTheBorder(size_t line, size_t column) const
 }
 
 // To expand the board, we have to add one line at beginning and end and for each line, add one column at beginning and end
-void Board::expandBoard()
+void Board::expandBoard() noexcept
 {
 
     // Keep old length for math
@@ -165,7 +165,7 @@ void Board::expandBoard()
 }
 
 // To reduce the board, we have to remove one line at beginning and end and for each line, reùove one column at beginning and end
-void Board::reduceBoard()
+void Board::reduceBoard() noexcept
 {
     // Don't go to low in the size of the board
     if (_lineLength <= minSize || _colLength <= minSize)
@@ -198,10 +198,4 @@ void Board::reduceBoard()
                 _grid.begin() + _colLength + 2 + 1); // +1 because erase is exclusive on the last parameter
 }
 
-size_t Board::get_lineLength() const { return _lineLength; }
 
-size_t Board::get_colLength() const { return _colLength; }
-
-void Board::set_lineLength(size_t newLength) { _lineLength = newLength; }
-
-void Board::set_colLength(size_t newLength) { _colLength = newLength; }

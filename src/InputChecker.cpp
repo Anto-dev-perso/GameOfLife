@@ -11,7 +11,7 @@ using namespace std;
 
 // Function to check the inputs arguments of the whole program
 // Return <false, "", 0, false> if one or multiple inputs are invalid
-tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc, char *argv[]) {
+tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc, char *argv[]) noexcept {
 
     // Check that at least one argument is given
     if ((argc <= 1) || !argv[argc - 1]) {
@@ -71,7 +71,9 @@ tuple<bool, string_view, unsigned int, bool> InputChecker::checkInputs(int argc,
 }
 
 // Due to the number of possible way to go wrong, isolate iteration conversion to a dedicated function
-optional<unsigned int> InputChecker::convertArgForIterations(std::string_view arg_path) {
+optional<unsigned int> InputChecker::convertArgForIterations(std::string_view arg_path) noexcept {
+
+    optional<unsigned int> retIter;
     try {
         // Use stoi because it is easier to deal with the negative cases
         // Max positive value for the integer is OK (2 Billion) for the game of life
@@ -81,21 +83,20 @@ optional<unsigned int> InputChecker::convertArgForIterations(std::string_view ar
             cerr << "ERROR: Iterations " << arg_path
                  << " is a negative number. Please retry with a positive number"
                  << endl;
-            return {nullopt};
+        }else{
+            retIter=static_cast<unsigned int>(convertedIteration);
         }
-        return {static_cast<unsigned int>(convertedIteration)};
+        
     }
     catch (std::out_of_range &err) {
         cerr << "ERROR "<< err.what() <<": Iterations " << arg_path
              << " is too high for a positive number. Please retry with a less higher number (lesser than "
              << numeric_limits<int>::max() << "), keep the result and relaunch this program"
              << endl;
-        return {nullopt};
     }
     catch (...) {
         cerr << "ERROR: Iterations " << arg_path << " is not a number. Please retry with a positive number"
              << endl;
-        return {nullopt};
     }
-    return {nullopt};
+    return retIter;
 }

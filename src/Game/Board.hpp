@@ -12,7 +12,7 @@ class Board {
 public:
 #ifdef ENABLE_DEBUG
 
-    [[nodiscard]] std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() {
+    [[nodiscard]] inline std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() const noexcept {
         return {_grid, _lineLength, _colLength};
     }
 
@@ -22,7 +22,7 @@ public:
         set_colLength(columnLength);
     }
 
-    void dumpGrid() {
+    inline void dumpGrid() const noexcept {
         for (size_t line = 0; line < _grid.size(); line += _colLength) {
             for (size_t column = 0; column < _colLength; column++) {
                 std::cout << boolToChar(_grid[line + column].get_isCurrentlyAlive());
@@ -48,28 +48,28 @@ public:
 
     Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn);
 
-    [[nodiscard]] constexpr const gridOfCells &get_grid_const() const { return _grid; }
+    [[nodiscard]] constexpr inline const gridOfCells &get_grid_const() const noexcept { return _grid; }
 
-    [[nodiscard]] constexpr gridOfCells &get_grid() { return _grid; }
+    [[nodiscard]] constexpr inline gridOfCells &get_grid() noexcept{ return _grid; }
 
-    [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column);
+    [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column) noexcept;
 
-    [[nodiscard]] bool isCellAtBorder(size_t line, size_t column) const;
+    [[nodiscard]] bool isCellAtBorder(size_t line, size_t column) const noexcept;
 
-    [[nodiscard]] bool isCellBeforeTheBorder(size_t line, size_t column) const;
+    [[nodiscard]] bool isCellBeforeTheBorder(size_t line, size_t column) const noexcept;
 
-    void expandBoard();
+    void expandBoard() noexcept;
 
-    void reduceBoard();
+    void reduceBoard() noexcept;
 
-    [[nodiscard]] size_t get_lineLength() const;
+    [[nodiscard]] inline size_t get_lineLength() const noexcept { return _lineLength; }
 
-    [[nodiscard]] size_t get_colLength() const;
+    [[nodiscard]] inline size_t get_colLength() const noexcept { return _colLength; }
 
 private:
-    void set_colLength(size_t newLength);
+    inline void set_colLength(size_t newLength) noexcept { _colLength = newLength; }
 
-    void set_lineLength(size_t newLength);
+    inline void set_lineLength(size_t newLength) noexcept { _lineLength = newLength; }
 
     gridOfCells _grid{};
     size_t _lineLength{0};
