@@ -14,6 +14,7 @@ project(GameOfLife LANGUAGES CXX VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+# TODO do this only for the Qt program
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -154,40 +155,40 @@ if (ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BU
 endif ()
 
 
-find_package(Qt6 6.2.4 REQUIRED COMPONENTS Core Quick Qml QuickControls2)
+find_package(Qt6 6.2.4 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
 
 
-# qt_add_executable(appQtGameOfLife
-#     main.cpp
-# )
+qt_add_executable(appQtGameOfLife
+    main.cpp
+)
 
-# qt_add_qml_module(appQtGameOfLife
-#     URI QtGameOfLife
-#     VERSION ${PROJECT_VERSION}
-#     QML_FILES Main.qml ActionButton.qml GameSliders.qml GameGrid.qml CustomImage.qml CustomSlider.qml
-#     RESOURCES clear.svg explanation.svg lexicon.svg next_white.svg next_blue.svg reset.svg speed-gauge.svg start.svg grid.svg trebuchet-ms-2/trebuc.ttf trebuchet-ms-2/Trebuchet-MS-Italic.ttf
-#     SOURCES UIParameters.hpp UIParameters.cpp UIGrid.hpp UIGrid.cpp
-# )
+qt_add_qml_module(appQtGameOfLife
+    URI QtGameOfLife
+    VERSION ${PROJECT_VERSION}
+    QML_FILES Main.qml ActionButton.qml GameSliders.qml GameGrid.qml CustomImage.qml CustomSlider.qml
+    RESOURCES clear.svg explanation.svg lexicon.svg next_white.svg next_blue.svg reset.svg speed-gauge.svg start.svg grid.svg trebuchet-ms-2/trebuc.ttf trebuchet-ms-2/Trebuchet-MS-Italic.ttf
+    SOURCES UIParameters.hpp UIParameters.cpp UIGrid.hpp UIGrid.cpp
+)
 
 
-# # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# # If you are developing for iOS or macOS you should consider setting an
-# # explicit, fixed bundle identifier manually though.
-# set_target_properties(appQtGameOfLife PROPERTIES
-# #    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appQtGameOfLife
-#     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-#     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-#     MACOSX_BUNDLE TRUE
-#     WIN32_EXECUTABLE TRUE
-# )
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+set_target_properties(appQtGameOfLife PROPERTIES
+#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appQtGameOfLife
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+    MACOSX_BUNDLE TRUE
+    WIN32_EXECUTABLE TRUE
+)
 
-# target_link_libraries(appQtGameOfLife
-#     PRIVATE Qt6::Quick
-# )
+target_link_libraries(appQtGameOfLife
+    PRIVATE Qt6::Quick
+)
 
-# include(GNUInstallDirs)
-# install(TARGETS appQtGameOfLife
-#     BUNDLE DESTINATION .
-#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-# )
+include(GNUInstallDirs)
+install(TARGETS appQtGameOfLife
+    BUNDLE DESTINATION .
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

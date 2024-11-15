@@ -22,7 +22,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -94,7 +94,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -116,7 +116,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -165,7 +165,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -195,7 +195,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -253,7 +253,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
@@ -312,7 +312,7 @@ jobs:
       - name: Install Conan and Qt 
         run: |
           sudo apt update
-          sudo apt install -y python3-pip qt6-base-dev qt6-declarative-dev qt6-wayland  qt6-declarative-dev qml6-module-qtquick-controls qml6-module-qtquick-templates libgl1-mesa-dev
+          sudo apt install -y python3-pip qt6* qml6* libgl1-mesa-dev build-essential build-essential
           pip install conan
 
       - name: Configure Conan profile
