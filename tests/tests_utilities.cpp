@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "tests_utilities.hpp"
-#include "Game/AllowedChar.hpp"
+#include "Back/Game/AllowedChar.hpp"
 
 #include <algorithm>
 #include <fstream>

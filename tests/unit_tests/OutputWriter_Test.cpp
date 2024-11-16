@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Game/OutputWriter.hpp"
+#include "Back/Game/OutputWriter.hpp"
 #include "../tests/tests_utilities.hpp"
 
 using namespace std;
