@@ -1,6 +1,7 @@
 #include "Game.hpp"
 
 #include<algorithm>
+#include<execution>
 
 using namespace std;
 
@@ -71,7 +72,7 @@ std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoi
         auto& grid{_board->get_grid()};
         const auto& numColumn{_board->get_colLength()};
 
-        for_each(grid.begin(), grid.end(), [&](Cell& cellToApply)
+        for_each(execution::par_unseq, grid.begin(), grid.end(), [&](Cell& cellToApply)
         {
             const size_t currentId{static_cast<size_t>(&cellToApply - &grid[0])};
             const size_t column{currentId % numColumn};
