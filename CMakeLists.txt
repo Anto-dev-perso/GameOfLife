@@ -33,7 +33,9 @@ if (MSVC)
 else ()
     # GCC/Clang specific flags
     add_compile_options(-Wall -Wextra)
-    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
+    #    TODO coverage should be specific
+    #    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-g -O3")
 endif ()
@@ -45,24 +47,24 @@ if (NOT CMAKE_BUILD_TYPE)
 endif ()
 
 add_library(InputCheckerLib STATIC
-        src/InputChecker.cpp
-        src/InputChecker.hpp
+        src/Back/InputChecker.cpp
+        src/Back/InputChecker.hpp
 )
 
 add_library(GameLib STATIC
-        src/Game/Game.cpp
-        src/Game/Game.hpp
-        src/Game/Board.cpp
-        src/Game/Board.hpp
-        src/Game/Cell.hpp
-        src/Game/Parser.cpp
-        src/Game/Parser.hpp
-        src/Game/OutputWriter.cpp
-        src/Game/OutputWriter.hpp
-        src/Game/AllowedChar.hpp
+        src/Back/Game/Game.cpp
+        src/Back/Game/Game.hpp
+        src/Back/Game/Board.cpp
+        src/Back/Game/Board.hpp
+        src/Back/Game/Cell.hpp
+        src/Back/Game/Parser.cpp
+        src/Back/Game/Parser.hpp
+        src/Back/Game/OutputWriter.cpp
+        src/Back/Game/OutputWriter.hpp
+        src/Back/Game/AllowedChar.hpp
 )
 
-add_executable(GameOfLife src/gameOfLife.cpp)
+add_executable(GameOfLife src/Back/gameOfLife.cpp)
 target_link_libraries(GameOfLife PRIVATE GameLib InputCheckerLib)
 
 
@@ -96,7 +98,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (MSVC)
         target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib)
     else ()
-        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib gcov)
+        #        TODO gcov shall be specific
+        #        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib gcov)
+        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib)
     endif ()
 
     target_include_directories(GameOfLifeUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
@@ -112,7 +116,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     if (MSVC)
         target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib)
     else ()
-        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib gcov)
+        #        TODO gcov shall be specific
+        #        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib gcov)
+        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib)
     endif ()
 
     target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
@@ -159,15 +165,15 @@ find_package(Qt6 6.2.4 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
 
 
 qt_add_executable(appQtGameOfLife
-    main.cpp
+        src/Front/main.cpp
 )
 
 qt_add_qml_module(appQtGameOfLife
-    URI QtGameOfLife
-    VERSION ${PROJECT_VERSION}
-    QML_FILES Main.qml ActionButton.qml GameSliders.qml GameGrid.qml CustomImage.qml CustomSlider.qml
-    RESOURCES clear.svg explanation.svg lexicon.svg next_white.svg next_blue.svg reset.svg speed-gauge.svg start.svg grid.svg trebuchet-ms-2/trebuc.ttf trebuchet-ms-2/Trebuchet-MS-Italic.ttf
-    SOURCES UIParameters.hpp UIParameters.cpp UIGrid.hpp UIGrid.cpp
+        URI QtGameOfLife
+        VERSION ${PROJECT_VERSION}
+        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf
+        SOURCES src/Front/Bridge/UIParameters.hpp src/Front/Bridge/UIParameters.cpp src/Front/Bridge/UIGrid.hpp src/Front/Bridge/UIGrid.cpp
+        QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml
 )
 
 
@@ -175,20 +181,20 @@ qt_add_qml_module(appQtGameOfLife
 # If you are developing for iOS or macOS you should consider setting an
 # explicit, fixed bundle identifier manually though.
 set_target_properties(appQtGameOfLife PROPERTIES
-#    MACOSX_BUNDLE_GUI_IDENTIFIER com.example.appQtGameOfLife
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
+        MACOSX_BUNDLE_GUI_IDENTIFIER appQtGameOfLife
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        MACOSX_BUNDLE TRUE
+        WIN32_EXECUTABLE TRUE
 )
 
 target_link_libraries(appQtGameOfLife
-    PRIVATE Qt6::Quick
+        PRIVATE Qt6::Quick
 )
 
 include(GNUInstallDirs)
 install(TARGETS appQtGameOfLife
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        BUNDLE DESTINATION .
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
