@@ -4,16 +4,14 @@
 
 #include <optional>
 #include <vector>
-#include <string>
+#include <string_view>
 
-
-class InputChecker {
+class InputChecker
+{
 public:
-    [[nodiscard]] static std::tuple<bool, std::string_view, unsigned int, bool> checkInputs(int argc, char *argv[])noexcept;
+    [[nodiscard]] static std::tuple<bool, std::string_view, unsigned int, bool> checkInputs(int argc, char *argv[]) noexcept;
 
     [[nodiscard]] static std::optional<unsigned int> convertArgForIterations(std::string_view arg_path) noexcept;
 
 private:
-
-
 };

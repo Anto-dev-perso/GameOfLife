@@ -7,106 +7,122 @@ using namespace std;
 // Define a minimum size for the line or column
 static constexpr size_t minSize{5};
 
-Board::Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(std::move(readGrid)),
-                                                                                    _lineLength(numberOfLines),
-                                                                                    _colLength(numberOfColumn) {}
+Board::Board(gridOfCells&& readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(std::move(readGrid)),
+    _lineLength(numberOfLines),
+    _colLength(numberOfColumn)
+{
+}
 
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column) noexcept
 {
-
-    if (line >= _grid.size() || column >= _colLength)
+    if (line >= _lineLength || column >= _colLength)
     {
         return {};
     }
 
-    const bool lineAtUpLimit{line + _colLength == _grid.size()};
-    const bool columnAtUpLimit{column + 1 == _colLength};
+    const bool lineAtUpLimit{line + 1 >= _lineLength};
+    const bool columnAtUpLimit{column + 1 >= _colLength};
     const bool lineAtLowLimit{line <= 0};
     const bool columnAtLowLimit{column <= 0};
 
     // Cast to a reference in order to return a vector a reference_wrapper (avoid copy)
-    auto &gridRef = static_cast<gridOfCells &>(_grid);
+    auto& gridRef = static_cast<gridOfCells&>(_grid);
 
     // We can do all neighbours
     if (!columnAtUpLimit && !columnAtLowLimit && !lineAtUpLimit && !lineAtLowLimit)
     {
-        return {gridRef[(line + _colLength) + (column + 1)],
-                gridRef[line + (column + 1)],
-                gridRef[(line - _colLength) + (column + 1)],
-                gridRef[(line + _colLength) + column],
-                gridRef[(line - _colLength) + column],
-                gridRef[(line + _colLength) + (column - 1)],
-                gridRef[line + (column - 1)],
-                gridRef[(line - _colLength) + (column - 1)]};
+        return {
+            gridRef[(line + 1) * _colLength + (column + 1)],
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + (column + 1)],
+            gridRef[(line + 1) * _colLength + column],
+            gridRef[(line - 1) * _colLength + column],
+            gridRef[(line + 1) * _colLength + (column - 1)],
+            gridRef[line * _colLength + (column - 1)],
+            gridRef[(line - 1) * _colLength + (column - 1)]
+        };
 
         // Line -1 isn't possible
     }
     else if (!columnAtUpLimit && !columnAtLowLimit && !lineAtUpLimit && lineAtLowLimit)
     {
-        return {gridRef[(line + _colLength) + (column + 1)],
-                gridRef[line + (column + 1)],
-                gridRef[(line + _colLength) + column],
-                gridRef[(line + _colLength) + (column - 1)],
-                gridRef[line + (column - 1)]};
+        return {
+            gridRef[(line + 1) * _colLength + (column + 1)],
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line + 1) * _colLength + column],
+            gridRef[(line + 1) * _colLength + (column - 1)],
+            gridRef[line * _colLength + (column - 1)]
+        };
     }
     // Line +1 isn't possible
     else if (!columnAtUpLimit && !columnAtLowLimit && lineAtUpLimit && !lineAtLowLimit)
     {
-        return {gridRef[line + (column + 1)],
-                gridRef[(line - _colLength) + (column + 1)],
-                gridRef[(line - _colLength) + column],
-                gridRef[line + (column - 1)],
-                gridRef[(line - _colLength) + (column - 1)]};
+        return {
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + column],
+            gridRef[line * _colLength + (column - 1)],
+            gridRef[(line - 1) * _colLength + (column - 1)]
+        };
     }
     // Col -1 isn't possible
     else if (!columnAtUpLimit && columnAtLowLimit && !lineAtUpLimit && !lineAtLowLimit)
     {
-        return {gridRef[(line + _colLength) + (column + 1)],
-                gridRef[line + (column + 1)],
-                gridRef[(line - _colLength) + (column + 1)],
-                gridRef[(line + _colLength) + column],
-                gridRef[(line - _colLength) + column]};
+        return {
+            gridRef[(line + 1) * _colLength + (column + 1)],
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + (column + 1)],
+            gridRef[(line + 1) * _colLength + column],
+            gridRef[(line - 1) * _colLength + column]
+        };
     }
     // Col+1 isn't possible
     else if (columnAtUpLimit && !columnAtLowLimit && !lineAtUpLimit && !lineAtLowLimit)
     {
-        return {gridRef[(line + _colLength) + column],
-                gridRef[(line - _colLength) + column],
-                gridRef[(line + _colLength) + (column - 1)],
-                gridRef[line + (column - 1)],
-                gridRef[(line - _colLength) + (column - 1)]};
+        return {
+            gridRef[(line + 1) * _colLength + column],
+            gridRef[(line - 1) * _colLength + column],
+            gridRef[(line + 1) * _colLength + (column - 1)],
+            gridRef[line + (column - 1)],
+            gridRef[(line - 1) * _colLength + (column - 1)]
+        };
     }
     // Col -1 and Line -1 isn't possible
     else if (!columnAtUpLimit && columnAtLowLimit && !lineAtUpLimit && lineAtLowLimit)
     {
-        return {gridRef[(line + _colLength) + (column + 1)],
-                gridRef[line + (column + 1)],
-                gridRef[(line + _colLength) + column]};
+        return {
+            gridRef[(line + 1) * _colLength + (column + 1)],
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line + 1) * _colLength + column]
+        };
     }
     // Col -1 and Line +1 isn't possible
     else if (!columnAtUpLimit && columnAtLowLimit && lineAtUpLimit && !lineAtLowLimit)
     {
         return {
-            gridRef[line + (column + 1)],
-            gridRef[(line - _colLength) + (column + 1)],
-            gridRef[(line - _colLength) + column]};
+            gridRef[line * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + (column + 1)],
+            gridRef[(line - 1) * _colLength + column]
+        };
     }
     // Col +1 and Line -1 isn't possible
     else if (columnAtUpLimit && !columnAtLowLimit && !lineAtUpLimit && lineAtLowLimit)
     {
         return {
-            gridRef[(line + _colLength) + column],
-            gridRef[(line + _colLength) + (column - 1)],
-            gridRef[line + (column - 1)]};
+            gridRef[(line + 1) * _colLength + column],
+            gridRef[(line + 1) * _colLength + (column - 1)],
+            gridRef[line * _colLength + (column - 1)]
+        };
     }
     // Col +1 and Line +1 isn't possible
     else if (columnAtUpLimit && !columnAtLowLimit && lineAtUpLimit && !lineAtLowLimit)
     {
         return {
-            gridRef[(line - _colLength) + column],
-            gridRef[line + (column - 1)],
-            gridRef[(line - _colLength) + (column - 1)]};
+            gridRef[(line - 1) * _colLength + column],
+            gridRef[line * _colLength + (column - 1)],
+            gridRef[(line - 1) * _colLength + (column - 1)]
+        };
     }
     return {};
 }
@@ -115,24 +131,21 @@ bool Board::isCellAtBorder(size_t line, size_t column) const noexcept
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the first or the last one (idem for column)
-    return ((column == 0 || column == _colLength - 1) || ((line < _colLength ||
-                                                              (_grid.size() - _colLength <= line &&
-                                                               line < _grid.size()))));
+    return ((column == 0 || column == _colLength - 1)
+        || ((line == 0 || line == _lineLength - 1)));
 }
 
 bool Board::isCellBeforeTheBorder(size_t line, size_t column) const noexcept
 {
     // Because we have a grid, all lines have the same number of column
     // So we have just to verify that the current line indice is the second or the penultimate (idem for column)
-    return ((column == 1 || column == _colLength - 2) || ((_colLength <= line && line < 2 * _colLength) ||
-                                                              (((_grid.size() - (2 * _colLength)) <= line) &&
-                                                               (line < _grid.size() - _colLength))));
+    return ((column == 1 || column == _colLength - 2)
+        || ((line == 1 || line == _lineLength - 2)));
 }
 
 // To expand the board, we have to add one line at beginning and end and for each line, add one column at beginning and end
 void Board::expandBoard() noexcept
 {
-
     // Keep old length for math
     const size_t oldColumnSize{_colLength};
 

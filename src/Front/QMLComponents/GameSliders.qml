@@ -32,7 +32,8 @@ Rectangle {
         }
         CustomSlider {
             id: speedGaugeSlider
-            value: uiParameters._gameSpeed
+            value: uiBridge._gameSpeed
+            onValueChanged: uiBridge.set_gameSpeed(value)
         }
         CustomImage {
             imgSource: "../assets/svg/grid.svg"
@@ -40,14 +41,15 @@ Rectangle {
         }
         CustomSlider {
             id: gridSlider
-            value: uiParameters._gridSize
+            value: uiBridge._zoomValue
+            onValueChanged: uiBridge.set_zoomValue(value)
         }
         CustomImage {
             imgSource: "../assets/svg/next_blue.svg"
             id: nextImg
         }
         Text {
-            text: uiParameters._iterationNumber
+            text: uiBridge._iterationNumber
             color: root.gameSlidersBackgroundUnSelectedColor
         }
     }

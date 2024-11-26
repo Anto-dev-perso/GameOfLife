@@ -6,25 +6,31 @@
 #include <vector>
 #include <iostream>
 
-typedef std::vector<Cell> gridOfCells;
+using gridOfCells = std::vector<Cell>;
 
-class Board {
+class Board
+{
 public:
 #ifdef ENABLE_DEBUG
 
-    [[nodiscard]] inline std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() const noexcept {
+    [[nodiscard]] inline std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() const noexcept
+    {
         return {_grid, _lineLength, _colLength};
     }
 
-    void update(const gridOfCells &newGrid, std::size_t lineLength, std::size_t columnLength) {
+    void update(const gridOfCells& newGrid, std::size_t lineLength, std::size_t columnLength)
+    {
         _grid = newGrid;
         set_lineLength(lineLength);
         set_colLength(columnLength);
     }
 
-    inline void dumpGrid() const noexcept {
-        for (size_t line = 0; line < _grid.size(); line += _colLength) {
-            for (size_t column = 0; column < _colLength; column++) {
+    inline void dumpGrid() const noexcept
+    {
+        for (size_t line = 0; line < _grid.size(); line += _colLength)
+        {
+            for (size_t column = 0; column < _colLength; column++)
+            {
                 std::cout << boolToChar(_grid[line + column].get_isCurrentlyAlive());
             }
             std::cout << std::endl;
@@ -36,21 +42,27 @@ public:
 
     Board() = default;
 
-    Board(const Board &other) = delete;
+    Board(const Board& other) = delete;
 
-    Board &operator=(const Board &other) = delete;
+    Board& operator=(const Board& other) = delete;
 
-    Board(const Board &&other) = delete;
+    Board(const Board&& other) = delete;
 
-    Board &operator=(const Board &&other) = delete;
+    Board& operator=(const Board&& other) = delete;
 
     ~Board() = default;
 
-    Board(gridOfCells &&readGrid, size_t numberOfLines, size_t numberOfColumn);
+    Board(gridOfCells&& readGrid, size_t numberOfLines, size_t numberOfColumn);
 
-    [[nodiscard]] constexpr inline const gridOfCells &get_grid_const() const noexcept { return _grid; }
+    Board(gridOfCells& readGrid, size_t numberOfLines, size_t numberOfColumn): _grid(readGrid),
+                                                                               _lineLength(numberOfLines),
+                                                                               _colLength(numberOfColumn)
+    {
+    }
 
-    [[nodiscard]] constexpr inline gridOfCells &get_grid() noexcept{ return _grid; }
+    [[nodiscard]] constexpr inline const gridOfCells& get_grid_const() const noexcept { return _grid; }
+
+    [[nodiscard]] constexpr inline gridOfCells& get_grid() noexcept { return _grid; }
 
     [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column) noexcept;
 
@@ -65,6 +77,24 @@ public:
     [[nodiscard]] inline size_t get_lineLength() const noexcept { return _lineLength; }
 
     [[nodiscard]] inline size_t get_colLength() const noexcept { return _colLength; }
+
+    [[nodiscard]] constexpr bool isCellAliveAtIndex(size_t index) const noexcept(false)
+    {
+        if (index >= _grid.size()) return false;
+        return _grid.at(index).get_isCurrentlyAlive();
+    };
+
+    [[nodiscard]] constexpr bool changeCellValue(size_t index, bool newValue) noexcept(false)
+    {
+        if (_grid.at(index).get_isCurrentlyAlive() == newValue)
+        {
+            return false;
+        }
+        auto& cell = _grid[index];
+        cell.memorizePreviousAliveValue();
+        cell.set_isCurrentlyAlive(newValue);
+        return true;
+    };
 
 private:
     inline void set_colLength(size_t newLength) noexcept { _colLength = newLength; }

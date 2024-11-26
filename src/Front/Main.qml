@@ -48,11 +48,8 @@ Window {
 
     readonly property double gridHeight: 1 - (topBarHeight + bottomBarHeight)
 
-    UIParameters {
-        id: uiParameters
-    }
-    UIGrid {
-        id: gridData
+    UIBridge {
+        id: uiBridge
     }
 
     color: backgroundColor
@@ -128,11 +125,19 @@ Window {
                 buttonText: "START"
                 imgSource: "../assets/svg/start.svg"
                 textSize: 24
+                onClicked: uiBridge.runGame()
             }
 
             ActionButton {
+                buttonText: "STOP"
+                imgSource: "../assets/svg/stop.svg"
+                textSize: 24
+                onClicked: uiBridge.stopGame()
+            }
+            ActionButton {
                 buttonText: "NEXT"
                 imgSource: "../assets/svg/next_white.svg"
+                onClicked: uiBridge.runIteration()
             }
 
             ActionButton {

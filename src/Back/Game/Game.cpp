@@ -13,7 +13,7 @@ Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path
 {
 }
 
-bool Game::init()noexcept
+bool Game::init() noexcept
 {
     auto [grid, lineLength, columnLength] = _fileParser.parseInputFile();
     _board = make_unique<Board>(std::move(grid), lineLength, columnLength);
@@ -29,15 +29,8 @@ bool Game::process() noexcept
     // Loop for iteration
     for (unsigned int currentIteration = 1; currentIteration <= _nbOfIterations; currentIteration++)
     {
-        const auto [expand, reduce] = applyRulesToTheBoardForIteration(currentIteration);
-        if (expand)
-        {
-            _board->expandBoard();
-        }
-        else if (reduce)
-        {
-            _board->reduceBoard();
-        }
+        const auto [expand, reduce, unused] = applyRulesToTheBoardForIteration(currentIteration);
+        std::ignore = checkIfBoardNeedToBeResize(expand, reduce);
 
         if (_outputAllIterations)
         {
@@ -53,29 +46,37 @@ bool Game::process() noexcept
 }
 
 // Because we will change Cell's alive status, we need to retrieve the reference to the grid
-// To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value and we memorize the old one
-// Memmrize also the last iteration at which we modify the value of the cells to avoid using the memrization instead of the actual value
-// So the loop use the memory value to the rules and set the values directly
-std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const noexcept
+// To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value, and we memorize the old one
+// Memorize also the last iteration at which we modify the value of the cells to avoid using the memorization instead of the actual value
+std::tuple<bool, bool, std::vector<Game::pairOfIndices>> Game::applyRulesToTheBoardForIteration(
+    unsigned int onGoingIteration) const noexcept
 {
+    // macro this to appear only on the Qt part
+    std::vector<pairOfIndices> indicesModified;
+
     bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
-    bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduce
+    bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduced
 
     // Put the loop in a scope to not keep all of these when we will resize the board
     // We avoid keeping a reference to the grid while this object change (resize)
     {
         vector<reference_wrapper<Cell>> neighbours;
-        neighbours.reserve(
-            8); // Reserve maximum possible number of neighbours to avoid multiple allocation/deallocation
+        neighbours.reserve(8);
+        // Reserve maximum possible number of neighbours to avoid multiple allocation/reallocation
 
         auto& grid{_board->get_grid()};
         const auto& numColumn{_board->get_colLength()};
+        const auto& numLine{_board->get_lineLength()};
+
+        // TODO have counter of alive cell ?
+        indicesModified.reserve(grid.size() / 4);
 
         for_each(grid.begin(), grid.end(), [&](Cell& cellToApply)
         {
             const size_t currentId{static_cast<size_t>(&cellToApply - &grid[0])};
             const size_t column{currentId % numColumn};
-            const size_t line{currentId - column};
+            const size_t line{currentId / numColumn};
+
 
             neighbours = _board->fillNeighbour(line, column);
 
@@ -85,7 +86,24 @@ std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoi
             const bool rule2{applyRule2(cellToApply, neighbours, onGoingIteration)};
             const bool resultOfRules{(rule1 && rule2) || applyRule3()};
 
-            cellToApply.set_isCurrentlyAlive(resultOfRules);
+            if (cellToApply.get_isPreviouslyAlive() != resultOfRules)
+            {
+                cellToApply.set_isCurrentlyAlive(resultOfRules);
+                // Push back directly if it is the first element or if the last pair inserted is complete (second is not null)
+                if (indicesModified.empty() || indicesModified.rbegin()->second != emptyPairOfIndices)
+                {
+                    indicesModified.emplace_back(line_column{line, column}, emptyPairOfIndices);
+                }
+            }
+            else
+            {
+                // Use the value of the current id even if it hasn't been modified to avoid if/else madness for nothing
+                if (!indicesModified.empty() && indicesModified.rbegin()->second == emptyPairOfIndices)
+                {
+                    indicesModified.rbegin()->second = {currentId / numColumn, column};
+                }
+            }
+
             cellToApply.set_lastIterationWhichModif(onGoingIteration);
 
             neighbours.clear();
@@ -106,8 +124,10 @@ std::tuple<bool, bool> Game::applyRulesToTheBoardForIteration(unsigned int onGoi
             }
         });
     }
-    return {expandSizeOfGrid, reduceSizeOfGrid};
+    return {expandSizeOfGrid, reduceSizeOfGrid, std::move(indicesModified)};
 }
+
+// So the loop use the memory value to the rules and set the values directly
 
 // Rule 1 of the Game : Any living cell with two or three living neighbours survives
 bool Game::applyRule1(Cell& currentCell, const std::vector<std::reference_wrapper<Cell>>& neighbours,

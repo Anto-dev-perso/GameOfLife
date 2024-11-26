@@ -4,27 +4,42 @@ import UIBridge
 Rectangle {
     id: rootGrid
 
-
     anchors.centerIn: parent
+    clip: true
 
     width: parent.width - root.gameSlidersMargins
     height: parent.height - root.gameSlidersMargins
-
-    Grid {
-        id: qtGrid
+    Item {
+        id: zoomItem
         anchors.fill: parent
 
-        columns: gridData._UIColumnCount
-        rows: gridData._UILineCount
+        // TODO run profiler because perfo issues at scale min
+        scale: uiBridge._scaleFactor
+        transformOrigin: Item.Center
 
-        Repeater {
-            model: gridData
-            Rectangle {
-                width: parent.width / parent.columns
-                height: parent.height / parent.rows
+        GridView {
+            id: qtGrid
+            anchors.centerIn: parent
+
+            width: parent.width
+            height: parent.height
+
+            model: uiBridge
+
+            cellHeight: (qtGrid.height / uiBridge._UILineCount)
+            cellWidth: (qtGrid.width / uiBridge._UIColumnCount)
+            cacheBuffer: Math.max(200, uiBridge._zoomValue * 20)
+
+            delegate: Rectangle {
+                width: qtGrid.cellWidth
+                height: qtGrid.cellHeight
+
+                layer {
+                    smooth: true
+                    enabled: true
+                }
+
                 color: model.value ? root.cellAliveColor : root.cellDeadColor
-
-
                 border {
                     width: 1
                     color: root.gridBorderColor
@@ -36,7 +51,14 @@ Rectangle {
                     }
                 }
             }
-        }
+            Behavior on scale {
 
+                NumberAnimation {
+
+                    duration: 300
+                    easing.type: Easing.InOutQuad
+                }
+            }
+        }
     }
 }

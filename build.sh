@@ -44,7 +44,10 @@ fi
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 
-conan install .. --output-folder=_deps --build=missing -s build_type=$BUILD_TYPE 
+if [ "$BUILD_TYPE" == "Debug" ];then
+    conan install .. --output-folder=_deps --build=missing -s build_type=$BUILD_TYPE
+    cmake -DCMAKE_TOOLCHAIN_FILE=_deps/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $PROFILING_TYPE $ASAN -Wno-dev .. 
+fi
 
-cmake -DCMAKE_TOOLCHAIN_FILE=_deps/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $PROFILING_TYPE $ASAN -Wno-dev .. 
+cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE $PROFILING_TYPE $ASAN -Wno-dev .. 
 cmake --build . -- -j

@@ -13,7 +13,8 @@ cmake_minimum_required(VERSION 3.16)
 project(GameOfLife LANGUAGES CXX VERSION 0.1)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 # TODO do this only for the Qt program
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -81,8 +82,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     enable_testing()
     add_compile_definitions(ENABLE_DEBUG)
 
-    include(${CMAKE_BINARY_DIR}/_deps/conan_toolchain.cmake)
     find_package(GTest REQUIRED CONFIG)
+
 
     add_executable(GameOfLifeUnitTests
             tests/unit_tests.cpp
@@ -96,11 +97,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
 
     if (MSVC)
-        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib)
+        target_link_libraries(GameOfLifeUnitTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest)
     else ()
         #        TODO gcov shall be specific
-        #        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib gcov)
-        target_link_libraries(GameOfLifeUnitTests PRIVATE GTest::gtest InputCheckerLib GameLib)
+        #        target_link_libraries(GameOfLifeUnitTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest gcov)
+        target_link_libraries(GameOfLifeUnitTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest)
     endif ()
 
     target_include_directories(GameOfLifeUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
@@ -114,11 +115,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
 
     if (MSVC)
-        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib)
+        target_link_libraries(GameOfLifeFunctionalTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest)
     else ()
         #        TODO gcov shall be specific
-        #        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib gcov)
-        target_link_libraries(GameOfLifeFunctionalTests PRIVATE gtest::gtest InputCheckerLib GameLib)
+        #        target_link_libraries(GameOfLifeFunctionalTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest gcov)
+        target_link_libraries(GameOfLifeFunctionalTests PRIVATE InputCheckerLib GameLib GTest::gtest_main GTest::gtest)
     endif ()
 
     target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
@@ -171,8 +172,9 @@ qt_add_executable(appQtGameOfLife
 qt_add_qml_module(appQtGameOfLife
         URI QtGameOfLife
         VERSION ${PROJECT_VERSION}
-        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf
-        SOURCES src/Front/Bridge/UIParameters.hpp src/Front/Bridge/UIParameters.cpp src/Front/Bridge/UIGrid.hpp src/Front/Bridge/UIGrid.cpp
+        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/svg/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf
+        SOURCES src/Front/Bridge/UIBridge.hpp src/Front/Bridge/UIBridge.cpp src/Front/Bridge/ThreadProxy.cpp
+        src/Front/Bridge/ThreadProxy.hpp
         QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml
 )
 
@@ -189,8 +191,9 @@ set_target_properties(appQtGameOfLife PROPERTIES
 )
 
 target_link_libraries(appQtGameOfLife
-        PRIVATE Qt6::Quick
+        PRIVATE Qt6::Quick Qt6::Core GameLib
 )
+target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src/Back)
 
 include(GNUInstallDirs)
 install(TARGETS appQtGameOfLife

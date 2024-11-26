@@ -8,6 +8,7 @@ Slider {
     width: parent.width * 0.6
     from: 0
     to: 100
+    stepSize: 1
 
     background: Rectangle {
         id: sliderBackground

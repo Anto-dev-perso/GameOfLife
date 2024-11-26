@@ -21,7 +21,8 @@ public:
     constexpr void
     set_lastIterationWhichModif(unsigned int iteration) noexcept { _lastIterationWhichModif = iteration; }
 
-    [[nodiscard]] constexpr bool isCellAlive(unsigned int iteration) {
+    [[nodiscard]] constexpr bool isCellAlive(unsigned int iteration) const
+    {
         // If we modif on the current iteration, it means that we are looking for an already processed cell
         // Take the memorized value
         return (_lastIterationWhichModif == iteration) ? (_isPreviouslyAlive) : (_isCurrentlyAlive);

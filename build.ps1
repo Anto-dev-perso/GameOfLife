@@ -15,10 +15,11 @@ function Usage
     exit 1
 }
 
-function Invoke-Process {
+function Invoke-Process
+{
     param (
-        [string]$Executable,    # The command to run
-        [string]$Arguments,     # Arguments to pass to the command
+        [string]$Executable, # The command to run
+        [string]$Arguments, # Arguments to pass to the command
         [int]$Timeout = 30000   # Timeout in milliseconds (default: 60 seconds)
     )
 
@@ -28,14 +29,16 @@ function Invoke-Process {
     $process = Start-Process -FilePath $Executable -ArgumentList $Arguments -NoNewWindow -PassThru -Wait
 
     # Wait for the process to exit, with a timeout
-    if (-not $process.WaitForExit($Timeout)) {
+    if (-not $process.WaitForExit($Timeout))
+    {
         $process.Kill()
-        throw "Process '$Executable' timed out after $($Timeout / 1000) seconds."
+        throw "Process '$Executable' timed out after $( $Timeout / 1000 ) seconds."
     }
 
     # Check the exit code
-    if ($process.ExitCode -ne 0) {
-        throw "Process '$Executable' failed with exit code $($process.ExitCode)."
+    if ($process.ExitCode -ne 0)
+    {
+        throw "Process '$Executable' failed with exit code $( $process.ExitCode )."
     }
 
     Write-Host "Process '$Executable' completed successfully."
@@ -74,10 +77,13 @@ Set-Location -Path $BUILD_DIR
 #  - https://doc.qt.io/qtinstallerframework/ifw-use-cases-cli.html
 #  - https://github.com/miurahr/aqtinstall
 
-Invoke-Expression "conan install .. --output-folder=_deps --build=missing -s build_type=$BUILD_TYPE -s compiler.cppstd=17"
+if ($BUILD_TYPE -eq "Debug")
+{
+    Invoke-Expression "conan install .. --output-folder=_deps --build=missing -s build_type=$BUILD_TYPE -s compiler.cppstd=17"
+}
 
 # Run CMake to configure the project (with Start-Process otherwise BUILD_TYPE value is not used)
-Invoke-Expression "cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev .."
+Invoke-Expression "cmake -DCMAKE_TOOLCHAIN_FILE=_deps/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev .."
 
 # Example with CMake (build step)
 Invoke-Expression "cmake --build . --config $BUILD_TYPE"
