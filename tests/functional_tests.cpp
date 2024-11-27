@@ -36,6 +36,7 @@ TEST(FTStaticPatterns, BlockPattern)
     const string fileName{filePath.string()};
     const string inputFile{UTILITIES::readFile(fileName + ".txt")};
 
+
     const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
 
     const int exitCode = std::system(cmd.c_str());

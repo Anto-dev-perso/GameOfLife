@@ -4,6 +4,7 @@ import QtQuick.Controls
 Rectangle {
     id: gameSliders
 
+
     anchors {
         bottom: parent.bottom
         right: parent.right
@@ -41,8 +42,8 @@ Rectangle {
         }
         CustomSlider {
             id: gridSlider
-            value: uiBridge._zoomValue
-            onValueChanged: uiBridge.set_zoomValue(value)
+            value: uiBridge._mainGridModel._zoomValue
+            onValueChanged: uiBridge._mainGridModel.set_zoomValue(value)
         }
         CustomImage {
             imgSource: "../assets/svg/next_blue.svg"

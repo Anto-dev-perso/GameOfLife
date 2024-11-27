@@ -26,6 +26,7 @@ Window {
     readonly property color bandTextColor: "#aacbff"
     readonly property color backgroundColor: "#646464"
 
+
     readonly property color gridBackgroundColor: "#404040"
     readonly property color gridBorderColor: "#989898"
     readonly property color cellDeadColor: "#7e7e7e"
@@ -36,6 +37,12 @@ Window {
     readonly property color gameSlidersBackgroundSelectedColor: "#2a4e97"
     readonly property color gameSlidersBackgroundUnSelectedColor: "#efefef"
     readonly property color gameSlidersHandleColor: gameSlidersBackgroundSelectedColor
+
+    readonly property color popUpBackgroundColor: "#38393c"
+    readonly property color popUpElementBackgroundColor: "#4d4d4d"
+    readonly property color popUpTextColor: "#f4f3e6"
+    readonly property color popUpBorderElementColor: "#626262"
+
 
     readonly property color buttonColor: "#2a4e97"
     readonly property color buttonTextColor: "#ffffff"
@@ -48,11 +55,19 @@ Window {
 
     readonly property double gridHeight: 1 - (topBarHeight + bottomBarHeight)
 
+    readonly property double popUpWidth: root.width / 2
+    readonly property double popUpHeight: root.height * 0.9
+
     UIBridge {
         id: uiBridge
     }
 
     color: backgroundColor
+
+    Overlay {
+        id: overlay
+        visible: popUp.visible
+    }
 
     Rectangle {
         id: topBar
@@ -99,6 +114,10 @@ Window {
         }
     }
 
+    LexiconPopUp {
+        id: popUp
+    }
+
     Rectangle {
         id: bottomBar
 
@@ -120,6 +139,7 @@ Window {
             ActionButton {
                 buttonText: "LEXICON"
                 imgSource: "../assets/svg/lexicon.svg"
+                onClicked: popUp.open()
             }
             ActionButton {
                 buttonText: "START"

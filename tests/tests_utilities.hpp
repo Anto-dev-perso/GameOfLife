@@ -8,7 +8,7 @@ namespace UTILITIES
 {
     /****************************************  Still lifes patterns ***************************************/
 
-    const inline gridOfCells blockPattern{
+    const inline grid_of_cells blockPattern{
         {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'},
@@ -17,7 +17,7 @@ namespace UTILITIES
     const inline size_t blockColumnLength{4};
     const inline size_t blockLineLength{4};
 
-    const inline gridOfCells beeHivePattern{
+    const inline grid_of_cells beeHivePattern{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'-'}, {'*'}, {'-'},
@@ -27,7 +27,7 @@ namespace UTILITIES
     const inline size_t beeHiveColumnLength{6};
     const inline size_t beeHiveLineLength{5};
 
-    const inline gridOfCells loafPattern{
+    const inline grid_of_cells loafPattern{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'-'}, {'*'}, {'-'},
@@ -38,7 +38,7 @@ namespace UTILITIES
     const inline size_t loafColumnLength{6};
     const inline size_t loafLineLength{6};
 
-    const inline gridOfCells boatPattern{
+    const inline grid_of_cells boatPattern{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'*'}, {'-'}, {'-'},
@@ -48,7 +48,7 @@ namespace UTILITIES
     const inline size_t boatColumnLength{6};
     const inline size_t boatLineLength{5};
 
-    const inline gridOfCells tubPattern{
+    const inline grid_of_cells tubPattern{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'*'}, {'-'},
@@ -60,7 +60,7 @@ namespace UTILITIES
 
     /****************************************  Oscillators patterns ***************************************/
 
-    const inline gridOfCells blinkerPatternG1{
+    const inline grid_of_cells blinkerPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'-'}, {'-'},
@@ -70,7 +70,7 @@ namespace UTILITIES
     const inline size_t blinkerColumnLength{5};
     const inline size_t blinkerLineLength{5};
 
-    const inline gridOfCells blinkerPatternG2{
+    const inline grid_of_cells blinkerPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'*'}, {'-'},
@@ -78,7 +78,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells toadPatternG1{
+    const inline grid_of_cells toadPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'-'}, {'*'}, {'-'},
@@ -89,7 +89,7 @@ namespace UTILITIES
     const inline size_t toadColumnLength{6};
     const inline size_t toadLineLength{6};
 
-    const inline gridOfCells toadPatternG2{
+    const inline grid_of_cells toadPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'*'}, {'*'}, {'*'}, {'-'},
@@ -98,7 +98,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells beaconPatternG1{
+    const inline grid_of_cells beaconPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'},
@@ -109,7 +109,7 @@ namespace UTILITIES
     const inline size_t beaconColumnLength{6};
     const inline size_t beaconLinenLength{6};
 
-    const inline gridOfCells beaconPatternG2{
+    const inline grid_of_cells beaconPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -118,7 +118,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pulsarPatternG1{
+    const inline grid_of_cells pulsarPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -157,7 +157,7 @@ namespace UTILITIES
     const inline size_t pulsarColumnLength{17};
     const inline size_t pulsarLineLength{17};
 
-    const inline gridOfCells pulsarPatternG2{
+    const inline grid_of_cells pulsarPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -194,7 +194,7 @@ namespace UTILITIES
         {'-'}
     };
 
-    const inline gridOfCells pulsarPatternG3{
+    const inline grid_of_cells pulsarPatternG3{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -231,7 +231,7 @@ namespace UTILITIES
         {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG1{
+    const inline grid_of_cells pentaDecathlonPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -254,7 +254,7 @@ namespace UTILITIES
     const inline size_t pentaDecathlonColumnLength{11};
     const inline size_t pentaDecathlonLineLength{18};
 
-    const inline gridOfCells pentaDecathlonPatternG2{
+    const inline grid_of_cells pentaDecathlonPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -275,7 +275,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG3{
+    const inline grid_of_cells pentaDecathlonPatternG3{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -296,7 +296,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG4{
+    const inline grid_of_cells pentaDecathlonPatternG4{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -317,7 +317,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG5{
+    const inline grid_of_cells pentaDecathlonPatternG5{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -338,7 +338,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG6{
+    const inline grid_of_cells pentaDecathlonPatternG6{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -359,7 +359,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG7{
+    const inline grid_of_cells pentaDecathlonPatternG7{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -380,7 +380,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG8{
+    const inline grid_of_cells pentaDecathlonPatternG8{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -401,7 +401,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG9{
+    const inline grid_of_cells pentaDecathlonPatternG9{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -422,7 +422,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG10{
+    const inline grid_of_cells pentaDecathlonPatternG10{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -443,7 +443,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG11{
+    const inline grid_of_cells pentaDecathlonPatternG11{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -464,7 +464,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG12{
+    const inline grid_of_cells pentaDecathlonPatternG12{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -485,7 +485,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG13{
+    const inline grid_of_cells pentaDecathlonPatternG13{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -506,7 +506,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG14{
+    const inline grid_of_cells pentaDecathlonPatternG14{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -527,7 +527,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells pentaDecathlonPatternG15{
+    const inline grid_of_cells pentaDecathlonPatternG15{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -548,7 +548,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
 
-    const inline gridOfCells gosperGliderGunPattern{
+    const inline grid_of_cells gosperGliderGunPattern{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -586,7 +586,7 @@ namespace UTILITIES
     const inline size_t gosperGliderGunColumnLength{38};
     const inline size_t gosperGliderGunLineLength{11};
 
-    const inline gridOfCells gosperGliderGunPatternG1{
+    const inline grid_of_cells gosperGliderGunPatternG1{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -624,9 +624,9 @@ namespace UTILITIES
 
     /****************************************  Functions ***************************************/
     // Helper function to compare the content of the gridOfCells between the actual one and the expected one
-    void compareGrid(std::tuple<gridOfCells, std::size_t, std::size_t> board, const gridOfCells& expected);
+    void compareGrid(const board_data& board, const grid_of_cells& expected);
 
     // Utility function to read the content of a file into a string
-    [[nodiscard]] std::string readFile(const std::string& filename);
+    [[nodiscard]] std::string readFile(std::string_view filename);
 }
 ;

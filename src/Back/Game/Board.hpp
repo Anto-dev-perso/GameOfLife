@@ -6,23 +6,34 @@
 #include <vector>
 #include <iostream>
 
-using gridOfCells = std::vector<Cell>;
+using grid_of_cells = std::vector<Cell>;
+using line_size = std::size_t;
+using column_size = std::size_t;
+
+struct board_data
+{
+    grid_of_cells grid{};
+    line_size line{0};
+    column_size column{0};
+
+    [[nodiscard]] bool empty() const noexcept { return grid.empty(); }
+
+    void clear() noexcept
+    {
+        grid.clear();
+        line = 0;
+        column = 0;
+    }
+};
 
 class Board
 {
 public:
 #ifdef ENABLE_DEBUG
 
-    [[nodiscard]] inline std::tuple<gridOfCells, std::size_t, std::size_t> retrieveDataForTest() const noexcept
+    [[nodiscard]] inline board_data retrieveDataForTest() const noexcept
     {
         return {_grid, _lineLength, _colLength};
-    }
-
-    void update(const gridOfCells& newGrid, std::size_t lineLength, std::size_t columnLength)
-    {
-        _grid = newGrid;
-        set_lineLength(lineLength);
-        set_colLength(columnLength);
     }
 
     inline void dumpGrid() const noexcept
@@ -52,17 +63,21 @@ public:
 
     ~Board() = default;
 
-    Board(gridOfCells&& readGrid, size_t numberOfLines, size_t numberOfColumn);
-
-    Board(gridOfCells& readGrid, size_t numberOfLines, size_t numberOfColumn): _grid(readGrid),
-                                                                               _lineLength(numberOfLines),
-                                                                               _colLength(numberOfColumn)
+    explicit Board(const board_data& readGrid): _grid(readGrid.grid),
+                                                _lineLength(readGrid.line),
+                                                _colLength(readGrid.column)
     {
     }
 
-    [[nodiscard]] constexpr inline const gridOfCells& get_grid_const() const noexcept { return _grid; }
+    Board(grid_of_cells& readGrid, size_t numberOfLines, size_t numberOfColumn): _grid(readGrid),
+        _lineLength(numberOfLines),
+        _colLength(numberOfColumn)
+    {
+    }
 
-    [[nodiscard]] constexpr inline gridOfCells& get_grid() noexcept { return _grid; }
+    [[nodiscard]] constexpr inline const grid_of_cells& get_grid_const() const noexcept { return _grid; }
+
+    [[nodiscard]] constexpr inline grid_of_cells& get_grid() noexcept { return _grid; }
 
     [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column) noexcept;
 
@@ -74,11 +89,11 @@ public:
 
     void reduceBoard() noexcept;
 
-    [[nodiscard]] inline size_t get_lineLength() const noexcept { return _lineLength; }
+    [[nodiscard]] constexpr size_t get_lineLength() const noexcept { return _lineLength; }
 
-    [[nodiscard]] inline size_t get_colLength() const noexcept { return _colLength; }
+    [[nodiscard]] constexpr size_t get_colLength() const noexcept { return _colLength; }
 
-    [[nodiscard]] constexpr bool isCellAliveAtIndex(size_t index) const noexcept(false)
+    [[nodiscard]] bool isCellAliveAtIndex(size_t index) const noexcept(false)
     {
         if (index >= _grid.size()) return false;
         return _grid.at(index).get_isCurrentlyAlive();
@@ -96,12 +111,20 @@ public:
         return true;
     };
 
+
+    void update(const board_data& grid) noexcept
+    {
+        _grid = grid.grid;
+        _lineLength = grid.line;
+        _colLength = grid.column;
+    }
+
 private:
     inline void set_colLength(size_t newLength) noexcept { _colLength = newLength; }
 
     inline void set_lineLength(size_t newLength) noexcept { _lineLength = newLength; }
 
-    gridOfCells _grid{};
+    grid_of_cells _grid{};
     size_t _lineLength{0};
     size_t _colLength{0};
 };

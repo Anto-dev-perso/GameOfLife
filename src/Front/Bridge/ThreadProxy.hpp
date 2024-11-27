@@ -4,7 +4,7 @@
 #include <QThread>
 #include "../Back/Game/Game.hpp"
 
-class ThreadProxy : public QObject
+class ThreadProxy final : public QObject
 {
     Q_OBJECT
 

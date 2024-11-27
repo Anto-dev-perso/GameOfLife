@@ -9,10 +9,10 @@ namespace UTILITIES
 {
     using namespace std;
 
-    void compareGrid(tuple<gridOfCells, size_t, size_t> board, const gridOfCells& expected)
+    void compareGrid(const board_data& board, const grid_of_cells& expected)
     {
-        const auto& grid{get<0>(board)};
-        const auto& numColumn{get<2>(board)};
+        const auto& grid{board.grid};
+        const auto& numColumn{board.column};
         for (size_t line = 0; line < grid.size(); line += numColumn)
         {
             for (size_t column = 0; column < numColumn; column++)
@@ -23,7 +23,7 @@ namespace UTILITIES
         }
     }
 
-    string readFile(const std::string& filename)
+    string readFile(std::string_view filename)
     {
         ifstream infile(filename);
         if (!infile)

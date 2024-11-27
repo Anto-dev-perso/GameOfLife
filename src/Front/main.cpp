@@ -10,12 +10,11 @@ int main(int argc, char* argv[])
     QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL, false);
     QCoreApplication::setAttribute(Qt::AA_UseOpenGLES, true);
 
-    QGuiApplication app(argc, argv);
+    const QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
 
     qmlRegisterType<UIBridge>("UIBridge", 1, 0, "UIBridge");
-
 
     const QUrl url{"qrc:/QtGameOfLife/src/Front/Main.qml"};
     QObject::connect(

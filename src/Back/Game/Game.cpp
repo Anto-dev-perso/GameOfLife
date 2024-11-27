@@ -1,28 +1,30 @@
 #include "Game.hpp"
 
-#include<algorithm>
+#include <algorithm>
 
 using namespace std;
 
-Game::Game(string_view path, unsigned int iterations, bool all) : _filePath(path),
-                                                                  _nbOfIterations(iterations),
-                                                                  _outputAllIterations(all),
-                                                                  _fileParser(Parser(_filePath)),
-                                                                  _outputWriter(make_unique<OutputWriter>(
-                                                                      _filePath))
-{
-}
-
 bool Game::init() noexcept
 {
-    auto [grid, lineLength, columnLength] = _fileParser.parseInputFile();
-    _board = make_unique<Board>(std::move(grid), lineLength, columnLength);
+    board_data readBoard;
+    if (const auto varFileParse{_fileParser.parseFile()}; std::holds_alternative<board_data>(varFileParse))
+    {
+        readBoard = std::get<board_data>(varFileParse);
+    }
 
+    else if (std::holds_alternative<PatternList>(varFileParse))
+    {
+        _patterns = std::get<PatternList>(varFileParse);
+
+        readBoard = _patterns.findPatternNamed("glider")._descriptionAndPattern.begin()->_gridPattern;
+    }
+
+    _board = make_unique<Board>(readBoard);
     // If parsing fail, grid is empty. In this case, return that it failed
     return !_board->get_grid_const().empty();
 }
 
-bool Game::process() noexcept
+bool Game::process() const noexcept
 {
     bool processOK{true};
 
@@ -48,11 +50,11 @@ bool Game::process() noexcept
 // Because we will change Cell's alive status, we need to retrieve the reference to the grid
 // To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value, and we memorize the old one
 // Memorize also the last iteration at which we modify the value of the cells to avoid using the memorization instead of the actual value
-std::tuple<bool, bool, std::vector<Game::pairOfIndices>> Game::applyRulesToTheBoardForIteration(
+std::tuple<bool, bool, std::vector<Game::pair_of_indices>> Game::applyRulesToTheBoardForIteration(
     unsigned int onGoingIteration) const noexcept
 {
     // macro this to appear only on the Qt part
-    std::vector<pairOfIndices> indicesModified;
+    std::vector<pair_of_indices> indicesModified;
 
     bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
     bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduced
@@ -66,7 +68,6 @@ std::tuple<bool, bool, std::vector<Game::pairOfIndices>> Game::applyRulesToTheBo
 
         auto& grid{_board->get_grid()};
         const auto& numColumn{_board->get_colLength()};
-        const auto& numLine{_board->get_lineLength()};
 
         // TODO have counter of alive cell ?
         indicesModified.reserve(grid.size() / 4);
@@ -90,15 +91,15 @@ std::tuple<bool, bool, std::vector<Game::pairOfIndices>> Game::applyRulesToTheBo
             {
                 cellToApply.set_isCurrentlyAlive(resultOfRules);
                 // Push back directly if it is the first element or if the last pair inserted is complete (second is not null)
-                if (indicesModified.empty() || indicesModified.rbegin()->second != emptyPairOfIndices)
+                if (indicesModified.empty() || indicesModified.rbegin()->second != EMTPY_PAIR_OF_INDICES)
                 {
-                    indicesModified.emplace_back(line_column{line, column}, emptyPairOfIndices);
+                    indicesModified.emplace_back(line_column{line, column}, EMTPY_PAIR_OF_INDICES);
                 }
             }
             else
             {
                 // Use the value of the current id even if it hasn't been modified to avoid if/else madness for nothing
-                if (!indicesModified.empty() && indicesModified.rbegin()->second == emptyPairOfIndices)
+                if (!indicesModified.empty() && indicesModified.rbegin()->second == EMTPY_PAIR_OF_INDICES)
                 {
                     indicesModified.rbegin()->second = {currentId / numColumn, column};
                 }
@@ -130,8 +131,8 @@ std::tuple<bool, bool, std::vector<Game::pairOfIndices>> Game::applyRulesToTheBo
 // So the loop use the memory value to the rules and set the values directly
 
 // Rule 1 of the Game : Any living cell with two or three living neighbours survives
-bool Game::applyRule1(Cell& currentCell, const std::vector<std::reference_wrapper<Cell>>& neighbours,
-                      unsigned int onGoingIteration) const noexcept
+bool Game::applyRule1(const Cell& currentCell, const std::vector<std::reference_wrapper<Cell>>& neighbours,
+                      unsigned int onGoingIteration) noexcept
 {
     if (!currentCell.isCellAlive(onGoingIteration))
     {
@@ -150,8 +151,8 @@ bool Game::applyRule1(Cell& currentCell, const std::vector<std::reference_wrappe
 }
 
 // Rule 2 of the Game : Any dead cell with three living neighbours survives
-bool Game::applyRule2(Cell& currentCell, const vector<std::reference_wrapper<Cell>>& neighbours,
-                      unsigned int onGoingIteration) const noexcept
+bool Game::applyRule2(const Cell& currentCell, const vector<std::reference_wrapper<Cell>>& neighbours,
+                      unsigned int onGoingIteration) noexcept
 {
     if (currentCell.isCellAlive(onGoingIteration))
     {

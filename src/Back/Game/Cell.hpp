@@ -2,13 +2,17 @@
 
 #include "AllowedChar.hpp"
 
-class Cell {
+class Cell
+{
 public:
-
-    Cell(char alive) : Cell(charToBool(alive)) {};
+    Cell(char alive) : Cell(charToBool(alive))
+    {
+    };
 
     // Set the two alive booleans to the same value because we don't really needs to memory anything at first
-    constexpr Cell(bool alive) : _isPreviouslyAlive(alive), _isCurrentlyAlive(alive) {};
+    explicit constexpr Cell(bool alive) : _isPreviouslyAlive(alive), _isCurrentlyAlive(alive)
+    {
+    };
 
     [[nodiscard]] constexpr bool get_isPreviouslyAlive() const noexcept { return _isPreviouslyAlive; }
 
@@ -28,10 +32,8 @@ public:
         return (_lastIterationWhichModif == iteration) ? (_isPreviouslyAlive) : (_isCurrentlyAlive);
     }
 
-
 private:
-
     bool _isPreviouslyAlive{false}; // Memory of previous alive state for this cell
-    bool _isCurrentlyAlive{false};// State of alive or not for the current iteration
+    bool _isCurrentlyAlive{false}; // State of alive or not for the current iteration
     unsigned int _lastIterationWhichModif{0};
 };

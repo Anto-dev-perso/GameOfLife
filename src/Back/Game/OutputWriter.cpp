@@ -13,7 +13,7 @@ OutputWriter::OutputWriter(string_view nameWithExtension) : _fileName(
 // This method is in charge of writing the output file
 // It needs to take the gridOfCells as inputs
 // The function take an optional int value corresponding to the iteration wanted in case of --all
-bool OutputWriter::writeIteration(const gridOfCells &grid, size_t numColumn, unsigned int iteration) const noexcept
+bool OutputWriter::writeIteration(const grid_of_cells &grid, size_t numColumn, unsigned int iteration) const noexcept
 {
 
     const string outputFileName = (iteration == 0) ? (string(_fileName) + '.' + _extension) : (string(_fileName) + '_' + to_string(iteration) + '.' + _extension);

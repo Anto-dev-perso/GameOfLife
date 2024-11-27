@@ -33,6 +33,7 @@ if (MSVC)
     set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "/DEBUG /O2")
 else ()
     # GCC/Clang specific flags
+    # TODO Wnrvo for gcc14 and up
     add_compile_options(-Wall -Wextra)
     #    TODO coverage should be specific
     #    set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 --coverage")
@@ -63,6 +64,7 @@ add_library(GameLib STATIC
         src/Back/Game/OutputWriter.cpp
         src/Back/Game/OutputWriter.hpp
         src/Back/Game/AllowedChar.hpp
+        src/Back/Game/PatternList.hpp
 )
 
 add_executable(GameOfLife src/Back/gameOfLife.cpp)
@@ -167,15 +169,19 @@ find_package(Qt6 6.2.4 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
 
 qt_add_executable(appQtGameOfLife
         src/Front/main.cpp
+
+
 )
+
 
 qt_add_qml_module(appQtGameOfLife
         URI QtGameOfLife
         VERSION ${PROJECT_VERSION}
-        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/svg/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf
+        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/svg/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf src/Front/assets/lexicon.txt
         SOURCES src/Front/Bridge/UIBridge.hpp src/Front/Bridge/UIBridge.cpp src/Front/Bridge/ThreadProxy.cpp
-        src/Front/Bridge/ThreadProxy.hpp
-        QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml
+        src/Front/Bridge/ThreadProxy.hpp src/Front/Bridge/LexiconModel.hpp src/Front/Bridge/LexiconModel.cpp src/Front/Bridge/MainGridModel.cpp
+        src/Front/Bridge/MainGridModel.hpp
+        QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml src/Front/QMLComponents/Overlay.qml src/Front/QMLComponents/LexiconPopUp.qml src/Front/QMLComponents/CustomText.qml
 )
 
 

@@ -30,7 +30,7 @@ void ThreadProxy::doWork() noexcept
     while (!_exitThread.load())
     {
         {
-            std::unique_lock<std::mutex> lock{_pauseMutex};
+            std::unique_lock lock{_pauseMutex};
 
             _pauseCondition.wait(lock, [this]() { return _gameRunning.load() || _exitThread.load(); });
 
@@ -49,11 +49,6 @@ void ThreadProxy::doWork() noexcept
             };
             if (remainingTime.count() > 0)
             {
-                std::cout << "Waiting time :" << remainingTime.count() << " for a wait time of " << _waitTimeMicro.
-                    load() <<
-                    std::endl;
-
-                
                 QThread::currentThread()->usleep(remainingTime.count());
             }
         }
@@ -78,7 +73,7 @@ void ThreadProxy::processingIteration() noexcept
     }
     else
     {
-        std::for_each(idModified.begin(), idModified.end(), [this](const Game::pairOfIndices& idPair)
+        std::for_each(idModified.begin(), idModified.end(), [this](const Game::pair_of_indices& idPair)
         {
             requestDataChange(idPair.first, idPair.second);
         });
@@ -88,5 +83,5 @@ void ThreadProxy::processingIteration() noexcept
 
 void ThreadProxy::set_waitTimeMicro(std::chrono::microseconds time) noexcept
 {
-    _waitTimeMicro.store(time.count());;
+    _waitTimeMicro.store(time.count());
 }

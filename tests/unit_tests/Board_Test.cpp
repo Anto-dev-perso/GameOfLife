@@ -10,7 +10,7 @@ Board boardToTest;
 
 TEST(UTFillNeighbour, BlockPatternTest)
 {
-    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
+    boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     // First try at the center of the pattern
     auto resultVec = boardToTest.fillNeighbour(2 * boardToTest.get_lineLength(), 2);
@@ -134,11 +134,11 @@ TEST(UTFillNeighbour, BlockPatternTest)
 TEST(UTFillNeighbour, RobustnessTest)
 {
     // grid empty
-    boardToTest.update({}, 0, 0);
+    boardToTest.update({{}, 0, 0});
     auto resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 0);
     ASSERT_EQ(resultVec.size(), 0);
 
-    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
+    boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     // line outside the possible indices
     resultVec = boardToTest.fillNeighbour(9 * boardToTest.get_lineLength(), 0);
@@ -163,20 +163,20 @@ TEST(UTFillNeighbour, RobustnessTest)
 
 TEST(UTReduceBoard, TryToReduceBlock)
 {
-    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
+    boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     boardToTest.reduceBoard();
-    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{
+    UTILITIES::compareGrid(board_data{
                                boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()
                            }, UTILITIES::blockPattern);
 }
 
 TEST(UTReduceBoard, TryToReduceTub)
 {
-    boardToTest.update(UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength);
+    boardToTest.update({UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength});
 
     boardToTest.reduceBoard();
-    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{
+    UTILITIES::compareGrid(board_data{
                                boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()
                            }, UTILITIES::tubPattern);
 }
@@ -185,11 +185,11 @@ TEST(UTReduceBoard, TryToReduceTub)
 
 TEST(UTExpandBoard, TryToExpandBlock)
 {
-    boardToTest.update(UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength);
+    boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     boardToTest.expandBoard();
     UTILITIES::compareGrid(
-        tuple<gridOfCells, size_t, size_t>
+        board_data
         {boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()}, {
             {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'},
             {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
@@ -199,10 +199,10 @@ TEST(UTExpandBoard, TryToExpandBlock)
 
 TEST(UTExpandBoard, TryToExpandTub)
 {
-    boardToTest.update(UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength);
+    boardToTest.update({UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength});
 
     boardToTest.expandBoard();
-    UTILITIES::compareGrid(tuple<gridOfCells, size_t, size_t>{
+    UTILITIES::compareGrid(board_data{
                                boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()
                            }, {
                                {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},

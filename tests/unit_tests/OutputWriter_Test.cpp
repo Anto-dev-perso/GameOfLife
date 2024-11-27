@@ -5,7 +5,7 @@
 using namespace std;
 
 // Declare the grid globally to keep the memory allocated by the first test to be played
-gridOfCells grid;
+grid_of_cells grid;
 
 /****************************************  Tests Suite for all instantiations of OutputWriter ***************************************/
 

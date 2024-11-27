@@ -14,32 +14,35 @@ Rectangle {
         anchors.fill: parent
 
         // TODO run profiler because perfo issues at scale min
-        scale: uiBridge._scaleFactor
+        scale: uiBridge._mainGridModel._scaleFactor
         transformOrigin: Item.Center
 
         GridView {
-            id: qtGrid
+            id: mainGrid
             anchors.centerIn: parent
 
             width: parent.width
             height: parent.height
 
-            model: uiBridge
+            interactive: false
 
-            cellHeight: (qtGrid.height / uiBridge._UILineCount)
-            cellWidth: (qtGrid.width / uiBridge._UIColumnCount)
-            cacheBuffer: Math.max(200, uiBridge._zoomValue * 20)
+            model: uiBridge._mainGridModel
+
+            cellHeight: (mainGrid.height / model._UILineCount)
+            cellWidth: (mainGrid.width / model._UIColumnCount)
 
             delegate: Rectangle {
-                width: qtGrid.cellWidth
-                height: qtGrid.cellHeight
+
+                width: mainGrid.cellWidth
+                height: mainGrid.cellHeight
 
                 layer {
                     smooth: true
                     enabled: true
                 }
+                color: model.cellValue ? root.cellAliveColor : root.cellDeadColor
 
-                color: model.value ? root.cellAliveColor : root.cellDeadColor
+
                 border {
                     width: 1
                     color: root.gridBorderColor
@@ -47,7 +50,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        model.value = !model.value
+                        model.cellValue = !model.cellValue
                     }
                 }
             }

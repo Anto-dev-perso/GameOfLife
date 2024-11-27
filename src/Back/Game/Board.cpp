@@ -7,12 +7,6 @@ using namespace std;
 // Define a minimum size for the line or column
 static constexpr size_t minSize{5};
 
-Board::Board(gridOfCells&& readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(std::move(readGrid)),
-    _lineLength(numberOfLines),
-    _colLength(numberOfColumn)
-{
-}
-
 std::vector<std::reference_wrapper<Cell>>
 Board::fillNeighbour(size_t line, size_t column) noexcept
 {
@@ -27,7 +21,7 @@ Board::fillNeighbour(size_t line, size_t column) noexcept
     const bool columnAtLowLimit{column <= 0};
 
     // Cast to a reference in order to return a vector a reference_wrapper (avoid copy)
-    auto& gridRef = static_cast<gridOfCells&>(_grid);
+    auto& gridRef = static_cast<grid_of_cells&>(_grid);
 
     // We can do all neighbours
     if (!columnAtUpLimit && !columnAtLowLimit && !lineAtUpLimit && !lineAtLowLimit)
@@ -210,5 +204,3 @@ void Board::reduceBoard() noexcept
     _grid.erase(_grid.begin(),
                 _grid.begin() + _colLength + 2 + 1); // +1 because erase is exclusive on the last parameter
 }
-
-
