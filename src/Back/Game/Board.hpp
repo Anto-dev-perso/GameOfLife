@@ -53,31 +53,31 @@ public:
 
     Board() = default;
 
-    Board(const Board& other) = delete;
+    Board(const Board &other) = delete;
 
-    Board& operator=(const Board& other) = delete;
+    Board &operator=(const Board &other) = delete;
 
-    Board(const Board&& other) = delete;
+    Board(const Board &&other) = delete;
 
-    Board& operator=(const Board&& other) = delete;
+    Board &operator=(const Board &&other) = delete;
 
     ~Board() = default;
 
-    explicit Board(const board_data& readGrid): _grid(readGrid.grid),
-                                                _lineLength(readGrid.line),
-                                                _colLength(readGrid.column)
+    explicit Board(board_data &&readGrid) : _grid(readGrid.grid),
+                                            _lineLength(readGrid.line),
+                                            _colLength(readGrid.column)
     {
     }
 
-    Board(grid_of_cells& readGrid, size_t numberOfLines, size_t numberOfColumn): _grid(readGrid),
-        _lineLength(numberOfLines),
-        _colLength(numberOfColumn)
+    Board(grid_of_cells &readGrid, size_t numberOfLines, size_t numberOfColumn) : _grid(readGrid),
+                                                                                  _lineLength(numberOfLines),
+                                                                                  _colLength(numberOfColumn)
     {
     }
 
-    [[nodiscard]] constexpr inline const grid_of_cells& get_grid_const() const noexcept { return _grid; }
+    [[nodiscard]] constexpr inline const grid_of_cells &get_grid_const() const noexcept { return _grid; }
 
-    [[nodiscard]] constexpr inline grid_of_cells& get_grid() noexcept { return _grid; }
+    [[nodiscard]] constexpr inline grid_of_cells &get_grid() noexcept { return _grid; }
 
     [[nodiscard]] std::vector<std::reference_wrapper<Cell>> fillNeighbour(size_t line, size_t column) noexcept;
 
@@ -95,28 +95,35 @@ public:
 
     [[nodiscard]] bool isCellAliveAtIndex(size_t index) const noexcept(false)
     {
-        if (index >= _grid.size()) return false;
+        if (index >= _grid.size())
+            return false;
         return _grid.at(index).get_isCurrentlyAlive();
     };
 
-    [[nodiscard]] constexpr bool changeCellValue(size_t index, bool newValue) noexcept(false)
+    [[nodiscard]] bool changeCellValue(size_t index, bool newValue) noexcept(false)
     {
         if (_grid.at(index).get_isCurrentlyAlive() == newValue)
         {
             return false;
         }
-        auto& cell = _grid[index];
+        auto &cell = _grid[index];
         cell.memorizePreviousAliveValue();
         cell.set_isCurrentlyAlive(newValue);
         return true;
     };
 
-
-    void update(const board_data& grid) noexcept
+    void update(const board_data &grid) noexcept
     {
         _grid = grid.grid;
         _lineLength = grid.line;
         _colLength = grid.column;
+    }
+
+    void clear() noexcept
+    {
+        _grid.clear();
+        _lineLength = 0;
+        _colLength = 0;
     }
 
 private:

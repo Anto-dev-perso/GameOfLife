@@ -32,6 +32,8 @@ public:
             return parseBoardFile();
         case TypeOfFileToParse::LEXICON:
             return parseLexiconFile();
+default:
+            return {};
         }
     }
 

@@ -2,10 +2,9 @@
 #include <QTimer>
 #include <QFile>
 
-
 static const QString LEXICON_RESSOURCE_PATH{":/QtGameOfLife/src/Front/assets/lexicon.txt"};
 
-UIBridge::UIBridge(QObject* parent)
+UIBridge::UIBridge(QObject *parent)
     : QObject(parent)
 
 {
@@ -25,7 +24,6 @@ UIBridge::UIBridge(QObject* parent)
     ressourceFile.close();
     tmpFile.close();
 
-
     _backend = std::make_shared<Game>(LEXICON_TMP_FILE_PATH.toStdString(), TypeOfFileToParse::LEXICON);
     if (!_backend->init())
     {
@@ -36,10 +34,9 @@ UIBridge::UIBridge(QObject* parent)
 
     _threadProxy = std::make_unique<ThreadProxy>(_backend, calculateWaitTimeFromSlider());
 
-    const auto& [patternsStruct, size] = _backend->get_lexiconPatterns();
+    const auto &[patternsStruct, size] = _backend->get_lexiconPatterns();
     _lexiconNameModel = std::make_unique<LexiconNameModel>(patternsStruct, size);
     _mainGridModel = std::make_unique<MainGridModel>(_backend);
-
 
     std::ignore = connect(_threadProxy.get(), &ThreadProxy::iterationNumberFinishedEditing, this,
                           &UIBridge::_iterationNumberChanged);
@@ -49,11 +46,18 @@ UIBridge::UIBridge(QObject* parent)
                           &MainGridModel::updateData);
 }
 
-void UIBridge::changePatternBackEnd(int patternIndex, int gridIndex) const noexcept
+void UIBridge::changePatternBackEnd(int patternIndex, int gridIndex) noexcept
 {
     // TODO data race here
-    _mainGridModel->beginResetGrid();
-    _backend->changeBoard(patternIndex, gridIndex);
-    _mainGridModel->updateGridCounters();
-    _mainGridModel->endResetGrid();
+    _mainGridModel->changeMainGridWithPatternIndices(patternIndex, gridIndex);
+}
+
+void UIBridge::resetPattern() noexcept
+{
+    _mainGridModel->resetMainGrid();
+}
+void UIBridge::clearPattern() noexcept
+{
+    // TODO data race here
+    _mainGridModel->clearMainGrid();
 }

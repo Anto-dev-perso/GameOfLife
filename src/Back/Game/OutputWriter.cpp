@@ -16,7 +16,7 @@ OutputWriter::OutputWriter(string_view nameWithExtension) : _fileName(
 bool OutputWriter::writeIteration(const grid_of_cells &grid, size_t numColumn, unsigned int iteration) const noexcept
 {
 
-    const string outputFileName = (iteration == 0) ? (string(_fileName) + '.' + _extension) : (string(_fileName) + '_' + to_string(iteration) + '.' + _extension);
+    const string outputFileName = (iteration == 0) ? (string(_fileName) + '.' + string(_extension)) : (string(_fileName) + '_' + to_string(iteration) + '.' + string(_extension));
 
     // TODO warn the user that a file with that name already exist and has been backup (eventually)
     ofstream file{outputFileName};

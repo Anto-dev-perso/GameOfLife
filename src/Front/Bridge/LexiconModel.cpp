@@ -1,17 +1,17 @@
 #include "LexiconModel.hpp"
 
-
-LexiconGridModel::LexiconGridModel(std::vector<pattern>& value, size_t sizePattern,
-                                   QObject* parent): QAbstractListModel(parent)
+LexiconGridModel::LexiconGridModel(std::vector<pattern> &value, size_t sizePattern,
+                                   QObject *parent) : QAbstractListModel(parent)
 {
+    Q_UNUSED(sizePattern) // TODO
     // _grids.reserve(sizePattern);
     _grids.reserve(value.size());
-    for (auto& pattern : value)
+    for (auto &pattern : value)
     {
         std::vector<std::reference_wrapper<board_data>> patt;
         patt.reserve(pattern._descriptionAndPattern.size());
 
-        for (auto& [ignore,grid] : pattern._descriptionAndPattern)
+        for (auto &[ignore, grid] : pattern._descriptionAndPattern)
         {
             patt.emplace_back(grid);
         }
@@ -19,43 +19,53 @@ LexiconGridModel::LexiconGridModel(std::vector<pattern>& value, size_t sizePatte
     }
 }
 
-int LexiconGridModel::rowCount(const QModelIndex& parent) const
+int LexiconGridModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return _grids.size();
 }
 
-QVariant LexiconGridModel::data(const QModelIndex& index, const int role) const
+QVariant LexiconGridModel::data(const QModelIndex &index, const int role) const
 {
+    Q_UNUSED(index)
+    Q_UNUSED(role)
     return {};
 }
 
-
 int LexiconGridModel::getSizeForIndex(int patternIndex, int gridIndex) const noexcept
 {
-    if (!incomingIndicesInBound(patternIndex, gridIndex)) { return -1; }
+    if (!incomingIndicesInBound(patternIndex, gridIndex))
+    {
+        return -1;
+    }
     return _grids.at(patternIndex).at(gridIndex).get().grid.size();
 }
 
 bool LexiconGridModel::incomingIndicesInBound(int patternIndex, int gridIndex) const noexcept
 {
-    return patternIndex >= 0 && patternIndex < rowCount() && gridIndex >= 0 && gridIndex < _grids.at(patternIndex).
-        size();
+    return patternIndex >= 0 && patternIndex < rowCount() && gridIndex >= 0 && static_cast<size_t>(gridIndex) < _grids.at(patternIndex).size();
 }
 
 bool LexiconGridModel::elementIndexInBound(int parentIndex, int gridIndex, int index) const noexcept
 {
-    return index >= 0 && index < _grids.at(parentIndex).at(gridIndex).get().grid.size();
+    return index >= 0 && static_cast<size_t>(index) < _grids.at(parentIndex).at(gridIndex).get().grid.size();
 }
 
 int LexiconGridModel::getLineCountForIndex(int patternIndex, int gridIndex) const noexcept
 {
-    if (!incomingIndicesInBound(patternIndex, gridIndex)) { return -1; }
+    if (!incomingIndicesInBound(patternIndex, gridIndex))
+    {
+        return -1;
+    }
     return _grids.at(patternIndex).at(gridIndex).get().line;
 }
 
 int LexiconGridModel::getColumnCountForIndex(int patternIndex, int gridIndex) const noexcept
 {
-    if (!incomingIndicesInBound(patternIndex, gridIndex)) { return -1; }
+    if (!incomingIndicesInBound(patternIndex, gridIndex))
+    {
+        return -1;
+    }
     return _grids.at(patternIndex).at(gridIndex).get().column;
 }
 
@@ -74,7 +84,6 @@ QVariant LexiconGridModel::getData(int parentIndex, int gridIndex, int elemIndex
     }
 }
 
-
 QHash<int, QByteArray> LexiconGridModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -82,20 +91,19 @@ QHash<int, QByteArray> LexiconGridModel::roleNames() const
     return roles;
 }
 
-
-LexiconDescriptionModel::LexiconDescriptionModel(std::vector<pattern>& value, size_t sizePattern,
-                                                 QObject* parent): QAbstractListModel(parent),
-                                                                   _gridModel(
-                                                                       std::make_unique<LexiconGridModel>(
-                                                                           value, sizePattern))
+LexiconDescriptionModel::LexiconDescriptionModel(std::vector<pattern> &value, size_t sizePattern,
+                                                 QObject *parent) : QAbstractListModel(parent),
+                                                                    _gridModel(
+                                                                        std::make_unique<LexiconGridModel>(
+                                                                            value, sizePattern))
 {
     _descriptions.reserve(value.size());
-    for (auto& pattern : value)
+    for (auto &pattern : value)
     {
         std::vector<std::string_view> desc;
         desc.reserve(pattern._descriptionAndPattern.size());
 
-        for (auto& [description,grid] : pattern._descriptionAndPattern)
+        for (auto &[description, grid] : pattern._descriptionAndPattern)
         {
             desc.emplace_back(description);
         }
@@ -103,24 +111,27 @@ LexiconDescriptionModel::LexiconDescriptionModel(std::vector<pattern>& value, si
     }
 }
 
-int LexiconDescriptionModel::rowCount(const QModelIndex& parent) const
+int LexiconDescriptionModel::rowCount(const QModelIndex &parent) const
 {
+    Q_UNUSED(parent)
     return _descriptions.size();
 }
 
-QVariant LexiconDescriptionModel::data(const QModelIndex& index, const int role) const
+QVariant LexiconDescriptionModel::data(const QModelIndex &index, const int role) const
 {
-    if (!index.isValid() || static_cast<size_t>(index.row()) >= rowCount())
-    {
-        return {};
-    }
+    Q_UNUSED(index)
+    Q_UNUSED(role)
+
     return {};
 }
 
 QVariant LexiconDescriptionModel::getData(int parentIndex, int elemIndex,
                                           const int role) const noexcept
 {
-    if (!parentIndexInBound(parentIndex) || !elementIndexInBound(parentIndex, elemIndex)) { return {}; }
+    if (!parentIndexInBound(parentIndex) || !elementIndexInBound(parentIndex, elemIndex))
+    {
+        return {};
+    }
     switch (role)
     {
     case DescriptionRole:
@@ -129,7 +140,6 @@ QVariant LexiconDescriptionModel::getData(int parentIndex, int elemIndex,
         return {};
     }
 }
-
 
 QHash<int, QByteArray> LexiconDescriptionModel::roleNames() const
 {
@@ -140,7 +150,10 @@ QHash<int, QByteArray> LexiconDescriptionModel::roleNames() const
 
 int LexiconDescriptionModel::getSizeForIndex(int parentIndex) const noexcept
 {
-    if (!parentIndexInBound(parentIndex)) { return -1; }
+    if (!parentIndexInBound(parentIndex))
+    {
+        return -1;
+    }
     return _descriptions.at(parentIndex).size();
 }
 
@@ -151,32 +164,30 @@ bool LexiconDescriptionModel::parentIndexInBound(int index) const noexcept
 
 inline bool LexiconDescriptionModel::elementIndexInBound(int parentIndex, int index) const noexcept
 {
-    return index >= 0 && index < _descriptions.at(parentIndex).size();
+    return index >= 0 && static_cast<size_t>(index) < _descriptions.at(parentIndex).size();
 }
 
-LexiconNameModel::LexiconNameModel(std::vector<pattern>& refPattern, size_t sizePattern, QObject* parent) :
-    QAbstractListModel(parent), _descriptionModel(std::make_unique<LexiconDescriptionModel>(refPattern, sizePattern))
+LexiconNameModel::LexiconNameModel(std::vector<pattern> &refPattern, size_t sizePattern, QObject *parent) : QAbstractListModel(parent), _descriptionModel(std::make_unique<LexiconDescriptionModel>(refPattern, sizePattern))
 {
     _patternNames.reserve(refPattern.size());
-    for (auto& [_name,ignore] : refPattern)
+    for (auto &[_name, ignore] : refPattern)
     {
         _patternNames.emplace_back(_name);
     }
 }
 
-int LexiconNameModel::rowCount(const QModelIndex& parent) const
+int LexiconNameModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return _patternNames.size();
 }
 
-QVariant LexiconNameModel::data(const QModelIndex& index, const int role) const
+QVariant LexiconNameModel::data(const QModelIndex &index, const int role) const
 {
-    if (!index.isValid() || static_cast<size_t>(index.row()) >= rowCount())
+    if (!index.isValid() || index.row() >= rowCount())
     {
         return {};
     }
-
 
     switch (role)
     {

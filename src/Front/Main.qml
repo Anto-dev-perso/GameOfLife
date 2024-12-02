@@ -26,7 +26,6 @@ Window {
     readonly property color bandTextColor: "#aacbff"
     readonly property color backgroundColor: "#646464"
 
-
     readonly property color gridBackgroundColor: "#404040"
     readonly property color gridBorderColor: "#989898"
     readonly property color cellDeadColor: "#7e7e7e"
@@ -42,7 +41,6 @@ Window {
     readonly property color popUpElementBackgroundColor: "#4d4d4d"
     readonly property color popUpTextColor: "#f4f3e6"
     readonly property color popUpBorderElementColor: "#626262"
-
 
     readonly property color buttonColor: "#2a4e97"
     readonly property color buttonTextColor: "#ffffff"
@@ -108,10 +106,8 @@ Window {
 
         color: root.gridBackgroundColor
 
-        GameGrid {
-        }
-        GameSliders {
-        }
+        GameGrid {}
+        GameSliders {}
     }
 
     LexiconPopUp {
@@ -163,10 +159,12 @@ Window {
             ActionButton {
                 buttonText: "RESET"
                 imgSource: "../assets/svg/reset.svg"
+                onClicked: uiBridge.resetPattern()
             }
             ActionButton {
                 buttonText: "CLEAR"
                 imgSource: "../assets/svg/clear.svg"
+                onClicked: uiBridge.clearPattern()
             }
         }
     }

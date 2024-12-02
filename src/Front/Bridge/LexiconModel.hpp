@@ -16,15 +16,13 @@ public:
 
     [[nodiscard]] QVariant data(const QModelIndex& index, const int role = Qt::DisplayRole) const override;
 
-    Q_INVOKABLE [[nodiscard]] QVariant getData(int parentIndex, int gridIndex,
-                                               int elemIndex, const int role = Qt::DisplayRole) const noexcept;
-    Q_INVOKABLE [[nodiscard]] int getLineCountForIndex(int patternIndex, int gridIndex) const noexcept;
-    Q_INVOKABLE [[nodiscard]] int getColumnCountForIndex(int patternIndex, int gridIndex) const noexcept;
-
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
-
-    Q_INVOKABLE[[nodiscard]] int getSizeForIndex(int patternIndex, int gridIndex) const noexcept;
+public slots:
+     [[nodiscard]] QVariant getData(int parentIndex, int gridIndex,   int elemIndex, const int role = Qt::DisplayRole) const noexcept;
+     [[nodiscard]] int getLineCountForIndex(int patternIndex, int gridIndex) const noexcept;
+     [[nodiscard]] int getColumnCountForIndex(int patternIndex, int gridIndex) const noexcept;
+    [[nodiscard]] int getSizeForIndex(int patternIndex, int gridIndex) const noexcept;
 
 private:
     enum Roles
@@ -53,18 +51,21 @@ public:
 
     [[nodiscard]] QVariant data(const QModelIndex& index, const int role = Qt::DisplayRole) const override;
 
-    Q_INVOKABLE[[nodiscard]] QVariant getData(int parentIndex, int elemIndex,
-                                              const int role = Qt::DisplayRole) const noexcept;
+
 
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
-
-
-    Q_INVOKABLE[[nodiscard]] int getSizeForIndex(int parentIndex) const noexcept;
 
     [[nodiscard]] LexiconGridModel* get_gridModel() const noexcept
     {
         return _gridModel.get();
     }
+
+public slots:
+    [[nodiscard]] int getSizeForIndex(int parentIndex) const noexcept;
+    [[nodiscard]] QVariant getData(int parentIndex, int elemIndex,
+                                               const int role = Qt::DisplayRole) const noexcept;
+
+
 
 private:
     enum Roles

@@ -9,10 +9,10 @@ namespace UTILITIES
 {
     using namespace std;
 
-    void compareGrid(const board_data& board, const grid_of_cells& expected)
+    void compareGrid(const board_data &board, const grid_of_cells &expected)
     {
-        const auto& grid{board.grid};
-        const auto& numColumn{board.column};
+        const auto &grid{board.grid};
+        const auto &numColumn{board.column};
         for (size_t line = 0; line < grid.size(); line += numColumn)
         {
             for (size_t column = 0; column < numColumn; column++)
@@ -25,10 +25,10 @@ namespace UTILITIES
 
     string readFile(std::string_view filename)
     {
-        ifstream infile(filename);
+        ifstream infile{filename.data()};
         if (!infile)
         {
-            throw std::runtime_error("Unable to open file: " + filename);
+            throw std::runtime_error("Unable to open file: " + string(filename));
         }
 
         // Read the file contents into a string

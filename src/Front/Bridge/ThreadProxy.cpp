@@ -3,7 +3,7 @@
 #include "ThreadProxy.hpp"
 
 ThreadProxy::ThreadProxy(std::shared_ptr<Game> backend, std::chrono::microseconds timeToWait,
-                         QObject* parent): _backend(std::move(backend)), _waitTimeMicro(timeToWait.count())
+                         QObject *parent) : QObject(parent), _backend(std::move(backend)), _waitTimeMicro(timeToWait.count())
 {
     moveToThread(&_thread);
     std::ignore = connect(&_thread, &QThread::started, this, &ThreadProxy::doWork);
@@ -32,9 +32,18 @@ void ThreadProxy::doWork() noexcept
         {
             std::unique_lock lock{_pauseMutex};
 
-            _pauseCondition.wait(lock, [this]() { return _gameRunning.load() || _exitThread.load(); });
+            _pauseCondition.wait(lock, [this]()
+                                 { return _gameRunning.load() || _exitThread.load(); });
 
-            if (_exitThread.load()) { break; }
+            if (_exitThread.load())
+            {
+                break;
+            }
+            // In case we have clear the board, it makes no sense to run the processing
+            if (_backend->boardEmpty())
+            {
+                _gameRunning.store(false);
+            }
         }
         while (_gameRunning.load())
         {
@@ -45,8 +54,7 @@ void ThreadProxy::doWork() noexcept
 
             const auto remainingTime{
                 std::chrono::duration_cast<std::chrono::microseconds>(
-                    std::chrono::microseconds{_waitTimeMicro.load()} - duration)
-            };
+                    std::chrono::microseconds{_waitTimeMicro.load()} - duration)};
             if (remainingTime.count() > 0)
             {
                 QThread::currentThread()->usleep(remainingTime.count());
@@ -61,7 +69,6 @@ void ThreadProxy::run() noexcept
     _pauseCondition.notify_one();
 }
 
-
 void ThreadProxy::processingIteration() noexcept
 {
     _backend->increment_nbOfIterations();
@@ -73,13 +80,10 @@ void ThreadProxy::processingIteration() noexcept
     }
     else
     {
-        std::for_each(idModified.begin(), idModified.end(), [this](const Game::pair_of_indices& idPair)
-        {
-            requestDataChange(idPair.first, idPair.second);
-        });
+        std::for_each(idModified.begin(), idModified.end(), [this](const Game::pair_of_indices &idPair)
+                      { requestDataChange(idPair.first, idPair.second); });
     }
 }
-
 
 void ThreadProxy::set_waitTimeMicro(std::chrono::microseconds time) noexcept
 {

@@ -7,31 +7,30 @@
 
 class Game
 {
+
 public:
     using line_column = std::pair<size_t, size_t>;
     using pair_of_indices = std::pair<line_column, line_column>;
     static constexpr line_column EMTPY_PAIR_OF_INDICES{0, 0};
 
-
-    Game(std::string_view path, unsigned int iterations, bool all): _filePath(path),
-                                                                    _nbOfIterations(iterations),
-                                                                    _outputAllIterations(all),
-                                                                    _fileParser(Parser(_filePath)),
-                                                                    _outputWriter(std::make_unique<OutputWriter>(
-                                                                        _filePath))
+    Game(std::string_view path, unsigned int iterations, bool all) : _filePath(path),
+                                                                     _nbOfIterations(iterations),
+                                                                     _outputAllIterations(all),
+                                                                     _fileParser(Parser(_filePath)),
+                                                                     _outputWriter(std::make_unique<OutputWriter>(
+                                                                         _filePath))
     {
     }
 
-    Game(std::string_view path, TypeOfFileToParse type): _filePath(path), _fileParser(Parser(_filePath, type))
+    Game(std::string_view path, TypeOfFileToParse type) : _filePath(path), _fileParser(Parser(_filePath, type))
     {
     }
 
 #ifdef ENABLE_DEBUG
-    Game() : _fileParser(Parser("")), _board(std::make_unique<Board>())
-    {
-    };
+    Game() : _fileParser(Parser("")), _board(std::make_unique<Board>()) {
+             };
 
-    void updateBoard(const board_data& newGrid) const noexcept
+    void updateBoard(const board_data &newGrid) const noexcept
     {
         _board->update(newGrid);
     }
@@ -46,18 +45,18 @@ public:
     [[nodiscard]] std::tuple<bool, bool, std::vector<Game::pair_of_indices>>
     applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const noexcept;
 
-    [[nodiscard]] const Board* get_board_const() const noexcept { return _board.get(); }
-    [[nodiscard]] Board* get_board() const noexcept { return _board.get(); }
+    [[nodiscard]] const Board *get_board_const() const noexcept { return _board.get(); }
+    [[nodiscard]] Board *get_board() const noexcept { return _board.get(); }
 
-    [[nodiscard]] constexpr size_t get_board_nbLine() const noexcept { return _board->get_lineLength(); }
-    [[nodiscard]] constexpr size_t get_board_nbColumn() const noexcept { return _board->get_colLength(); }
+    [[nodiscard]] size_t get_board_nbLine() const noexcept { return _board->get_lineLength(); }
+    [[nodiscard]] size_t get_board_nbColumn() const noexcept { return _board->get_colLength(); }
 
     [[nodiscard]] bool get_boardCellAliveAt(size_t index) const noexcept
     {
         return _board->isCellAliveAtIndex(index);
     }
 
-    [[nodiscard]] constexpr inline bool change_CellValue(size_t index, bool newValue) const noexcept
+    [[nodiscard]] inline bool change_CellValue(size_t index, bool newValue) const noexcept
     {
         return _board->changeCellValue(index, newValue);
     }
@@ -92,30 +91,47 @@ public:
         return false;
     }
 
-
-    [[nodiscard]] std::pair<std::vector<pattern>&, size_t> get_lexiconPatterns() noexcept
+    [[nodiscard]] std::pair<std::vector<pattern> &, size_t> get_lexiconPatterns() noexcept
     {
         return {_patterns.get_list_ref(), _patterns.get_numberOfPatternTotal()};
     }
 
-    [[nodiscard]] std::pair<const std::vector<pattern>&, size_t> get_lexiconPatterns_const() const noexcept
+    [[nodiscard]] std::pair<const std::vector<pattern> &, size_t> get_lexiconPatterns_const() const noexcept
     {
         return {_patterns.get_list_const_ref(), _patterns.get_numberOfPatternTotal()};
     }
 
     void changeBoard(int patternIndex, int gridIndex) noexcept
     {
-        _board->update(_patterns.getPatternForIndices(patternIndex, gridIndex));
+        boardPattern = {patternIndex, gridIndex};
+        resetBoard();
+    }
+
+    void resetBoard()
+    {
+        _board->update(_patterns.getPatternForIndices(boardPattern.patternIndex, boardPattern.gridIndex));
         _nbOfIterations = 0;
     }
 
+    void clearBoard() noexcept
+    {
+        _board->clear();
+        boardPattern = {};
+        _nbOfIterations = 0;
+    }
+
+    bool boardEmpty() const noexcept
+    {
+        return _board->get_grid_const().empty();
+    }
+
 private:
-    [[nodiscard]] static bool applyRule1(const Cell& currentCell,
-                                         const std::vector<std::reference_wrapper<Cell>>& neighbours,
+    [[nodiscard]] static bool applyRule1(const Cell &currentCell,
+                                         const std::vector<std::reference_wrapper<Cell>> &neighbours,
                                          unsigned int onGoingIteration) noexcept;
 
-    [[nodiscard]] static bool applyRule2(const Cell& currentCell,
-                                         const std::vector<std::reference_wrapper<Cell>>& neighbours,
+    [[nodiscard]] static bool applyRule2(const Cell &currentCell,
+                                         const std::vector<std::reference_wrapper<Cell>> &neighbours,
                                          unsigned int onGoingIteration) noexcept;
 
     // Rule 3 of the Game : All others live cells die in the next generation and all other dead cells stay dead
@@ -128,6 +144,7 @@ private:
     unsigned int _nbOfIterations{0};
     bool _outputAllIterations{false};
 
+    lexicon_pattern_index boardPattern{};
 
     Parser _fileParser{};
     PatternList _patterns{};

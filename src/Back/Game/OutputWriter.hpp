@@ -21,5 +21,5 @@ public:
 
 private:
     std::string_view _fileName{};
-    const std::string _extension{"res"};
+     static constexpr std::string_view _extension{"res"};
 };
