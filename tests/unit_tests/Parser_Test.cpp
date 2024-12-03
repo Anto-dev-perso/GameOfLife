@@ -66,7 +66,8 @@ TEST(UTParseInputFile, PulsarPattern)
                            UTILITIES::pulsarPatternG1);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pulsarG2.txt").parseBoardFile(),
                            UTILITIES::pulsarPatternG2);
-    UTILITIES::compareGrid(Parser("../tests/input_files/pulsarG3.txt").parseBoardFile(), UTILITIES::pulsarPatternG3);
+    UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pulsarG3.txt").parseBoardFile(),
+                           UTILITIES::pulsarPatternG3);
 }
 
 TEST(UTParseInputFile, PentaDecathlonPattern)
@@ -79,7 +80,7 @@ TEST(UTParseInputFile, PentaDecathlonPattern)
                            UTILITIES::pentaDecathlonPatternG3);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG4.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG4);
-    UTILITIES::compareGrid(Parser("../tests/input_files/pentaDecathlonG5.txt").parseBoardFile(),
+    UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG5.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG5);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG6.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG6);
@@ -89,7 +90,7 @@ TEST(UTParseInputFile, PentaDecathlonPattern)
                            UTILITIES::pentaDecathlonPatternG8);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG9.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG9);
-    UTILITIES::compareGrid(Parser("../tests/input_files/pentaDecathlonG10.txt").parseBoardFile(),
+    UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG10.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG10);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG11.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG11);
@@ -99,7 +100,7 @@ TEST(UTParseInputFile, PentaDecathlonPattern)
                            UTILITIES::pentaDecathlonPatternG13);
     UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG14.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG14);
-    UTILITIES::compareGrid(Parser("../tests/input_files/pentaDecathlonG15.txt").parseBoardFile(),
+    UTILITIES::compareGrid(Parser("../tests/input_files/oscillators/pentaDecathlonG15.txt").parseBoardFile(),
                            UTILITIES::pentaDecathlonPatternG15);
 }
 
@@ -117,6 +118,7 @@ TEST(UTRobustnessInput, BadPath)
 
 TEST(UTRobustnessInput, BadLengthOfLines)
 {
+    const auto test = Parser("../tests/input_files/badFile1.txt").parseBoardFile();
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile1.txt").parseBoardFile(), {});
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile2.txt").parseBoardFile(), {});
     UTILITIES::compareGrid(Parser("../tests/input_files/badFile3.txt").parseBoardFile(), {});

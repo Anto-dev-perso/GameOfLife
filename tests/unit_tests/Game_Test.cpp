@@ -85,7 +85,7 @@ TEST(UTApplyRulesOscillatorsPatterns, BeaconPattern)
 
 TEST(UTApplyRulesOscillatorsPatterns, PulsarPattern)
 {
-    game.updateBoard({UTILITIES::pulsarPatternG1, UTILITIES::pulsarColumnLength, UTILITIES::pulsarColumnLength});
+    game.updateBoard({UTILITIES::pulsarPatternG1, UTILITIES::pulsarLineLength, UTILITIES::pulsarColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
 
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::pulsarPatternG2);
@@ -100,9 +100,10 @@ TEST(UTApplyRulesOscillatorsPatterns, PulsarPattern)
 TEST(UTApplyRulesOscillatorsPatterns, PentaDecathlonPattern)
 {
     game.updateBoard({
-        UTILITIES::pentaDecathlonPatternG1, UTILITIES::pentaDecathlonColumnLength,
+        UTILITIES::pentaDecathlonPatternG1, UTILITIES::pentaDecathlonLineLength,
         UTILITIES::pentaDecathlonColumnLength
     });
+
 
     std::ignore = game.applyRulesToTheBoardForIteration(1);
 

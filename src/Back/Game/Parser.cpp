@@ -24,7 +24,6 @@ bool Parser::parseLineOfGrid(board_data& boardRead, std::string& line) const noe
             cerr << "ERROR in parsing of file " << _file << ", length of current line is " << line.size() <<
                 " but previous lines was " << boardRead.column <<
                 " .Be consistent with the length between all the lines !" << endl;
-            boardRead.grid.clear();
             return false;
         }
     }
@@ -69,10 +68,15 @@ board_data Parser::parseBoardFile() const noexcept
     else
     {
         string line;
-        bool readOk{true};
-        while (getline(file, line) && readOk)
+
+        while (getline(file, line))
         {
-            readOk = parseLineOfGrid(readGrid, line);
+            if (!parseLineOfGrid(readGrid, line))
+            {
+                readGrid = {};
+
+                return readGrid;
+            }
         }
         // Insert a line of empty cells at last
         readGrid.grid.insert(readGrid.grid.end(), readGrid.column, getDeadChar());

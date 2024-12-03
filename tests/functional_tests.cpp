@@ -34,7 +34,7 @@ TEST(FTStaticPatterns, BlockPattern)
     constexpr unsigned int iteration{5};
     const filesystem::path filePath{stillLifePath + "/block"};
     const string fileName{filePath.string()};
-    const string inputFile{UTILITIES::readFile(fileName + ".txt")};
+    const string inputFile{UTILITIES::readFile(fileName + "_res.txt")};
 
 
     const string cmd{exe + " --input " + fileName + ".txt --iterations " + to_string(iteration) + " --all"};
@@ -59,8 +59,8 @@ TEST(FTOscillatorPatterns, BlinkerPattern)
     const filesystem::path filePath{oscillatorsPath + "/blinkerG"};
     const string fileName{filePath.string()};
 
-    const string inputFileOdd{UTILITIES::readFile(fileName + "2.txt")};
-    const string inputFileEven{UTILITIES::readFile(fileName + "1.txt")};
+    const string inputFileOdd{UTILITIES::readFile(fileName + "2_res.txt")};
+    const string inputFileEven{UTILITIES::readFile(fileName + "1_res.txt")};
 
     const string cmd{exe + " --input " + fileName + "1.txt --iterations " + to_string(iteration) + " --all"};
 

@@ -78,7 +78,7 @@ Board::fillNeighbour(size_t line, size_t column) noexcept
             gridRef[(line + 1) * _colLength + column],
             gridRef[(line - 1) * _colLength + column],
             gridRef[(line + 1) * _colLength + (column - 1)],
-            gridRef[line + (column - 1)],
+            gridRef[line * _colLength + (column - 1)],
             gridRef[(line - 1) * _colLength + (column - 1)]
         };
     }

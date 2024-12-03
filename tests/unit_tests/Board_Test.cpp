@@ -13,7 +13,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     // First try at the center of the pattern
-    auto resultVec = boardToTest.fillNeighbour(2 * boardToTest.get_lineLength(), 2);
+    auto resultVec = boardToTest.fillNeighbour(2, 2);
     ASSERT_EQ(resultVec.size(), 8);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -33,7 +33,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(7).get().get_isPreviouslyAlive(), true);
 
     // Then try at the top left corner
-    resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 0);
+    resultVec = boardToTest.fillNeighbour(0, 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), true);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), true);
@@ -43,7 +43,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(1).get().get_isPreviouslyAlive(), false);
 
     // Try at the top right corner
-    resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 3);
+    resultVec = boardToTest.fillNeighbour(0, 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -53,7 +53,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom left corner
-    resultVec = boardToTest.fillNeighbour(3 * boardToTest.get_lineLength(), 0);
+    resultVec = boardToTest.fillNeighbour(3, 0);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -63,7 +63,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), false);
 
     // Try at the bottom right corner
-    resultVec = boardToTest.fillNeighbour(3 * boardToTest.get_lineLength(), 3);
+    resultVec = boardToTest.fillNeighbour(3, 3);
     ASSERT_EQ(resultVec.size(), 3);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -73,7 +73,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(2).get().get_isPreviouslyAlive(), true);
 
     // Try at one of the left border
-    resultVec = boardToTest.fillNeighbour(2 * boardToTest.get_lineLength(), 0);
+    resultVec = boardToTest.fillNeighbour(2, 0);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -87,7 +87,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the right border
-    resultVec = boardToTest.fillNeighbour(1 * boardToTest.get_lineLength(), 3);
+    resultVec = boardToTest.fillNeighbour(1, 3);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -101,7 +101,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the top border
-    resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 2);
+    resultVec = boardToTest.fillNeighbour(0, 2);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -115,7 +115,7 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 
     // Try at one of the bottom border
-    resultVec = boardToTest.fillNeighbour(3 * boardToTest.get_lineLength(), 1);
+    resultVec = boardToTest.fillNeighbour(3, 1);
     ASSERT_EQ(resultVec.size(), 5);
     EXPECT_EQ(resultVec.at(0).get().get_isCurrentlyAlive(), false);
     EXPECT_EQ(resultVec.at(0).get().get_isPreviouslyAlive(), false);
@@ -135,27 +135,27 @@ TEST(UTFillNeighbour, RobustnessTest)
 {
     // grid empty
     boardToTest.update({{}, 0, 0});
-    auto resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 0);
+    auto resultVec = boardToTest.fillNeighbour(0, 0);
     ASSERT_EQ(resultVec.size(), 0);
 
     boardToTest.update({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
 
     // line outside the possible indices
-    resultVec = boardToTest.fillNeighbour(9 * boardToTest.get_lineLength(), 0);
+    resultVec = boardToTest.fillNeighbour(9, 0);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(4 * boardToTest.get_lineLength(), 0);
+    resultVec = boardToTest.fillNeighbour(4, 0);
     ASSERT_EQ(resultVec.size(), 0);
 
     // column outside the possible indices
-    resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 9);
+    resultVec = boardToTest.fillNeighbour(0, 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(0 * boardToTest.get_lineLength(), 4);
+    resultVec = boardToTest.fillNeighbour(0, 4);
     ASSERT_EQ(resultVec.size(), 0);
 
     // line and column outside the possible indices
-    resultVec = boardToTest.fillNeighbour(9 * boardToTest.get_lineLength(), 9);
+    resultVec = boardToTest.fillNeighbour(9, 9);
     ASSERT_EQ(resultVec.size(), 0);
-    resultVec = boardToTest.fillNeighbour(4 * boardToTest.get_lineLength(), 4);
+    resultVec = boardToTest.fillNeighbour(4, 4);
     ASSERT_EQ(resultVec.size(), 0);
 }
 
