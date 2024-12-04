@@ -144,8 +144,8 @@ jobs:
       - name: Run valgrind with memcheck
         run: |
           mkdir valgrind-report
-          valgrind --tool=memcheck --xml=yes --xml-file=valgrind-report/heap_analyzis.xml -v --leak-check=full --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
-          valgrind --tool=memcheck  -v --leak-check=full --log-file=valgrind-report/heap_analyzis.valg --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
+          valgrind --tool=memcheck --xml=yes --xml-file=valgrind-report/heap_analyzis.xml -v --leak-check=full --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/Back/input_files/spaceship/rPentomino.txt --all
+          valgrind --tool=memcheck  -v --leak-check=full --log-file=valgrind-report/heap_analyzis.valg --trace-children=yes --show-reachable=yes --trace-children=yes --track-origins=yes --time-stamp=yes  ./build-debug/GameOfLife --iterations 100 --input tests/Back/input_files/spaceship/rPentomino.txt --all
 
       - name: Generate HTML report
         run: |
@@ -213,15 +213,15 @@ jobs:
 
       - name: HEAP Profiling
         run: |
-          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/bigStable.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/Back/input_files/bigStable.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_bigStable.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
           rm heap_profiling.prof*
-          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/spaceship/rPentomino.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/Back/input_files/spaceship/rPentomino.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_pentomino.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
           rm heap_profiling.prof*
-          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/input_files/spaceship/gosperGliderGun.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 100 --input tests/Back/input_files/spaceship/gosperGliderGun.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife heap_profiling.prof* > heap_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife heap_profiling.prof*
 
@@ -269,15 +269,15 @@ jobs:
       - name: CPU Profiling
         run: |
           CPUPROFILE_FREQUENCY=100000 
-          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/bigStable.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/Back/input_files/bigStable.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_bigStable.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
           rm cpu_profiling.prof
-          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/rPentomino.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/Back/input_files/spaceship/rPentomino.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_pentomino.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
           rm cpu_profiling.prof
-          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/input_files/spaceship/gosperGliderGun.txt --all
+          ./build-relwithdebinfo/GameOfLife --iterations 1000 --input tests/Back/input_files/spaceship/gosperGliderGun.txt --all
           google-pprof --pdf ./build-relwithdebinfo/GameOfLife cpu_profiling.prof > cpu_profiling_gosper.pdf
           google-pprof --text ./build-relwithdebinfo/GameOfLife cpu_profiling.prof
 

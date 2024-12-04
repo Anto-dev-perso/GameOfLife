@@ -16,8 +16,8 @@ bool Game::init() noexcept
     {
         _patterns = std::get<PatternList>(varFileParse);
 
-        boardPattern = _patterns.findIndexForPatterNamed("glider");
-        readBoard = _patterns.getPatternForIndices(boardPattern.patternIndex, boardPattern.gridIndex);
+        _boardPattern = _patterns.findIndexForPatternNamed("glider");
+        readBoard = _patterns.getPatternForIndices(_boardPattern.patternIndex, _boardPattern.gridIndex);
     }
 
     _board = make_unique<Board>(std::move(readBoard));

@@ -96,12 +96,18 @@ public:
     [[nodiscard]] bool isCellAliveAtIndex(size_t index) const
     {
         if (index >= _grid.size())
-            return false;
+        {
+            throw std::out_of_range("Cell index out of bounds");
+        }
         return _grid.at(index).get_isCurrentlyAlive();
     };
 
     [[nodiscard]] bool changeCellValue(size_t index, bool newValue)
     {
+        if (index >= _grid.size())
+        {
+            throw std::out_of_range("Cell index out of bounds");
+        }
         if (_grid.at(index).get_isCurrentlyAlive() == newValue)
         {
             return false;

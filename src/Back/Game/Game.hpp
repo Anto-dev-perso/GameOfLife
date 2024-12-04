@@ -7,7 +7,6 @@
 
 class Game
 {
-
 public:
     using line_column = std::pair<size_t, size_t>;
     using pair_of_indices = std::pair<line_column, line_column>;
@@ -27,12 +26,27 @@ public:
     }
 
 #ifdef ENABLE_DEBUG
-    Game() : _fileParser(Parser("")), _board(std::make_unique<Board>()) {
-             };
-
-    void updateBoard(const board_data &newGrid) const noexcept
+    Game() : _fileParser(Parser("")), _board(std::make_unique<Board>())
     {
-        _board->update(newGrid);
+    };
+
+    void updateBoard(board_data newGrid) const noexcept
+    {
+        _board->update(std::move(newGrid));
+    }
+
+    void updateBoard(const PatternList& patterns, lexicon_pattern_index indexOfPattern) noexcept
+    {
+        _patterns = patterns;
+        _boardPattern = indexOfPattern;
+        _board->update(
+            _patterns.get_list_const_ref().at(indexOfPattern.patternIndex)._descriptionAndPattern.at(
+                indexOfPattern.gridIndex)._gridPattern);
+    }
+
+    void set_patternsList(const PatternList& newList) noexcept
+    {
+        _patterns = newList;
     }
 
     [[nodiscard]] inline auto retrieveBoardDataForTest() const noexcept { return _board->retrieveDataForTest(); }
@@ -45,8 +59,8 @@ public:
     [[nodiscard]] std::tuple<bool, bool, std::vector<Game::pair_of_indices>>
     applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const noexcept;
 
-    [[nodiscard]] const Board *get_board_const() const noexcept { return _board.get(); }
-    [[nodiscard]] Board *get_board() const noexcept { return _board.get(); }
+    [[nodiscard]] const Board* get_board_const() const noexcept { return _board.get(); }
+    [[nodiscard]] Board* get_board() const noexcept { return _board.get(); }
 
     [[nodiscard]] size_t get_board_nbLine() const noexcept { return _board->get_lineLength(); }
     [[nodiscard]] size_t get_board_nbColumn() const noexcept { return _board->get_colLength(); }
@@ -61,9 +75,14 @@ public:
         return _board->changeCellValue(index, newValue);
     }
 
-    [[nodiscard]] constexpr inline unsigned int get_nbOfIterations() const noexcept
+    [[nodiscard]] constexpr unsigned int get_nbOfIterations() const noexcept
     {
         return _nbOfIterations;
+    }
+
+    void set_nbOfIterations(unsigned int newIterations) noexcept
+    {
+        _nbOfIterations = newIterations;
     }
 
     constexpr inline void increment_nbOfIterations() noexcept
@@ -91,47 +110,51 @@ public:
         return false;
     }
 
-    [[nodiscard]] std::pair<std::vector<pattern> &, size_t> get_lexiconPatterns() noexcept
+    [[nodiscard]] std::pair<std::vector<pattern>&, size_t> get_lexiconPatterns() noexcept
     {
         return {_patterns.get_list_ref(), _patterns.get_numberOfPatternTotal()};
     }
 
-    [[nodiscard]] std::pair<const std::vector<pattern> &, size_t> get_lexiconPatterns_const() const noexcept
+    [[nodiscard]] std::pair<const std::vector<pattern>&, size_t> get_lexiconPatterns_const() const noexcept
     {
         return {_patterns.get_list_const_ref(), _patterns.get_numberOfPatternTotal()};
     }
 
     void changeBoard(int patternIndex, int gridIndex) noexcept
     {
-        boardPattern = {patternIndex, gridIndex};
+        _boardPattern = {patternIndex, gridIndex};
         resetBoard();
     }
 
     void resetBoard()
     {
-        _board->update(_patterns.getPatternForIndices(boardPattern.patternIndex, boardPattern.gridIndex));
+        _board->update(_patterns.getPatternForIndices(_boardPattern.patternIndex, _boardPattern.gridIndex));
         _nbOfIterations = 0;
     }
 
     void clearBoard() noexcept
     {
         _board->clear();
-        boardPattern = {};
+        _boardPattern = {};
         _nbOfIterations = 0;
     }
+
+    [[nodiscard]] lexicon_pattern_index get_boardPattern() const noexcept { return _boardPattern; }
+
 
     bool boardEmpty() const noexcept
     {
         return _board->get_grid_const().empty();
     }
 
-private:
-    [[nodiscard]] static bool applyRule1(const Cell &currentCell,
-                                         const std::vector<std::reference_wrapper<Cell>> &neighbours,
+private
+:
+    [[nodiscard]] static bool applyRule1(const Cell& currentCell,
+                                         const std::vector<std::reference_wrapper<Cell>>& neighbours,
                                          unsigned int onGoingIteration) noexcept;
 
-    [[nodiscard]] static bool applyRule2(const Cell &currentCell,
-                                         const std::vector<std::reference_wrapper<Cell>> &neighbours,
+    [[nodiscard]] static bool applyRule2(const Cell& currentCell,
+                                         const std::vector<std::reference_wrapper<Cell>>& neighbours,
                                          unsigned int onGoingIteration) noexcept;
 
     // Rule 3 of the Game : All others live cells die in the next generation and all other dead cells stay dead
@@ -144,7 +167,7 @@ private:
     unsigned int _nbOfIterations{0};
     bool _outputAllIterations{false};
 
-    lexicon_pattern_index boardPattern{};
+    lexicon_pattern_index _boardPattern{};
 
     Parser _fileParser{};
     PatternList _patterns{};

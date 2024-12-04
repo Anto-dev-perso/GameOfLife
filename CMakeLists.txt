@@ -90,14 +90,16 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
 
     add_executable(GameOfLifeUnitTests
-            tests/unit_tests.cpp
-            tests/tests_utilities.hpp
-            tests/tests_utilities.cpp
-            tests/unit_tests/InputChecker_Test.cpp
-            tests/unit_tests/OutputWriter_Test.cpp
-            tests/unit_tests/Game_Test.cpp
-            tests/unit_tests/Board_Test.cpp
-            tests/unit_tests/Parser_Test.cpp
+            tests/Back/unit_tests.cpp
+            tests/Back/tests_utilities.hpp
+            tests/Back/tests_utilities.cpp
+            tests/Back/unit_tests/InputChecker_Test.cpp
+            tests/Back/unit_tests/OutputWriter_Test.cpp
+            tests/Back/unit_tests/Game_Test.cpp
+            tests/Back/unit_tests/Board_Test.cpp
+            tests/Back/unit_tests/Parser_Test.cpp
+            tests/Back/unit_tests/AllowedChar_Test.cpp
+            tests/Back/unit_tests/PatternList_Test.cpp
     )
 
     if (MSVC)
@@ -113,9 +115,9 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     add_test(NAME GameOfLifeUnitTests COMMAND GameOfLifeUnitTests)
 
     add_executable(GameOfLifeFunctionalTests
-            tests/functional_tests.cpp
-            tests/tests_utilities.hpp
-            tests/tests_utilities.cpp
+            tests/Back/functional_tests.cpp
+            tests/Back/tests_utilities.hpp
+            tests/Back/tests_utilities.cpp
     )
 
     if (MSVC)
