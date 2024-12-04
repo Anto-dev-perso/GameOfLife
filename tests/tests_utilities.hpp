@@ -56,7 +56,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
     const inline size_t tubColumnLength{5};
-    const inline size_t tubLength{5};
+    const inline size_t tubLineLength{5};
 
     /****************************************  Oscillators patterns ***************************************/
 
@@ -107,7 +107,7 @@ namespace UTILITIES
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'}
     };
     const inline size_t beaconColumnLength{6};
-    const inline size_t beaconLinenLength{6};
+    const inline size_t beaconLineLength{6};
 
     const inline grid_of_cells beaconPatternG2{
         {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},

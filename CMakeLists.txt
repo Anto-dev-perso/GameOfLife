@@ -84,6 +84,8 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     enable_testing()
     add_compile_definitions(ENABLE_DEBUG)
 
+    include(${CMAKE_BINARY_DIR}/_deps/conan_toolchain.cmake)
+
     find_package(GTest REQUIRED CONFIG)
 
 
@@ -130,11 +132,17 @@ endif ()
 
 if (ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))
     message(STATUS "Enable Address Sanitizer")
-    set(CMAKE_CXX_FLAGS "-fsanitize=address,undefined,leak,bounds -fsanitize-address-use-after-scope -fno-omit-frame-pointer")
+    set(SANITIZE_FLAGS "-fsanitize-address-use-after-scope -fno-omit-frame-pointer -fsanitize=address,undefined,bounds")
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU") #GCC
+        set(SANITIZE_FLAGS "${SANITIZE_FLAGS},leak")
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT CMAKE_SYSTEM_NAME MATCHES "Darwin")# Clang, but not Apple Clang
+        set(SANITIZE_FLAGS "${SANITIZE_FLAGS},leak")
+    endif ()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZE_FLAGS}")
 endif ()
 
 
-find_package(Qt6 6.2.4 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
 
 
 qt_add_executable(appQtGameOfLife

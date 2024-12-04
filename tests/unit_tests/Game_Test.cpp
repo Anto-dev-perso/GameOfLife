@@ -11,7 +11,7 @@ static Game game;
 /****************************************  Tests Suite for applyRulesToTheGame with some 'still lifes' structures ***************************************/
 TEST(UTApplyRulesStillLifePatterns, BlockPattern)
 {
-    game.updateBoard({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
+    game.updateBoard({UTILITIES::blockPattern, UTILITIES::blockLineLength, UTILITIES::blockColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::blockPattern);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -20,16 +20,20 @@ TEST(UTApplyRulesStillLifePatterns, BlockPattern)
 
 TEST(UTApplyRulesStillLifePatterns, BeeHivePattern)
 {
-    game.updateBoard({UTILITIES::beeHivePattern, UTILITIES::beeHiveColumnLength, UTILITIES::beeHiveColumnLength});
+    game.updateBoard({UTILITIES::beeHivePattern, UTILITIES::beeHiveLineLength, UTILITIES::beeHiveColumnLength});
+    game.get_board_const()->dumpGrid();
+    std::cout << "========================================" << std::endl;
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::beeHivePattern);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
+    game.get_board_const()->dumpGrid();
+    std::cout << "========================================" << std::endl;
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::beeHivePattern);
 }
 
 TEST(UTApplyRulesStillLifePatterns, LoafPattern)
 {
-    game.updateBoard({UTILITIES::loafPattern, UTILITIES::loafColumnLength, UTILITIES::loafColumnLength});
+    game.updateBoard({UTILITIES::loafPattern, UTILITIES::loafLineLength, UTILITIES::loafColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::loafPattern);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -38,7 +42,7 @@ TEST(UTApplyRulesStillLifePatterns, LoafPattern)
 
 TEST(UTApplyRulesStillLifePatterns, BoatPattern)
 {
-    game.updateBoard({UTILITIES::boatPattern, UTILITIES::boatColumnLength, UTILITIES::boatColumnLength});
+    game.updateBoard({UTILITIES::boatPattern, UTILITIES::boatLineLength, UTILITIES::boatColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::boatPattern);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -47,7 +51,7 @@ TEST(UTApplyRulesStillLifePatterns, BoatPattern)
 
 TEST(UTApplyRulesStillLifePatterns, tubPattern)
 {
-    game.updateBoard({UTILITIES::tubPattern, UTILITIES::tubColumnLength, UTILITIES::tubColumnLength});
+    game.updateBoard({UTILITIES::tubPattern, UTILITIES::tubLineLength, UTILITIES::tubColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::tubPattern);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -57,7 +61,7 @@ TEST(UTApplyRulesStillLifePatterns, tubPattern)
 /****************************************  Tests Suite for applyRulesToTheGame with some 'oscillators' structures ***************************************/
 TEST(UTApplyRulesOscillatorsPatterns, BlinkerPattern)
 {
-    game.updateBoard({UTILITIES::blinkerPatternG1, UTILITIES::blinkerColumnLength, UTILITIES::blinkerColumnLength});
+    game.updateBoard({UTILITIES::blinkerPatternG1, UTILITIES::blinkerLineLength, UTILITIES::blinkerColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::blinkerPatternG2);
 
@@ -67,7 +71,7 @@ TEST(UTApplyRulesOscillatorsPatterns, BlinkerPattern)
 
 TEST(UTApplyRulesOscillatorsPatterns, ToadPattern)
 {
-    game.updateBoard({UTILITIES::toadPatternG2, UTILITIES::toadColumnLength, UTILITIES::toadColumnLength});
+    game.updateBoard({UTILITIES::toadPatternG2, UTILITIES::toadLineLength, UTILITIES::toadColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::toadPatternG1);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -76,7 +80,7 @@ TEST(UTApplyRulesOscillatorsPatterns, ToadPattern)
 
 TEST(UTApplyRulesOscillatorsPatterns, BeaconPattern)
 {
-    game.updateBoard({UTILITIES::beaconPatternG1, UTILITIES::beaconColumnLength, UTILITIES::beaconColumnLength});
+    game.updateBoard({UTILITIES::beaconPatternG1, UTILITIES::beaconLineLength, UTILITIES::beaconColumnLength});
     std::ignore = game.applyRulesToTheBoardForIteration(1);
     UTILITIES::compareGrid(game.retrieveBoardDataForTest(), UTILITIES::beaconPatternG2);
     std::ignore = game.applyRulesToTheBoardForIteration(2);
@@ -173,7 +177,7 @@ TEST(UTApplyRulesOscillatorsPatterns, PentaDecathlonPattern)
 TEST(UTApplyRulesSpaceshipPatterns, GosperGliderGunPattern)
 {
     game.updateBoard({
-        UTILITIES::gosperGliderGunPattern, UTILITIES::gosperGliderGunColumnLength,
+        UTILITIES::gosperGliderGunPattern, UTILITIES::gosperGliderGunLineLength,
         UTILITIES::gosperGliderGunColumnLength
     });
     std::ignore = game.applyRulesToTheBoardForIteration(1);
@@ -193,7 +197,7 @@ TEST(UTApplyRulesRobustness, RobustnessTests)
     }
     {
         // No iteration
-        emptyGame.updateBoard({UTILITIES::blockPattern, UTILITIES::blockColumnLength, UTILITIES::blockColumnLength});
+        emptyGame.updateBoard({UTILITIES::blockPattern, UTILITIES::blockLineLength, UTILITIES::blockColumnLength});
         std::ignore = emptyGame.applyRulesToTheBoardForIteration(0);
 
         UTILITIES::compareGrid(emptyGame.retrieveBoardDataForTest(), UTILITIES::blockPattern);

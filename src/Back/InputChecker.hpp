@@ -4,7 +4,7 @@
 
 #include <optional>
 #include <vector>
-#include <string_view>
+#include <string>
 
 class InputChecker
 {

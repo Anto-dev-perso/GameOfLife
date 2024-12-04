@@ -21,9 +21,9 @@ class MainGridModel final : public QAbstractListModel
     Q_PROPERTY(int _UIColumnCount READ get_UIColumnCount NOTIFY _dimensionChanged)
 
 public:
-    explicit MainGridModel(std::shared_ptr<Game> backend, QObject *parent = nullptr);
+    explicit MainGridModel(std::shared_ptr<Game> backend, QObject* parent = nullptr);
 
-    [[nodiscard]] std::optional<QModelIndex> calculateUIIndexFromBackId(const Game::line_column &pair) const noexcept;
+    [[nodiscard]] std::optional<QModelIndex> calculateUIIndexFromBackId(const Game::line_column& pair) const noexcept;
 
     [[nodiscard]] int get_UILineCount() const noexcept
     {
@@ -38,14 +38,14 @@ public:
     [[nodiscard]] double get_zoomValue() const noexcept { return _zoomValue; }
     [[nodiscard]] double get_scaleFactor() const noexcept { return _scaleFactor; }
 
-    [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override
+    [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const override
     {
         Q_UNUSED(parent)
         return _UILineCount * _UIColumnCount;
     }
 
-    [[nodiscard]] QVariant data(const QModelIndex &index, const int role = Qt::DisplayRole) const override;
-    [[nodiscard]] bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
+    [[nodiscard]] QVariant data(const QModelIndex& index, const int role = Qt::DisplayRole) const override;
+    [[nodiscard]] bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
 
     void updateUIGrid() noexcept;
 
@@ -55,8 +55,8 @@ public:
                                                                double x2 = 100) noexcept
     {
         const double m{(y2 - y1) / (x2 - x1)}; // Slope
-        const double b{y1 - m * x1};           // Intercept
-        return m * x + b;                      // Linear value
+        const double b{y1 - m * x1}; // Intercept
+        return m * x + b; // Linear value
     }
 
     void changeMainGridWithPatternIndices(int patternIndex, int gridIndex);
@@ -81,13 +81,12 @@ public slots:
         endResetModel();
     }
 
-    void updateData(const Game::line_column &firstRow, const Game::line_column &lastRow)
+    void updateData(const Game::line_column& firstRow, const Game::line_column& lastRow)
     {
         const auto optFrist{calculateUIIndexFromBackId(firstRow)};
         const auto optLast{calculateUIIndexFromBackId(lastRow)};
         if (optFrist.has_value() && optLast.has_value())
         {
-
             dataChanged(optFrist.value(), optLast.value());
         }
     }
@@ -119,15 +118,15 @@ private:
         emit _dimensionChanged();
     }
 
-    [[nodiscard]] std::optional<int> calculateIndexFromUIRow(const QModelIndex &index) const noexcept;
+    [[nodiscard]] std::optional<int> calculateIndexFromUIRow(const QModelIndex& index) const noexcept;
 
-    [[nodiscard]] static constexpr int calculateUIColumns(double sliderValue) noexcept
+    [[nodiscard]] static int calculateUIColumns(double sliderValue) noexcept
     {
         return static_cast<int>(std::round(
             calculateLinearValue(sliderValue, NB_UI_COLUMNS_AT_MAX, NB_UI_COLUMNS_AT_MIN)));
     }
 
-    [[nodiscard]] static constexpr int calculateUILines(double sliderValue) noexcept
+    [[nodiscard]] static int calculateUILines(double sliderValue) noexcept
     {
         return static_cast<int>(std::round(
             calculateLinearValue(sliderValue, NB_UI_LINES_AT_MAX, NB_UI_LINES_AT_MIN)));

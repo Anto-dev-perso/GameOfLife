@@ -80,10 +80,16 @@ Set-Location -Path $BUILD_DIR
 if ($BUILD_TYPE -eq "Debug")
 {
     Invoke-Expression "conan install .. --output-folder=_deps --build=missing -s build_type=$BUILD_TYPE -s compiler.cppstd=17"
+    # Run CMake to configure the project (with Start-Process otherwise BUILD_TYPE value is not used)
+    Invoke-Expression "cmake -DCMAKE_TOOLCHAIN_FILE='_deps/conan_toolchain.cmake' -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev .."
+}
+else
+{
+    # Run CMake to configure the project (with Start-Process otherwise BUILD_TYPE value is not used)
+    Invoke-Expression "cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev .."
+
 }
 
-# Run CMake to configure the project (with Start-Process otherwise BUILD_TYPE value is not used)
-Invoke-Expression "cmake -DCMAKE_TOOLCHAIN_FILE=_deps/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=$BUILD_TYPE -Wno-dev .."
 
 # Example with CMake (build step)
 Invoke-Expression "cmake --build . --config $BUILD_TYPE"
