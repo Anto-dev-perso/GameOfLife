@@ -12,7 +12,8 @@ Button {
     property int imgSize: textSize
     property int imgWidth: imgSize
     property int imgHeight: imgSize
-
+    property int paddingLeft: 0
+    property int paddingTop: 0
     property color defaultColor: root.buttonColor
     property color pressedColor: Qt.darker(defaultColor, 1.1)
 
@@ -40,32 +41,33 @@ Button {
         }
     ]
 
-    implicitWidth: contentItem.implicitWidth
-    implicitHeight: contentItem.implicitHeight
+    implicitWidth: (contentItem.implicitWidth + contentItem.spacing + contentItem.rightPadding + contentItem.leftPadding)
+    implicitHeight: (contentItem.implicitHeight + contentItem.spacing + contentItem.bottomPadding + contentItem.topPadding)
 
     contentItem: Row {
         id: buttonContent
         spacing: 10
 
-        bottomPadding: 15
-        topPadding: 10
-        rightPadding: 30
-        leftPadding: 30
+        bottomPadding: 7
+        topPadding: actionButton.paddingTop
+        rightPadding: 12
+        leftPadding: actionButton.paddingLeft
 
         anchors {
             centerIn: parent
             verticalCenterOffset: actionButton.pressed ? 1 : 0
         }
 
-        Image {
-            source: actionButton.imgSource
-            width: actionButton.imgWidth
-            height: actionButton.imgHeight
-            visible: imgSource !== ""
-            smooth: true
+
+        CustomImage {
+            id: buttonImage
+            imgSource: actionButton.imgSource
+            dividerRatio: 25
+
         }
 
         Text {
+            id: buttonText
             text: actionButton.buttonText
             font {
                 pixelSize: actionButton.textSize

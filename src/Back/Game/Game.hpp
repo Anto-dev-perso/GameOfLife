@@ -8,8 +8,13 @@
 class Game
 {
 public:
-    using line_column = std::pair<size_t, size_t>;
-    using pair_of_indices = std::pair<line_column, line_column>;
+    struct line_column
+    {
+        size_t line;
+        size_t column;
+    };
+
+    using indices_with_value = std::pair<line_column, bool>;
     static constexpr line_column EMTPY_PAIR_OF_INDICES{0, 0};
 
     Game(std::string_view path, unsigned int iterations, bool all) : _filePath(path),
@@ -56,11 +61,12 @@ public:
 
     [[nodiscard]] bool process() const noexcept;
 
-    [[nodiscard]] std::tuple<bool, bool, std::vector<Game::pair_of_indices>>
+    [[nodiscard]] std::tuple<bool, bool, std::vector<Game::indices_with_value>>
     applyRulesToTheBoardForIteration(unsigned int onGoingIteration) const noexcept;
 
     [[nodiscard]] const Board* get_board_const() const noexcept { return _board.get(); }
     [[nodiscard]] Board* get_board() const noexcept { return _board.get(); }
+    [[nodiscard]] board_data get_board_data() const noexcept { return _board->get_board_data(); }
 
     [[nodiscard]] size_t get_board_nbLine() const noexcept { return _board->get_lineLength(); }
     [[nodiscard]] size_t get_board_nbColumn() const noexcept { return _board->get_colLength(); }

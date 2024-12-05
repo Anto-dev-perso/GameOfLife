@@ -2,13 +2,19 @@
 #include <QTimer>
 #include <QFile>
 
+#include "MainGridImageProvider.hpp"
+
+
 static const QString LEXICON_RESSOURCE_PATH{":/QtGameOfLife/src/Front/assets/lexicon.txt"};
 
-UIBridge::UIBridge(QObject *parent)
+UIBridge::UIBridge(QObject* parent)
     : QObject(parent)
-
 {
-    QFile ressourceFile(LEXICON_RESSOURCE_PATH);
+}
+
+void UIBridge::initialize(QQmlEngine* engine)
+{
+    QFile ressourceFile{LEXICON_RESSOURCE_PATH};
     if (!ressourceFile.open(QIODevice::ReadOnly))
     {
         throw std::ios_base::failure("Failed to open resource file:" + LEXICON_RESSOURCE_PATH.toStdString());
@@ -24,40 +30,51 @@ UIBridge::UIBridge(QObject *parent)
     ressourceFile.close();
     tmpFile.close();
 
-    _backend = std::make_shared<Game>(LEXICON_TMP_FILE_PATH.toStdString(), TypeOfFileToParse::LEXICON);
-    if (!_backend->init())
+    auto back = std::make_shared<Game>(LEXICON_TMP_FILE_PATH.toStdString(), TypeOfFileToParse::LEXICON);
+    if (!back->init())
     {
         throw std::ios_base::failure("Failed to initialize backend");
     }
 
     QFile::remove(LEXICON_TMP_FILE_PATH);
 
-    _threadProxy = std::make_unique<ThreadProxy>(_backend, calculateWaitTimeFromSlider());
+    _threadProxy = std::make_unique<ThreadProxy>(back, calculateWaitTimeFromSlider());
 
-    const auto &[patternsStruct, size] = _backend->get_lexiconPatterns();
+    const auto& [patternsStruct, size] = back->get_lexiconPatterns();
     _lexiconNameModel = std::make_unique<LexiconNameModel>(patternsStruct, size);
-    _mainGridModel = std::make_unique<MainGridModel>(_backend);
+
+    if (engine)
+    {
+        _mainGridImageProvider = new MainGridImageProvider(back);
+        engine->addImageProvider(IMAGE_PROVIDER_NAME, _mainGridImageProvider);
+    }
 
     std::ignore = connect(_threadProxy.get(), &ThreadProxy::iterationNumberFinishedEditing, this,
                           &UIBridge::_iterationNumberChanged);
-    std::ignore = connect(_threadProxy.get(), &ThreadProxy::requestModelReset, _mainGridModel.get(),
-                          &MainGridModel::resetModel);
-    std::ignore = connect(_threadProxy.get(), &ThreadProxy::requestDataChange, _mainGridModel.get(),
-                          &MainGridModel::updateData);
+    std::ignore = connect(_threadProxy.get(), &ThreadProxy::requestModelReset, this,
+                          &UIBridge::reDrawEntirely);
+    std::ignore = connect(_threadProxy.get(), &ThreadProxy::requestDataChange, this,
+                          &UIBridge::updateCells);
 }
 
 void UIBridge::changePatternBackEnd(int patternIndex, int gridIndex) noexcept
 {
     // TODO data race here
-    _mainGridModel->changeMainGridWithPatternIndices(patternIndex, gridIndex);
+    _mainGridImageProvider->changeMainGridWithPatternIndices(patternIndex, gridIndex);
+    emit _iterationNumberChanged();
+    emit _imageUpdated();
 }
 
 void UIBridge::resetPattern() noexcept
 {
-    _mainGridModel->resetMainGrid();
+    _mainGridImageProvider->resetMainGrid();
+    emit _iterationNumberChanged();
+    emit _imageUpdated();
 }
+
 void UIBridge::clearPattern() noexcept
 {
     // TODO data race here
-    _mainGridModel->clearMainGrid();
+    _mainGridImageProvider->clearMainGrid();
+    emit _imageUpdated();
 }

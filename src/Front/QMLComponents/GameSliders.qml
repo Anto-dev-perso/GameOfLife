@@ -3,8 +3,6 @@ import QtQuick.Controls
 
 Rectangle {
     id: gameSliders
-
-
     anchors {
         bottom: parent.bottom
         right: parent.right
@@ -28,8 +26,9 @@ Rectangle {
         padding: 10
 
         CustomImage {
-            imgSource: "../assets/svg/speed-gauge.svg"
+            imgSource: "../assets/svg/buttons/speed-gauge.svg"
             id: speedGaugeImg
+            dividerRatio: 25
         }
         CustomSlider {
             id: speedGaugeSlider
@@ -37,17 +36,19 @@ Rectangle {
             onValueChanged: uiBridge.set_gameSpeed(value)
         }
         CustomImage {
-            imgSource: "../assets/svg/grid.svg"
             id: gridImg
+            imgSource: "../assets/svg/buttons/grid.svg"
+            dividerRatio: 25
         }
         CustomSlider {
             id: gridSlider
-            value: uiBridge._mainGridModel._zoomValue
-            onValueChanged: uiBridge._mainGridModel.set_zoomValue(value)
+            value: uiBridge._zoomValue
+            onValueChanged: uiBridge.set_zoomValue(value)
         }
         CustomImage {
-            imgSource: "../assets/svg/next_blue.svg"
             id: nextImg
+            imgSource: "../assets/svg/buttons/next_blue.svg"
+            dividerRatio: 25
         }
         Text {
             text: uiBridge._iterationNumber

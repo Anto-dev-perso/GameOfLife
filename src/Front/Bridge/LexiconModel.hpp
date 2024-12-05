@@ -19,9 +19,10 @@ public:
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
 public slots:
-     [[nodiscard]] QVariant getData(int parentIndex, int gridIndex,   int elemIndex, const int role = Qt::DisplayRole) const noexcept;
-     [[nodiscard]] int getLineCountForIndex(int patternIndex, int gridIndex) const noexcept;
-     [[nodiscard]] int getColumnCountForIndex(int patternIndex, int gridIndex) const noexcept;
+    [[nodiscard]] QVariant getData(int parentIndex, int gridIndex, int elemIndex,
+                                   const int role = Qt::DisplayRole) const noexcept;
+    [[nodiscard]] int getLineCountForIndex(int patternIndex, int gridIndex) const noexcept;
+    [[nodiscard]] int getColumnCountForIndex(int patternIndex, int gridIndex) const noexcept;
     [[nodiscard]] int getSizeForIndex(int patternIndex, int gridIndex) const noexcept;
 
 private:
@@ -52,7 +53,6 @@ public:
     [[nodiscard]] QVariant data(const QModelIndex& index, const int role = Qt::DisplayRole) const override;
 
 
-
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
     [[nodiscard]] LexiconGridModel* get_gridModel() const noexcept
@@ -60,12 +60,19 @@ public:
         return _gridModel.get();
     }
 
+    [[nodiscard]] bool checkIfGridIsntEmpty(int patternId, int gridId) const noexcept
+    {
+        if (!parentIndexInBound(patternId) || !elementIndexInBound(patternId, gridId))
+        {
+            return false;
+        }
+        return _gridModel->getSizeForIndex(patternId, gridId) > 0;
+    }
+
 public slots:
     [[nodiscard]] int getSizeForIndex(int parentIndex) const noexcept;
     [[nodiscard]] QVariant getData(int parentIndex, int elemIndex,
-                                               const int role = Qt::DisplayRole) const noexcept;
-
-
+                                   const int role = Qt::DisplayRole) const noexcept;
 
 private:
     enum Roles

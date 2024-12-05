@@ -11,10 +11,16 @@ class ThreadProxy final : public QObject
 public:
     explicit ThreadProxy(std::shared_ptr<Game> backend, std::chrono::microseconds timeToWait,
                          QObject* parent = nullptr);
-    ~ThreadProxy();
+    ~ThreadProxy() override;
     void stopWork() noexcept;
     void doWork() noexcept;
     void run() noexcept;
+
+    auto get_iterationNumber() const noexcept
+    {
+        return _backend->get_nbOfIterations();
+    }
+
     void processingIteration() noexcept;
 
     void set_waitTimeMicro(std::chrono::microseconds time) noexcept;
@@ -22,7 +28,7 @@ public:
 signals:
     void iterationNumberFinishedEditing();
     void requestModelReset();
-    void requestDataChange(Game::line_column firstRow, Game::line_column lastRow);
+    void requestDataChange(const std::vector<Game::indices_with_value>& idToChange);
 
 private:
     std::shared_ptr<Game> _backend;

@@ -1,12 +1,16 @@
 import QtQuick
 
 Image {
+    id: customImg
 
     required property url imgSource
+    property int dividerRatio: 1
 
     source: imgSource
-    width: 30
-    height: 30
+    height: customImg.implicitHeight / dividerRatio
+
+    asynchronous: true
+    visible: imgSource !== ""
 
     fillMode: Image.PreserveAspectFit
     smooth: true

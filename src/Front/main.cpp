@@ -1,46 +1,49 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
 
 #include "Bridge/UIBridge.hpp"
-
+#include "Bridge/MainGridImageProvider.hpp"
 
 int main(int argc, char* argv[])
 {
-    qputenv("QSG_RENDER_LOOP", "threaded");
-    QCoreApplication::setAttribute(Qt::AA_UseSoftwareOpenGL, false);
-    QCoreApplication::setAttribute(Qt::AA_UseOpenGLES, true);
-
+    int returnVal{1};
     const QGuiApplication app(argc, argv);
+    UIBridge uiBridge;
+    {
+        QQmlApplicationEngine engine;
 
-    QQmlApplicationEngine engine;
+        uiBridge.initialize(&engine);
+        engine.rootContext()->setContextProperty("uiBridge", &uiBridge);
 
-    qmlRegisterType<UIBridge>("UIBridge", 1, 0, "UIBridge");
+        const QUrl url{"qrc:/QtGameOfLife/src/Front/Main.qml"};
+        QObject::connect(
+            &engine,
+            &QQmlApplicationEngine::objectCreated,
+            &app,
+            [url](const QObject* obj, const QUrl& objUrl)
+            {
+                if (!obj && url == objUrl)
+                    QCoreApplication::exit(-1);
+            },
+            Qt::QueuedConnection);
+        engine.load(url);
 
-    const QUrl url{"qrc:/QtGameOfLife/src/Front/Main.qml"};
-    QObject::connect(
-        &engine,
-        &QQmlApplicationEngine::objectCreated,
-        &app,
-        [url](const QObject* obj, const QUrl& objUrl)
-        {
-            if (!obj && url == objUrl)
-                QCoreApplication::exit(-1);
-        },
-        Qt::QueuedConnection);
-    engine.load(url);
+        // QObject::connect(
+        //     &engine,
+        //     &QQmlApplicationEngine::objectCreationFailed,
+        //     &app,
+        //     []()
+        //     {
+        //         QCoreApplication::exit(-1);
+        //     },
+        //     Qt::QueuedConnection);
+        //
+        // // engine.loadFromModule("QtGameOfLife", "Main");
+        // engine.load(QUrl(QStringLiteral("qrc:/QtGameOfLife/src/Front/Main.qml")));
 
-    // QObject::connect(
-    //     &engine,
-    //     &QQmlApplicationEngine::objectCreationFailed,
-    //     &app,
-    //     []()
-    //     {
-    //         QCoreApplication::exit(-1);
-    //     },
-    //     Qt::QueuedConnection);
-    //
-    // // engine.loadFromModule("QtGameOfLife", "Main");
-    // engine.load(QUrl(QStringLiteral("qrc:/QtGameOfLife/src/Front/Main.qml")));
+        returnVal = app.exec();
+    }
 
-    return app.exec();
+    return returnVal;
 }

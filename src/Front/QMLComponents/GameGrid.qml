@@ -1,5 +1,4 @@
 import QtQuick
-import UIBridge
 
 Rectangle {
     id: rootGrid
@@ -13,54 +12,22 @@ Rectangle {
         id: zoomItem
         anchors.fill: parent
 
-        // TODO run profiler because perfo issues at scale min
-        scale: uiBridge._mainGridModel._scaleFactor
+        scale: uiBridge._scaleFactor
         transformOrigin: Item.Center
-
-        GridView {
+        Image {
             id: mainGrid
-            anchors.centerIn: parent
-
             width: parent.width
             height: parent.height
 
-            interactive: false
+            // Call directly the Image Provider that will convert the backend grid to an Image
+            source: uiBridge.getMainGridImage()
+            fillMode: Image.PreserveAspectFit
+        }
+        Connections {
+            target: uiBridge
 
-            model: uiBridge._mainGridModel
-
-            cellHeight: (mainGrid.height / model._UILineCount)
-            cellWidth: (mainGrid.width / model._UIColumnCount)
-
-            delegate: Rectangle {
-
-                width: mainGrid.cellWidth
-                height: mainGrid.cellHeight
-
-                layer {
-                    smooth: true
-                    enabled: true
-                }
-                color: model.cellValue ? root.cellAliveColor : root.cellDeadColor
-
-
-                border {
-                    width: 1
-                    color: root.gridBorderColor
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        model.cellValue = !model.cellValue
-                    }
-                }
-            }
-            Behavior on scale {
-
-                NumberAnimation {
-
-                    duration: 300
-                    easing.type: Easing.InOutQuad
-                }
+            function on_ImageUpdated() {
+                mainGrid.source = uiBridge.getMainGridImage()  // Reload the image
             }
         }
     }

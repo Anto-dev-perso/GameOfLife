@@ -51,11 +51,11 @@ bool Game::process() const noexcept
 // Because we will change Cell's alive status, we need to retrieve the reference to the grid
 // To avoid looping multiple times (one to know if the cell will be alive or dead and one for editing the value), we set directly the new value, and we memorize the old one
 // Memorize also the last iteration at which we modify the value of the cells to avoid using the memorization instead of the actual value
-std::tuple<bool, bool, std::vector<Game::pair_of_indices>> Game::applyRulesToTheBoardForIteration(
+std::tuple<bool, bool, std::vector<Game::indices_with_value>> Game::applyRulesToTheBoardForIteration(
     unsigned int onGoingIteration) const noexcept
 {
     // macro this to appear only on the Qt part
-    std::vector<pair_of_indices> indicesModified;
+    std::vector<indices_with_value> indicesModified;
 
     bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
     bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduced
@@ -92,19 +92,7 @@ std::tuple<bool, bool, std::vector<Game::pair_of_indices>> Game::applyRulesToThe
             if (cellToApply.get_isPreviouslyAlive() != resultOfRules)
             {
                 cellToApply.set_isCurrentlyAlive(resultOfRules);
-                // Push back directly if it is the first element or if the last pair inserted is complete (second is not null)
-                if (indicesModified.empty() || indicesModified.rbegin()->second != EMTPY_PAIR_OF_INDICES)
-                {
-                    indicesModified.emplace_back(line_column{line, column}, EMTPY_PAIR_OF_INDICES);
-                }
-            }
-            else
-            {
-                // Use the value of the current id even if it hasn't been modified to avoid if/else madness for nothing
-                if (!indicesModified.empty() && indicesModified.rbegin()->second == EMTPY_PAIR_OF_INDICES)
-                {
-                    indicesModified.rbegin()->second = {currentId / numColumn, column};
-                }
+                indicesModified.emplace_back(line_column{line, column}, resultOfRules);
             }
 
             cellToApply.set_lastIterationWhichModif(onGoingIteration);

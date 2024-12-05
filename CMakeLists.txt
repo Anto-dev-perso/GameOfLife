@@ -71,13 +71,71 @@ add_executable(GameOfLife src/Back/gameOfLife.cpp)
 target_link_libraries(GameOfLife PRIVATE GameLib InputCheckerLib)
 
 
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2 Svg)
+
+# generation of all patterns and retrieve all in a variable for the QML
+add_executable(generatePatternsSvg src/Back/SvgGenerator/generatePatternsSvg.cpp)
+target_link_libraries(generatePatternsSvg PRIVATE Qt6::Core Qt6::Svg GameLib)
+target_include_directories(generatePatternsSvg PRIVATE ${CMAKE_SOURCE_DIR}/src/Back/Game)
+
+add_custom_target(RunGeneratePatterns ALL
+        COMMAND generatePatternsSvg
+        COMMENT "Generating all the SVG files of the lexicon ...")
+
+
+set(GENERATED_SVGS_DIR ${CMAKE_SOURCE_DIR}/src/Front/assets/svg/lexicon)
+# Collect all SVG files
+file(GLOB GENERATED_SVG_FILES "${GENERATED_SVGS_DIR}/*.svg")
+
+# Generate a newline-separated list of absolute paths
+set(ALL_SVG_PATHS "")
+foreach (SVG_FILE ${GENERATED_SVG_FILES})
+    file(RELATIVE_PATH REL_SVG_FILE ${CMAKE_SOURCE_DIR} ${SVG_FILE})
+    list(APPEND ALL_SVG_PATHS ${REL_SVG_FILE})
+endforeach ()
+
+
+qt_add_executable(appQtGameOfLife src/Front/main.cpp)
+#add_dependencies(appQtGameOfLife RunGeneratePatterns) # TODO uncomment me
+
+qt_add_qml_module(appQtGameOfLife
+        URI QtGameOfLife
+        VERSION ${PROJECT_VERSION}
+        RESOURCES src/Front/assets/svg/buttons/clear.svg src/Front/assets/svg/buttons/explanation.svg src/Front/assets/svg/buttons/lexicon.svg src/Front/assets/svg/buttons/next_white.svg src/Front/assets/svg/buttons/next_blue.svg src/Front/assets/svg/buttons/reset.svg src/Front/assets/svg/buttons/speed-gauge.svg src/Front/assets/svg/buttons/start.svg src/Front/assets/svg/buttons/grid.svg src/Front/assets/svg/buttons/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf src/Front/assets/lexicon.txt
+        SOURCES src/Front/Bridge/UIBridge.hpp src/Front/Bridge/UIBridge.cpp src/Front/Bridge/ThreadProxy.cpp
+        src/Front/Bridge/ThreadProxy.hpp src/Front/Bridge/LexiconModel.hpp src/Front/Bridge/LexiconModel.cpp src/Front/Bridge/MainGridImageProvider.cpp src/Front/Bridge/MainGridImageProvider.hpp
+        QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml src/Front/QMLComponents/Overlay.qml src/Front/QMLComponents/LexiconPopUp.qml src/Front/QMLComponents/CustomText.qml
+        # Lexicon Resources
+        RESOURCES ${ALL_SVG_PATHS}
+)
+
+
+# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
+# If you are developing for iOS or macOS you should consider setting an
+# explicit, fixed bundle identifier manually though.
+set_target_properties(appQtGameOfLife PROPERTIES
+        MACOSX_BUNDLE_GUI_IDENTIFIER appQtGameOfLife
+        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
+        MACOSX_BUNDLE TRUE
+        WIN32_EXECUTABLE TRUE
+)
+
+target_link_libraries(appQtGameOfLife
+        PRIVATE Qt6::Quick Qt6::Core Qt6::Svg GameLib
+)
+
+target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src/Back)
+
+include(GNUInstallDirs)
+install(TARGETS appQtGameOfLife
+        BUNDLE DESTINATION .
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+
 option(ENABLE_ASAN "Enable AddressSanitizer with ON" OFF)
-
-if (MSVC)
-    option(CMAKE_CONFIGURATION "Configuration for the build to come")
-endif ()
-
-message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}")
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     message(STATUS "Compiling in Debug mode. Preparing targets for unit tests and functional tests")
@@ -142,51 +200,6 @@ if (ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BU
     endif ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZE_FLAGS}")
 endif ()
-
-
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2)
-
-
-qt_add_executable(appQtGameOfLife
-        src/Front/main.cpp
-
-
-)
-
-
-qt_add_qml_module(appQtGameOfLife
-        URI QtGameOfLife
-        VERSION ${PROJECT_VERSION}
-        RESOURCES src/Front/assets/svg/clear.svg src/Front/assets/svg/explanation.svg src/Front/assets/svg/lexicon.svg src/Front/assets/svg/next_white.svg src/Front/assets/svg/next_blue.svg src/Front/assets/svg/reset.svg src/Front/assets/svg/speed-gauge.svg src/Front/assets/svg/start.svg src/Front/assets/svg/grid.svg src/Front/assets/svg/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf src/Front/assets/lexicon.txt
-        SOURCES src/Front/Bridge/UIBridge.hpp src/Front/Bridge/UIBridge.cpp src/Front/Bridge/ThreadProxy.cpp
-        src/Front/Bridge/ThreadProxy.hpp src/Front/Bridge/LexiconModel.hpp src/Front/Bridge/LexiconModel.cpp src/Front/Bridge/MainGridModel.cpp
-        src/Front/Bridge/MainGridModel.hpp
-        QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml src/Front/QMLComponents/Overlay.qml src/Front/QMLComponents/LexiconPopUp.qml src/Front/QMLComponents/CustomText.qml
-)
-
-
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
-set_target_properties(appQtGameOfLife PROPERTIES
-        MACOSX_BUNDLE_GUI_IDENTIFIER appQtGameOfLife
-        MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-        MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-        MACOSX_BUNDLE TRUE
-        WIN32_EXECUTABLE TRUE
-)
-
-target_link_libraries(appQtGameOfLife
-        PRIVATE Qt6::Quick Qt6::Core GameLib
-)
-target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src/Back)
-
-include(GNUInstallDirs)
-install(TARGETS appQtGameOfLife
-        BUNDLE DESTINATION .
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     option(PROFILING_TYPE "Select which profiler to use (none, cpu, heap)" "none")

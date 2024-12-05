@@ -132,6 +132,11 @@ public:
         _colLength = 0;
     }
 
+    [[nodiscard]] board_data get_board_data() const noexcept
+    {
+        return {_grid, _lineLength, _colLength};
+    }
+
 private:
     inline void set_colLength(size_t newLength) noexcept { _colLength = newLength; }
 

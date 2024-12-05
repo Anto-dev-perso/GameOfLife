@@ -4,8 +4,6 @@ import QtQuick.Controls.Material
 
 import "./QMLComponents"
 
-import UIBridge
-
 // TODO track all hard coded values (padding ...) to make all of these variables to the window size
 Window {
     id: root
@@ -19,7 +17,7 @@ Window {
     FontLoader {
         id: customFont
         source: "assets/font/trebuchet-ms-2/trebuc.ttf"
-        //source: "../assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf"
+        //source: "/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf"
     }
 
     readonly property color bandColor: "#3663a8"
@@ -55,10 +53,6 @@ Window {
 
     readonly property double popUpWidth: root.width / 2
     readonly property double popUpHeight: root.height * 0.9
-
-    UIBridge {
-        id: uiBridge
-    }
 
     color: backgroundColor
 
@@ -106,8 +100,10 @@ Window {
 
         color: root.gridBackgroundColor
 
-        GameGrid {}
-        GameSliders {}
+        GameGrid {
+        }
+        GameSliders {
+        }
     }
 
     LexiconPopUp {
@@ -130,40 +126,38 @@ Window {
 
             ActionButton {
                 buttonText: "EXPLANATION"
-                imgSource: "../assets/svg/explanation.svg"
+                imgSource: "../assets/svg/buttons/explanation.svg"
             }
             ActionButton {
                 buttonText: "LEXICON"
-                imgSource: "../assets/svg/lexicon.svg"
+                imgSource: "../assets/svg/buttons/lexicon.svg"
                 onClicked: popUp.open()
             }
             ActionButton {
                 buttonText: "START"
-                imgSource: "../assets/svg/start.svg"
-                textSize: 24
+                imgSource: "../assets/svg/buttons/start.svg"
                 onClicked: uiBridge.runGame()
             }
 
             ActionButton {
                 buttonText: "STOP"
-                imgSource: "../assets/svg/stop.svg"
-                textSize: 24
+                imgSource: "../assets/svg/buttons/stop.svg"
                 onClicked: uiBridge.stopGame()
             }
             ActionButton {
                 buttonText: "NEXT"
-                imgSource: "../assets/svg/next_white.svg"
+                imgSource: "../assets/svg/buttons/next_white.svg"
                 onClicked: uiBridge.runIteration()
             }
 
             ActionButton {
                 buttonText: "RESET"
-                imgSource: "../assets/svg/reset.svg"
+                imgSource: "../assets/svg/buttons/reset.svg"
                 onClicked: uiBridge.resetPattern()
             }
             ActionButton {
                 buttonText: "CLEAR"
-                imgSource: "../assets/svg/clear.svg"
+                imgSource: "../assets/svg/buttons/clear.svg"
                 onClicked: uiBridge.clearPattern()
             }
         }
