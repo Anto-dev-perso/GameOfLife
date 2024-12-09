@@ -11,6 +11,8 @@
 #include <utility>
 #include <set>
 
+// TODO click on main grid (inside and outside the backend grid)
+// TODO main grid at zoom min shall fill the entire rectangle
 class UIBridge : public QObject
 {
     Q_OBJECT

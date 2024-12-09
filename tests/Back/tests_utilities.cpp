@@ -1,4 +1,4 @@
-#include <gtest/gtest.h>
+#include </Users/antonin/.conan2/p/b/gtestd71292abb0440/p/include/gtest/gtest.h>
 #include "tests_utilities.hpp"
 #include "Back/Game/AllowedChar.hpp"
 
@@ -60,4 +60,6 @@ namespace UTILITIES
             std::cout << std::endl;
         }
     }
+
+
 };

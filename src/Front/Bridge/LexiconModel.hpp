@@ -2,7 +2,7 @@
 
 #include <qabstractitemmodel.h>
 #include <QString>
-#include "../Back/Game/PatternList.hpp"
+#include "Back/Game/PatternList.hpp"
 
 
 class LexiconGridModel final : public QAbstractListModel
@@ -18,6 +18,11 @@ public:
 
     [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
+    enum Roles
+    {
+        GridRole = Qt::UserRole + 1,
+    };
+
 public slots:
     [[nodiscard]] QVariant getData(int parentIndex, int gridIndex, int elemIndex,
                                    const int role = Qt::DisplayRole) const noexcept;
@@ -26,11 +31,6 @@ public slots:
     [[nodiscard]] int getSizeForIndex(int patternIndex, int gridIndex) const noexcept;
 
 private:
-    enum Roles
-    {
-        GridRole = Qt::UserRole + 1,
-    };
-
     [[nodiscard]] inline bool incomingIndicesInBound(int patternIndex, int gridIndex) const noexcept;
 
     [[nodiscard]] inline bool elementIndexInBound(int parentIndex, int gridIndex, int index) const noexcept;
@@ -69,17 +69,17 @@ public:
         return _gridModel->getSizeForIndex(patternId, gridId) > 0;
     }
 
+    enum Roles
+    {
+        DescriptionRole = Qt::UserRole + 1,
+    };
+
 public slots:
     [[nodiscard]] int getSizeForIndex(int parentIndex) const noexcept;
     [[nodiscard]] QVariant getData(int parentIndex, int elemIndex,
                                    const int role = Qt::DisplayRole) const noexcept;
 
 private:
-    enum Roles
-    {
-        DescriptionRole = Qt::UserRole + 1,
-    };
-
     [[nodiscard]] bool parentIndexInBound(int index) const noexcept;
 
     [[nodiscard]] bool elementIndexInBound(int parentIndex, int index) const noexcept;
@@ -109,13 +109,12 @@ public:
         return _descriptionModel.get();
     }
 
-private:
     enum Roles
     {
         NameRole = Qt::UserRole + 1,
     };
 
-
+private:
     std::vector<std::string_view> _patternNames;
     std::unique_ptr<LexiconDescriptionModel> _descriptionModel;
 };

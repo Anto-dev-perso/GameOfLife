@@ -1,6 +1,6 @@
 #include "MainGridImageProvider.hpp"
 
-#include "../Back/Game/Board.hpp"
+#include "Back/Game/Board.hpp"
 
 
 MainGridImageProvider::MainGridImageProvider(std::shared_ptr<Game> backend) :
@@ -15,17 +15,22 @@ MainGridImageProvider::MainGridImageProvider(std::shared_ptr<Game> backend) :
     printANewGridImage();
 }
 
-void MainGridImageProvider::changeCellColors(const std::vector<Game::indices_with_value>& indicesToChanges) noexcept
+void MainGridImageProvider::changeCellColors(const std::vector<Game::indices_with_value>& indicesToChanges)
 {
+    bool changed{false};
     for (const auto& [idBack,newValue] : indicesToChanges)
     {
         const auto convertedIds{calculateUIIndexFromBackId(idBack)};
         if (convertedIds.has_value())
         {
+            changed = true;
             changeCellInImage(convertedIds.value(), newValue);
         }
     }
-    _cacheBuster++;
+    if (changed)
+    {
+        _cacheBuster++;
+    }
 }
 
 void MainGridImageProvider::printANewGridImage() noexcept
@@ -72,7 +77,8 @@ QImage MainGridImageProvider::requestImage(const QString& id, QSize* size, const
 std::optional<Game::line_column>
 MainGridImageProvider::calculateUIIndexFromBackId(const Game::line_column& pair) const noexcept
 {
-    if (_gridFirstRow < 0 || _gridFirstColumn < 0)
+    if (_gridFirstRow < 0 || pair.line >= _backend->get_board_nbLine() || pair.column >= _backend->get_board_nbColumn()
+        || _gridFirstColumn < 0)
     {
         return std::nullopt;
     }
@@ -83,7 +89,7 @@ void MainGridImageProvider::updateGridCounters() noexcept
 {
     const auto backNbLine{_backend->get_board_nbLine()};
     const auto backNbCol{_backend->get_board_nbColumn()};
-    if (backNbLine > 0 && backNbCol > 0)
+    if (backNbLine > 0 && backNbCol > 0 && backNbLine < NB_UI_LINES_AT_MAX && backNbCol < NB_UI_COLUMNS_AT_MAX)
     {
         _gridFirstRow = (_UILineCount - _backend->get_board_nbLine()) / 2;
         _gridFirstColumn = (_UIColumnCount - _backend->get_board_nbColumn()) / 2;

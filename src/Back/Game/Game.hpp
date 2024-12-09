@@ -12,6 +12,11 @@ public:
     {
         size_t line;
         size_t column;
+
+        bool operator==(const line_column& other) const noexcept
+        {
+            return (line == other.line && column == other.column);
+        }
     };
 
     using indices_with_value = std::pair<line_column, bool>;
@@ -126,7 +131,7 @@ public:
         return {_patterns.get_list_const_ref(), _patterns.get_numberOfPatternTotal()};
     }
 
-    void changeBoard(int patternIndex, int gridIndex) noexcept
+    void changeBoard(int patternIndex, int gridIndex)
     {
         _boardPattern = {patternIndex, gridIndex};
         resetBoard();

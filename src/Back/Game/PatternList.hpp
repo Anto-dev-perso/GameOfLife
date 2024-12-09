@@ -25,6 +25,9 @@ struct pattern
         _descriptionAndPattern(descAndPattern)
     {
     }
+#ifdef ENABLE_DEBUG
+    pattern() = default;
+#endif
 
     std::string _name{};
     description_and_pattern_type _descriptionAndPattern{};

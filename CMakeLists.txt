@@ -15,7 +15,6 @@ project(GameOfLife LANGUAGES CXX VERSION 0.1)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
-# TODO do this only for the Qt program
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
@@ -71,16 +70,17 @@ add_executable(GameOfLife src/Back/gameOfLife.cpp)
 target_link_libraries(GameOfLife PRIVATE GameLib InputCheckerLib)
 
 
-find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2 Svg)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Quick Qml QuickControls2 Svg Test)
 
 # generation of all patterns and retrieve all in a variable for the QML
 add_executable(generatePatternsSvg src/Back/SvgGenerator/generatePatternsSvg.cpp)
 target_link_libraries(generatePatternsSvg PRIVATE Qt6::Core Qt6::Svg GameLib)
 target_include_directories(generatePatternsSvg PRIVATE ${CMAKE_SOURCE_DIR}/src/Back/Game)
 
-add_custom_target(RunGeneratePatterns ALL
-        COMMAND generatePatternsSvg
-        COMMENT "Generating all the SVG files of the lexicon ...")
+# TODO uncomment me
+#add_custom_target(RunGeneratePatterns ALL
+#        COMMAND generatePatternsSvg
+#        COMMENT "Generating all the SVG files of the lexicon ...")
 
 
 set(GENERATED_SVGS_DIR ${CMAKE_SOURCE_DIR}/src/Front/assets/svg/lexicon)
@@ -94,6 +94,19 @@ foreach (SVG_FILE ${GENERATED_SVG_FILES})
     list(APPEND ALL_SVG_PATHS ${REL_SVG_FILE})
 endforeach ()
 
+add_library(BridgeLib STATIC
+        src/Front/Bridge/UIBridge.hpp
+        src/Front/Bridge/UIBridge.cpp
+        src/Front/Bridge/ThreadProxy.cpp
+        src/Front/Bridge/ThreadProxy.hpp
+        src/Front/Bridge/LexiconModel.hpp
+        src/Front/Bridge/LexiconModel.cpp
+        src/Front/Bridge/MainGridImageProvider.cpp
+        src/Front/Bridge/MainGridImageProvider.hpp
+)
+target_include_directories(BridgeLib PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_link_libraries(BridgeLib PRIVATE Qt6::Quick Qt6::Core Qt6::Svg GameLib)
+
 
 qt_add_executable(appQtGameOfLife src/Front/main.cpp)
 #add_dependencies(appQtGameOfLife RunGeneratePatterns) # TODO uncomment me
@@ -102,8 +115,6 @@ qt_add_qml_module(appQtGameOfLife
         URI QtGameOfLife
         VERSION ${PROJECT_VERSION}
         RESOURCES src/Front/assets/svg/buttons/clear.svg src/Front/assets/svg/buttons/explanation.svg src/Front/assets/svg/buttons/lexicon.svg src/Front/assets/svg/buttons/next_white.svg src/Front/assets/svg/buttons/next_blue.svg src/Front/assets/svg/buttons/reset.svg src/Front/assets/svg/buttons/speed-gauge.svg src/Front/assets/svg/buttons/start.svg src/Front/assets/svg/buttons/grid.svg src/Front/assets/svg/buttons/stop.svg src/Front/assets/font/trebuchet-ms-2/trebuc.ttf src/Front/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf src/Front/assets/lexicon.txt
-        SOURCES src/Front/Bridge/UIBridge.hpp src/Front/Bridge/UIBridge.cpp src/Front/Bridge/ThreadProxy.cpp
-        src/Front/Bridge/ThreadProxy.hpp src/Front/Bridge/LexiconModel.hpp src/Front/Bridge/LexiconModel.cpp src/Front/Bridge/MainGridImageProvider.cpp src/Front/Bridge/MainGridImageProvider.hpp
         QML_FILES src/Front/Main.qml src/Front/QMLComponents/ActionButton.qml src/Front/QMLComponents/GameSliders.qml src/Front/QMLComponents/GameGrid.qml src/Front/QMLComponents/CustomImage.qml src/Front/QMLComponents/CustomSlider.qml src/Front/QMLComponents/Overlay.qml src/Front/QMLComponents/LexiconPopUp.qml src/Front/QMLComponents/CustomText.qml
         # Lexicon Resources
         RESOURCES ${ALL_SVG_PATHS}
@@ -121,11 +132,9 @@ set_target_properties(appQtGameOfLife PROPERTIES
         WIN32_EXECUTABLE TRUE
 )
 
-target_link_libraries(appQtGameOfLife
-        PRIVATE Qt6::Quick Qt6::Core Qt6::Svg GameLib
-)
+target_link_libraries(appQtGameOfLife PRIVATE Qt6::Quick BridgeLib)
 
-target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src/Back)
+target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
 include(GNUInstallDirs)
 install(TARGETS appQtGameOfLife
@@ -149,6 +158,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     add_executable(GameOfLifeUnitTests
             tests/Back/unit_tests.cpp
+            tests/InputsBoards.hpp
             tests/Back/tests_utilities.hpp
             tests/Back/tests_utilities.cpp
             tests/Back/unit_tests/InputChecker_Test.cpp
@@ -174,6 +184,7 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     add_executable(GameOfLifeFunctionalTests
             tests/Back/functional_tests.cpp
+            tests/InputsBoards.hpp
             tests/Back/tests_utilities.hpp
             tests/Back/tests_utilities.cpp
     )
@@ -188,6 +199,30 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 
     target_include_directories(GameOfLifeFunctionalTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
     add_test(NAME GameOfLifeFunctionalTests COMMAND GameOfLifeFunctionalTests)
+
+
+    add_executable(GameOfLifeGUIUnitTests
+            tests/Front/unit_tests.cpp
+            tests/InputsBoards.hpp
+            tests/Front/tests_utilities.hpp
+            tests/Front/tests_utilities.cpp
+            tests/Back/tests_utilities.hpp
+            tests/Back/tests_utilities.cpp
+            tests/Front/Bridge/ThreadProxy_Test.cpp
+            tests/Front/Bridge/LexiconModel_Test.cpp
+            tests/Front/Bridge/MainGridImageProvider_Test.cpp
+    )
+
+    if (MSVC)
+        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib GTest::gtest_main GTest::gtest Qt6::Quick Qt6::Test)
+    else ()
+        #        TODO gcov shall be specific
+        #        target_link_libraries(GameOfLifeUnitTests PRIVATE GameLib BridgeLib GTest::gtest_main GTest::gtest gcov)
+        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib GTest::gtest_main GTest::gtest Qt6::Quick Qt6::Test)
+    endif ()
+
+    target_include_directories(GameOfLifeGUIUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)
+    add_test(NAME GameOfLifeGUIUnitTests COMMAND GameOfLifeGUIUnitTests)
 endif ()
 
 if (ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo"))

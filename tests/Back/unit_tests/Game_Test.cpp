@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include "Back/Game/Game.hpp"
 
-#include "../tests_utilities.hpp"
+#include "../tests/Back/tests_utilities.hpp"
 
 using namespace std;
 
