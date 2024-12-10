@@ -1,13 +1,10 @@
 import QtQuick
 
-Loader {
+Rectangle {
+    id: overlay
 
-    sourceComponent: Rectangle {
-        id: overlay
-
-        anchors.fill: parent
-        color: root.gridBackgroundColor
-        opacity: 0.9
-        z: 1
-    }
+    anchors.fill: parent
+    color: root.gridBackgroundColor
+    opacity: 0.9
+    z: 1
 }

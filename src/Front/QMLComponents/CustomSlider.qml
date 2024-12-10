@@ -21,8 +21,7 @@ Slider {
             width: rootSlider.visualPosition * parent.width
             height: parent.height
             color: root.gameSlidersBackgroundSelectedColor
-            topLeftRadius: height / 2
-            bottomLeftRadius: height / 2
+            radius: height / 2
         }
     }
     handle: Rectangle {
@@ -30,7 +29,8 @@ Slider {
 
         width: rootSlider.height * 1.8
         height: rootSlider.height * 1.8
-        x: ((rootSlider.value - rootSlider.from) / (rootSlider.to - rootSlider.from)) * (rootSlider.width - width)
+        x: ((rootSlider.value - rootSlider.from)
+            / (rootSlider.to - rootSlider.from)) * (rootSlider.width - width)
         y: (rootSlider.height - height) / 2
 
         radius: rootSlider.width / 2

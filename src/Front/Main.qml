@@ -5,7 +5,7 @@ import QtQuick.Controls.Material
 import "./QMLComponents"
 
 // TODO track all hard coded values (padding ...) to make all of these variables to the window size
-Window {
+ApplicationWindow {
     id: root
 
     width: 1400
@@ -42,6 +42,7 @@ Window {
 
     readonly property color buttonColor: "#2a4e97"
     readonly property color buttonTextColor: "#ffffff"
+    readonly property color urlLinkColor: "#91bcff"
 
     readonly property double topBarHeight: 0.13
     readonly property double topBarTextBottomMargin: 0.12
@@ -58,7 +59,7 @@ Window {
 
     Overlay {
         id: overlay
-        visible: popUp.visible
+        visible: lexiconPopUp.visible || explanationPopUp.visible
     }
 
     Rectangle {
@@ -100,14 +101,17 @@ Window {
 
         color: root.gridBackgroundColor
 
-        GameGrid {
-        }
-        GameSliders {
-        }
+        GameGrid {}
+        GameSliders {}
     }
 
-    LexiconPopUp {
-        id: popUp
+    GenericPopUp {
+        id: lexiconPopUp
+        contentOfPopUp: GenericPopUp.PopUpType.LEXICON
+    }
+    GenericPopUp {
+        id: explanationPopUp
+        contentOfPopUp: GenericPopUp.PopUpType.EXPLANATION
     }
 
     Rectangle {
@@ -127,11 +131,12 @@ Window {
             ActionButton {
                 buttonText: "EXPLANATION"
                 imgSource: "../assets/svg/buttons/explanation.svg"
+                onClicked: explanationPopUp.open()
             }
             ActionButton {
                 buttonText: "LEXICON"
                 imgSource: "../assets/svg/buttons/lexicon.svg"
-                onClicked: popUp.open()
+                onClicked: lexiconPopUp.open()
             }
             ActionButton {
                 buttonText: "START"
