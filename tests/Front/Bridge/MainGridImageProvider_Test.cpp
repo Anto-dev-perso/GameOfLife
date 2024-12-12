@@ -155,26 +155,26 @@ TEST_F(UpdateGridCountersTest, NormalCase)
 {
     provider->updateGridCounters();
 
-    EXPECT_EQ(provider->_gridFirstRow, 97);
-    EXPECT_EQ(provider->_gridFirstColumn, 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 97);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
 
     realGame->updateBoard(UTILITIES::loafPattern);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 97);
-    EXPECT_EQ(provider->_gridFirstColumn, 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 97);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
 
     realGame->updateBoard(UTILITIES::beaconPatternG2);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 97);
-    EXPECT_EQ(provider->_gridFirstColumn, 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 97);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
 
     realGame->updateBoard(UTILITIES::zweiback);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 87);
-    EXPECT_EQ(provider->_gridFirstColumn, 178);
+    EXPECT_EQ(provider->get_gridFirstRow(), 86);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 178);
 }
 
 TEST_F(UpdateGridCountersTest, ZeroDimensions)
@@ -182,8 +182,8 @@ TEST_F(UpdateGridCountersTest, ZeroDimensions)
     realGame->updateBoard({});
     provider->updateGridCounters();
 
-    EXPECT_EQ(provider->_gridFirstRow, -1);
-    EXPECT_EQ(provider->_gridFirstColumn, -1);
+    EXPECT_EQ(provider->get_gridFirstRow(), -1);
+    EXPECT_EQ(provider->get_gridFirstColumn(), -1);
 }
 
 TEST_F(UpdateGridCountersTest, BackendLargerThanUIGrid)
@@ -194,8 +194,8 @@ TEST_F(UpdateGridCountersTest, BackendLargerThanUIGrid)
     });
     provider->updateGridCounters();
 
-    EXPECT_EQ(provider->_gridFirstRow, -1);
-    EXPECT_EQ(provider->_gridFirstColumn, -1);
+    EXPECT_EQ(provider->get_gridFirstRow(), -1);
+    EXPECT_EQ(provider->get_gridFirstColumn(), -1);
 }
 
 // Test effect of grid counters on subsequent calculations
@@ -324,8 +324,8 @@ TEST_F(CalculateIndexFromUIRowTest, OutOfBounds)
 
 TEST_F(CalculateIndexFromUIRowTest, NegativeOffsets)
 {
-    provider->_gridFirstRow = -1;
-    provider->_gridFirstColumn = -1;
+    provider->set_gridFirstRow(-1);
+    provider->set_gridFirstColumn(-1);
 
     size_t uiRow = 0, uiCol = 0;
     auto backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
@@ -334,8 +334,8 @@ TEST_F(CalculateIndexFromUIRowTest, NegativeOffsets)
 
 TEST_F(CalculateIndexFromUIRowTest, OffsetEffect)
 {
-    provider->_gridFirstRow = 0;
-    provider->_gridFirstColumn = 0;
+    provider->set_gridFirstRow(0);
+    provider->set_gridFirstColumn(0);
 
     size_t uiRow = 3, uiCol = 3;
     auto backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
@@ -363,17 +363,17 @@ protected:
 TEST_F(ReDrawMainGridTest, BasicRedraw)
 {
     realGame->updateBoard(UTILITIES::pulsarPatternG2);
-    provider->reDrawMainGrid();
+    provider->reDrawThenEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::pulsarPatternG2, *provider);
 
     realGame->updateBoard(UTILITIES::tubPattern);
-    provider->reDrawMainGrid();
+    provider->reDrawThenEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::tubPattern, *provider);
 
     realGame->updateBoard(UTILITIES::pentaDecathlonPatternG11);
-    provider->reDrawMainGrid();
+    provider->reDrawThenEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::pentaDecathlonPatternG11, *provider);
 }
@@ -381,7 +381,7 @@ TEST_F(ReDrawMainGridTest, BasicRedraw)
 TEST_F(ReDrawMainGridTest, EmptyBackEnd)
 {
     realGame->updateBoard({});
-    provider->reDrawMainGrid();
+    provider->reDrawThenEntireMainGrid();
 
     UTILITIES::compareQImage({}, *provider);
 }
@@ -536,8 +536,8 @@ TEST_F(CalculateUIIndexFromBackIdTest, OutOfBoundsBackendIndex)
 
 TEST_F(CalculateUIIndexFromBackIdTest, GridCounterEffect)
 {
-    provider->_gridFirstRow = 0;
-    provider->_gridFirstColumn = 0;
+    provider->set_gridFirstRow(0);
+    provider->set_gridFirstColumn(0);
     constexpr Game::line_column backendIndex{1, 1};
     constexpr Game::line_column expectedUIIndex{1, 1};
 
@@ -549,8 +549,8 @@ TEST_F(CalculateUIIndexFromBackIdTest, GridCounterEffect)
 
 TEST_F(CalculateUIIndexFromBackIdTest, EmptyBackend)
 {
-    provider->_gridFirstRow = -1;
-    provider->_gridFirstColumn = -1;
+    provider->set_gridFirstRow(-1);
+    provider->set_gridFirstColumn(-1);
     constexpr Game::line_column backendIndex{1, 1};
 
     const auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
@@ -622,7 +622,7 @@ TEST_F(PrintANewGridImageTest, LargeGridSize)
 
     realGame->updateBoard(testGrid);
 
-    provider->reDrawMainGrid();
+    provider->reDrawThenEntireMainGrid();
 
     EXPECT_EQ(provider->_cacheBuster, 2);
     UTILITIES::compareQImage(testGrid, *provider);

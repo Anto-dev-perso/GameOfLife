@@ -26,17 +26,18 @@ public:
     }
 
     void printANewGridImage() noexcept;
+
     QImage requestImage(const QString& id, QSize* size, const QSize& requestedSize) override;
 
     [[nodiscard]] std::optional<Game::line_column>
     calculateUIIndexFromBackId(const Game::line_column& pair) const noexcept;
 
-    [[nodiscard]] int get_UILineCount() const noexcept
+    [[nodiscard]] size_t get_UILineCount() const noexcept
     {
         return _UILineCount;
     }
 
-    [[nodiscard]] int get_UIColumnCount() const noexcept
+    [[nodiscard]] size_t get_UIColumnCount() const noexcept
     {
         return _UIColumnCount;
     }
@@ -54,7 +55,8 @@ public:
     }
 
     void changeMainGridWithPatternIndices(int patternIndex, int gridIndex);
-    void reDrawMainGrid();
+    void reDrawThenEntireMainGrid() noexcept;
+    void reDrawGrid();
     void resetMainGrid();
     void clearMainGrid();
 
@@ -72,18 +74,24 @@ public:
     void changeCellColors(const std::vector<Game::indices_with_value>& indicesToChanges);
 
 #ifdef ENABLE_DEBUG
-    void updateGridCounters() noexcept;
-#else
 
-private:
-    void updateGridCounters() noexcept;
+    [[nodiscard]] int get_gridFirstColumn() const noexcept { return _gridFirstColumn; }
+    [[nodiscard]] int get_gridFirstRow() const noexcept { return _gridFirstRow; }
+
+    void set_gridFirstColumn(int firstCol) noexcept { _gridFirstColumn = firstCol; }
+    void set_gridFirstRow(int firstRow) noexcept { _gridFirstRow = firstRow; }
+
 #endif
 
+    void updateGridCounters() noexcept;
+    [[nodiscard]] std::optional<size_t> calculateIndexFromUIRow(size_t row, size_t column) const noexcept;
+
+#ifdef ENABLE_DEBUG
+
+private:
+#endif
 
     void changeCellInImage(const Game::line_column& indices, bool value) noexcept;
-
-
-    [[nodiscard]] std::optional<size_t> calculateIndexFromUIRow(size_t row, size_t column) const noexcept;
 
     [[nodiscard]] static size_t calculateUIColumns(double sliderValue) noexcept
     {
@@ -97,6 +105,9 @@ private:
             calculateLinearValue(sliderValue, NB_UI_LINES_AT_MAX, NB_UI_LINES_AT_MIN)));
     }
 
+    void drawGridRectangle(size_t row, size_t column, const grid_of_cells& grid) noexcept;
+    void updateImage() noexcept;
+
     std::shared_ptr<Game> _backend;
 
     double _zoomValue{50};
@@ -104,6 +115,8 @@ private:
 
     int _gridFirstRow{-1};
     int _gridFirstColumn{-1};
+    int _oldGridFirstRow{-1};
+    int _oldGridFirstColumn{-1};
 
     size_t _UILineCount{NB_UI_LINES_AT_MAX};
     size_t _UIColumnCount{NB_UI_COLUMNS_AT_MAX};

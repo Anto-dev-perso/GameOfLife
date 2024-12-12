@@ -110,8 +110,11 @@ PatternList Parser::parseLexiconFile() const noexcept
                 if (!patternName.empty())
                 {
                     // Push one last line of dead cells
-                    patternGrid.grid.insert(patternGrid.grid.end(), patternGrid.column, getDeadChar());
-                    patternGrid.line++;
+                    if (!patternGrid.grid.empty())
+                    {
+                        patternGrid.grid.insert(patternGrid.grid.end(), patternGrid.column, getDeadChar());
+                        patternGrid.line++;
+                    }
                     readDescriptionsAndPatterns.push_back({patternDescription, patternGrid});
                     readPatterns.addPattern(patternName, readDescriptionsAndPatterns);
                 }

@@ -49,7 +49,7 @@ protected:
             mockPatterns.push_back(std::move(p));
         }
 
-        nameModel = std::make_unique<LexiconNameModel>(mockPatterns, 3);
+        nameModel = std::make_unique<LexiconNameModel>(mockPatterns);
     }
 };
 
@@ -173,8 +173,7 @@ TEST(BackendData, RealBackendData)
     {
         throw std::ios_base::failure("Failed to initialize backend");
     }
-    const auto& [patternsStruct, size] = backend->get_lexiconPatterns();
-    const LexiconNameModel nameModelWithBackend{patternsStruct, size};
+    const LexiconNameModel nameModelWithBackend{backend->get_lexiconPatterns()};
     const auto descriptionModel{nameModelWithBackend.get_descriptionModel()};
     const auto gridModel{descriptionModel->get_gridModel()};
 
@@ -187,8 +186,6 @@ TEST(BackendData, RealBackendData)
     ASSERT_EQ(descriptionModel->rowCount(), lexiconId+1);
     ASSERT_EQ(gridModel->rowCount(), lexiconId+1);
 
-    const auto toto = nameModelWithBackend.data(nameModelWithBackend.index(lexiconId), LexiconNameModel::NameRole).
-                                           toString().toStdString();
     EXPECT_EQ(nameModelWithBackend.data(nameModelWithBackend.index(lexiconId), LexiconNameModel::NameRole).
               toString().toStdString(), "zweiback");
     EXPECT_EQ(descriptionModel->getData(lexiconId, gridId, LexiconDescriptionModel::DescriptionRole).toString().

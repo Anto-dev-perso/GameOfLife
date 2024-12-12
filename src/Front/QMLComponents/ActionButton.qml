@@ -65,14 +65,11 @@ Button {
             dividerRatio: 25
 
         }
-
-        Text {
+        CustomText {
+            width: actionButton.buttonText.length * actionButton.textSize * 0.75
             id: buttonText
             text: actionButton.buttonText
-            font {
-                pixelSize: actionButton.textSize
-                family: customFont.name
-            }
+            textSize: actionButton.textSize
             color: root.buttonTextColor
         }
         transitions: [

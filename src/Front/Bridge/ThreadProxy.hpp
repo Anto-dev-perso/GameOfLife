@@ -25,6 +25,8 @@ public:
 
     void processingIteration() noexcept;
 
+    void runIteration() noexcept;
+
     void set_waitTimeMicro(std::chrono::microseconds time) noexcept;
 
 
@@ -45,6 +47,7 @@ public:
 
     std::shared_ptr<Game> _backend;
     std::atomic<bool> _gameRunning{false};
+    std::atomic<bool> _runOnce{false};
     std::atomic<bool> _exitThread{false};
     std::atomic<unsigned long> _waitTimeMicro{1000};
 

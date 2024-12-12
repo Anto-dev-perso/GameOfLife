@@ -115,16 +115,15 @@ public:
         }
         if (reduce)
         {
-            _board->dumpGrid();
             _board->reduceBoard();
             return true;
         }
         return false;
     }
 
-    [[nodiscard]] std::pair<std::vector<pattern>&, size_t> get_lexiconPatterns() noexcept
+    [[nodiscard]] std::vector<pattern>& get_lexiconPatterns() noexcept
     {
-        return {_patterns.get_list_ref(), _patterns.get_numberOfPatternTotal()};
+        return _patterns.get_list_ref();
     }
 
     [[nodiscard]] std::pair<const std::vector<pattern>&, size_t> get_lexiconPatterns_const() const noexcept

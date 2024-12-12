@@ -5,8 +5,16 @@ namespace UTILITIES
 {
     QImage generateImage(const board_data& inputGrid, MainGridImageProvider& provider) noexcept
     {
-        const auto firstGridCol{static_cast<column_size>(provider._gridFirstColumn)};
-        const auto firstGridRow{static_cast<line_size>(provider._gridFirstRow)};
+        const auto firstGridCol{
+            provider.get_gridFirstColumn() >= 0
+                ? static_cast<size_t>(provider.get_gridFirstColumn())
+                : provider.get_UIColumnCount()
+        };
+        const auto firstGridRow{
+            provider.get_gridFirstRow() >= 0
+                ? static_cast<size_t>(provider.get_gridFirstRow())
+                : provider.get_UILineCount()
+        };
 
         QImage returnedImage{
             MainGridImageProvider::NB_UI_COLUMNS_AT_MAX * CELL_SIZE,
@@ -21,9 +29,9 @@ namespace UTILITIES
         pen.setWidth(1);
         painter.setPen(pen);
 
-        for (size_t row = 0; row < provider._UILineCount; row++)
+        for (size_t row = 0; row < provider.get_UILineCount(); row++)
         {
-            for (size_t column = 0; column < provider._UIColumnCount; column++)
+            for (size_t column = 0; column < provider.get_UIColumnCount(); column++)
             {
                 if (row >= firstGridRow && row < firstGridRow + inputGrid.line && column >=
                     firstGridCol && column < firstGridCol + inputGrid.column)

@@ -35,12 +35,17 @@ void ThreadProxy::doWork() noexcept
 
             _pauseCondition.wait(lock, [this]()
             {
-                return _gameRunning.load() || _exitThread.load();
+                return _gameRunning.load() || _exitThread.load() || _runOnce.load();
             });
 
             if (_exitThread.load())
             {
                 break;
+            }
+            if (_runOnce.load())
+            {
+                _runOnce.store(false);
+                processingIteration();
             }
         }
         while (_gameRunning.load())
@@ -89,6 +94,15 @@ void ThreadProxy::processingIteration() noexcept
         requestDataChange(idModified);
     }
     emit iterationNumberFinishedEditing();
+}
+
+void ThreadProxy::runIteration() noexcept
+{
+    if (!_gameRunning.load())
+    {
+        _runOnce.store(true);
+        _pauseCondition.notify_one();
+    }
 }
 
 void ThreadProxy::set_waitTimeMicro(std::chrono::microseconds time) noexcept

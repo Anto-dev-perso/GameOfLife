@@ -159,8 +159,6 @@ TEST(UTFillNeighbour, BlockPatternTest)
     EXPECT_EQ(resultVec.at(4).get().get_isPreviouslyAlive(), false);
 }
 
-// Do not test the negative indices because it can't happen in current implementation
-// TODO consider adding this check
 TEST(UTFillNeighbour, RobustnessTest)
 {
     // grid empty

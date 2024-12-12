@@ -13,7 +13,6 @@
 
 // TODO click on main grid (inside and outside the backend grid)
 // TODO main grid at zoom min shall fill the entire rectangle
-// TODO force the backend grid to not became bigger than the UI Grid
 class UIBridge : public QObject
 {
     Q_OBJECT
@@ -74,15 +73,14 @@ public slots:
     void runGame() const noexcept { _threadProxy->run(); }
     void stopGame() const noexcept { _threadProxy->stopWork(); }
 
-    void runIteration() noexcept
+    void runIteration() const noexcept
     {
-        _threadProxy->processingIteration();
-        emit _imageUpdated();
+        _threadProxy->runIteration();
     }
 
     void reDrawEntirely() noexcept
     {
-        _mainGridImageProvider->reDrawMainGrid();
+        _mainGridImageProvider->reDrawGrid();
         emit _imageUpdated();
     }
 

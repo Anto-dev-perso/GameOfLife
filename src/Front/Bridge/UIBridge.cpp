@@ -39,8 +39,7 @@ void UIBridge::initialize(QQmlEngine* engine)
 
     _threadProxy = std::make_unique<ThreadProxy>(back, calculateWaitTimeFromSlider());
 
-    const auto& [patternsStruct, size] = back->get_lexiconPatterns();
-    _lexiconNameModel = std::make_unique<LexiconNameModel>(patternsStruct, size);
+    _lexiconNameModel = std::make_unique<LexiconNameModel>(back->get_lexiconPatterns());
 
     if (engine)
     {
@@ -72,7 +71,6 @@ void UIBridge::resetPattern() noexcept
 
 void UIBridge::clearPattern() noexcept
 {
-    // TODO data race here
     _mainGridImageProvider->clearMainGrid();
     emit _iterationNumberChanged();
     emit _imageUpdated();

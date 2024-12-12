@@ -14,12 +14,6 @@ ApplicationWindow {
 
     title: qsTr("Game of Life")
 
-    FontLoader {
-        id: customFont
-        source: "assets/font/trebuchet-ms-2/trebuc.ttf"
-        //source: "/assets/font/trebuchet-ms-2/Trebuchet-MS-Italic.ttf"
-    }
-
     readonly property color bandColor: "#3663a8"
     readonly property color bandTextColor: "#aacbff"
     readonly property color backgroundColor: "#646464"
@@ -72,15 +66,9 @@ ApplicationWindow {
 
         color: root.bandColor
 
-        Text {
+        CustomText {
+            textSize: 40
             text: "Conway's Game of Life"
-
-            font {
-                pixelSize: 40
-                family: customFont.name
-            }
-            color: bandTextColor
-
             anchors {
                 bottom: parent.bottom
                 left: parent.left
@@ -88,6 +76,7 @@ ApplicationWindow {
                 leftMargin: parent.width * topBarTextLeftMargin
             }
             opacity: 0.9
+            color: bandTextColor
         }
     }
 
@@ -101,8 +90,10 @@ ApplicationWindow {
 
         color: root.gridBackgroundColor
 
-        GameGrid {}
-        GameSliders {}
+        GameGrid {
+        }
+        GameSliders {
+        }
     }
 
     GenericPopUp {
@@ -129,42 +120,89 @@ ApplicationWindow {
             spacing: 30
 
             ActionButton {
+                id: explanationButton
                 buttonText: "EXPLANATION"
                 imgSource: "../assets/svg/buttons/explanation.svg"
                 onClicked: explanationPopUp.open()
             }
             ActionButton {
+                id: lexiconButton
                 buttonText: "LEXICON"
                 imgSource: "../assets/svg/buttons/lexicon.svg"
                 onClicked: lexiconPopUp.open()
             }
             ActionButton {
+                id: startButton
                 buttonText: "START"
                 imgSource: "../assets/svg/buttons/start.svg"
-                onClicked: uiBridge.runGame()
+                onClicked: parent.state = "running"
             }
 
             ActionButton {
+                id: stopButton
                 buttonText: "STOP"
                 imgSource: "../assets/svg/buttons/stop.svg"
-                onClicked: uiBridge.stopGame()
+                onClicked: parent.state = "stopped"
+
             }
             ActionButton {
+                id: nextButton
                 buttonText: "NEXT"
                 imgSource: "../assets/svg/buttons/next_white.svg"
                 onClicked: uiBridge.runIteration()
             }
 
             ActionButton {
+                id: resetButton
                 buttonText: "RESET"
                 imgSource: "../assets/svg/buttons/reset.svg"
-                onClicked: uiBridge.resetPattern()
+                visible: uiBridge._iterationNumber > 0
+                onClicked: {
+                    uiBridge.resetPattern()
+                    parent.state = "stopped"}
             }
             ActionButton {
+                id: clearButton
                 buttonText: "CLEAR"
                 imgSource: "../assets/svg/buttons/clear.svg"
-                onClicked: uiBridge.clearPattern()
+                visible: uiBridge._iterationNumber === 0
+                onClicked: {
+                    uiBridge.clearPattern()
+                    parent.state = "stopped"}
             }
+            states: [
+                State {
+                    name: "stopped"
+                    PropertyChanges {
+                        target: startButton
+                        visible: true
+                    }
+                    PropertyChanges {
+                        target: stopButton
+                        visible: false
+                    }
+                },
+                State {
+                    name: "running"
+                    PropertyChanges {
+                        target: startButton
+                        visible: false
+                    }
+                    PropertyChanges {
+                        target: stopButton
+                        visible: true
+                    }
+                }
+            ]
+            state: "stopped"
+            onStateChanged: {
+                if (state === "stopped") {
+                    uiBridge.stopGame()
+                } else if (state === "running") {
+                    uiBridge.runGame()
+                }
+            }
+
         }
     }
 }

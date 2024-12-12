@@ -2,11 +2,9 @@
 
 // #include "../PatternSVGGenerator.hpp"
 
-LexiconGridModel::LexiconGridModel(std::vector<pattern>& value, size_t sizePattern,
+LexiconGridModel::LexiconGridModel(std::vector<pattern>& value,
                                    QObject* parent) : QAbstractListModel(parent)
 {
-    Q_UNUSED(sizePattern) // TODO
-    // _grids.reserve(sizePattern);
     _grids.reserve(value.size());
     for (auto& pattern : value)
     {
@@ -94,11 +92,11 @@ QHash<int, QByteArray> LexiconGridModel::roleNames() const
     return roles;
 }
 
-LexiconDescriptionModel::LexiconDescriptionModel(std::vector<pattern>& value, size_t sizePattern,
+LexiconDescriptionModel::LexiconDescriptionModel(std::vector<pattern>& value,
                                                  QObject* parent) : QAbstractListModel(parent),
                                                                     _gridModel(
                                                                         std::make_unique<LexiconGridModel>(
-                                                                            value, sizePattern))
+                                                                            value))
 {
     _descriptions.reserve(value.size());
     for (auto& pattern : value)
@@ -170,8 +168,8 @@ bool LexiconDescriptionModel::elementIndexInBound(int parentIndex, int index) co
     return index >= 0 && static_cast<size_t>(index) < _descriptions.at(parentIndex).size();
 }
 
-LexiconNameModel::LexiconNameModel(std::vector<pattern>& refPattern, size_t sizePattern, QObject* parent) :
-    QAbstractListModel(parent), _descriptionModel(std::make_unique<LexiconDescriptionModel>(refPattern, sizePattern))
+LexiconNameModel::LexiconNameModel(std::vector<pattern>& refPattern, QObject* parent) :
+    QAbstractListModel(parent), _descriptionModel(std::make_unique<LexiconDescriptionModel>(refPattern))
 {
     _patternNames.reserve(refPattern.size());
     for (auto& [_name, ignore] : refPattern)

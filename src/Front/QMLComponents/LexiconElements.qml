@@ -114,7 +114,6 @@ ScrollView {
                                             MouseArea {
                                                 anchors.fill: parent
                                                 onClicked: {
-                                                    // TODO 2*183 ms from the profiler
                                                     if (uiBridge._lexiconNameModel._descriptionModel._gridModel.getSizeForIndex(
                                                                 patternIndex,
                                                                 elementPatternIndex) > 0) {
