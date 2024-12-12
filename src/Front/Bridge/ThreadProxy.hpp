@@ -2,6 +2,7 @@
 
 
 #include <QThread>
+#include <QReadWriteLock>
 #include "Back/Game/Game.hpp"
 
 class ThreadProxy final : public QObject
@@ -16,8 +17,9 @@ public:
     void doWork() noexcept;
     void run() noexcept;
 
-    auto get_iterationNumber() const noexcept
+    auto get_iterationNumber() noexcept
     {
+        QReadLocker lock(&_lockBackend);
         return _backend->get_nbOfIterations();
     }
 
@@ -25,6 +27,8 @@ public:
 
     void set_waitTimeMicro(std::chrono::microseconds time) noexcept;
 
+
+    QReadWriteLock& get_lockBackend() noexcept { return _lockBackend; }
 
 signals
 :
@@ -44,6 +48,7 @@ public:
     std::atomic<bool> _exitThread{false};
     std::atomic<unsigned long> _waitTimeMicro{1000};
 
+    QReadWriteLock _lockBackend;
     std::mutex _pauseMutex;
     std::condition_variable _pauseCondition;
 

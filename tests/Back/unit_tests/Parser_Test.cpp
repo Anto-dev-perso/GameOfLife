@@ -295,3 +295,17 @@ TEST(UTLexiconInput, SpaceshipLexiconTest)
 
     UTILITIES::compareGrid(gliderRead._descriptionAndPattern[0]._gridPattern, {});
 }
+
+TEST(UTLexiconInput, DegreeMWSSTest)
+{
+    const auto gliderRead{*lexicon.findPattern("135-degree MWSS-to-G")};
+
+    EXPECT_EQ(gliderRead._name, "135-degree MWSS-to-G");
+    EXPECT_EQ(gliderRead._descriptionAndPattern.size(), 1);
+
+    EXPECT_EQ(gliderRead._descriptionAndPattern[0]._description,
+              "The following {converter}, discovered by Matthias Merzenich in July 2013.  It accepts an {MWSS} as input, and produces an output {glider} travelling at a 135-degree angle relative to the input direction.");
+
+    EXPECT_EQ(gliderRead._descriptionAndPattern.begin()->_gridPattern.line, 13);
+    EXPECT_EQ(gliderRead._descriptionAndPattern.begin()->_gridPattern.column, 16);
+}

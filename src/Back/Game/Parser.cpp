@@ -111,6 +111,7 @@ PatternList Parser::parseLexiconFile() const noexcept
                 {
                     // Push one last line of dead cells
                     patternGrid.grid.insert(patternGrid.grid.end(), patternGrid.column, getDeadChar());
+                    patternGrid.line++;
                     readDescriptionsAndPatterns.push_back({patternDescription, patternGrid});
                     readPatterns.addPattern(patternName, readDescriptionsAndPatterns);
                 }
@@ -166,9 +167,6 @@ PatternList Parser::parseLexiconFile() const noexcept
                 }
                 else
                 {
-                    // 2c/3 wire has text after pattern
-                    // bi-loaf has multiple patterns possible
-                    // spaceship has only references
                     if (!patternGrid.empty())
                     {
                         // Insert a line of empty cells at last

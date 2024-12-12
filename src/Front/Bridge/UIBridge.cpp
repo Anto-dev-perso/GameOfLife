@@ -6,12 +6,12 @@
 
 static const QString LEXICON_RESSOURCE_PATH{":/QtGameOfLife/src/Front/assets/lexicon.txt"};
 
-UIBridge::UIBridge(QObject *parent)
+UIBridge::UIBridge(QObject* parent)
     : QObject(parent)
 {
 }
 
-void UIBridge::initialize(QQmlEngine *engine)
+void UIBridge::initialize(QQmlEngine* engine)
 {
     QFile ressourceFile{LEXICON_RESSOURCE_PATH};
     if (!ressourceFile.open(QIODevice::ReadOnly))
@@ -39,12 +39,12 @@ void UIBridge::initialize(QQmlEngine *engine)
 
     _threadProxy = std::make_unique<ThreadProxy>(back, calculateWaitTimeFromSlider());
 
-    const auto &[patternsStruct, size] = back->get_lexiconPatterns();
+    const auto& [patternsStruct, size] = back->get_lexiconPatterns();
     _lexiconNameModel = std::make_unique<LexiconNameModel>(patternsStruct, size);
 
     if (engine)
     {
-        _mainGridImageProvider = new MainGridImageProvider(back);
+        _mainGridImageProvider = new MainGridImageProvider(back, _threadProxy->get_lockBackend());
         engine->addImageProvider(IMAGE_PROVIDER_NAME, _mainGridImageProvider);
     }
 
@@ -58,7 +58,6 @@ void UIBridge::initialize(QQmlEngine *engine)
 
 void UIBridge::changePatternBackEnd(int patternIndex, int gridIndex) noexcept
 {
-    // TODO data race here
     _mainGridImageProvider->changeMainGridWithPatternIndices(patternIndex, gridIndex);
     emit _iterationNumberChanged();
     emit _imageUpdated();

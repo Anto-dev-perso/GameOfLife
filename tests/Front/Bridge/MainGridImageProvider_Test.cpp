@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "Front/Bridge/MainGridImageProvider_Test.hpp"
+#include "Front/Bridge/MainGridImageProvider.hpp"
 
 
 #include "../tests_utilities.hpp"
@@ -14,7 +14,9 @@ TEST(MainGridImageProviderConstructorTest, ConstructorInitializesProperly)
         std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON)
     };
     std::ignore = realGame->init();
-    ASSERT_NO_THROW(MainGridImageProvider_Test{realGame});
+
+    QReadWriteLock tmpLock;
+    ASSERT_NO_THROW(MainGridImageProvider(realGame, tmpLock));
 }
 
 
@@ -30,8 +32,8 @@ TEST_F(CalculateLinearValueTest, BasicCases)
 
     // Slope m = (y2 - y1) / (x2 - x1) = 2.0
     // Intercept c = y1 - m * x1 = 0.0
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(2.0,y1, y2, x1, x2), 4.0);
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(3.0,y1, y2, x1, x2), 6.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(2.0,y1, y2, x1, x2), 4.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(3.0,y1, y2, x1, x2), 6.0);
 }
 
 TEST_F(CalculateLinearValueTest, HorizontalLine)
@@ -39,8 +41,8 @@ TEST_F(CalculateLinearValueTest, HorizontalLine)
     constexpr double x1{1.0}, y1{3.0}, x2{5.0}, y2{3.0};
 
     // Horizontal line: y = 3.0
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(2.0,y1, y2, x1, x2), 3.0);
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(10.0,y1, y2, x1, x2), 3.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(2.0,y1, y2, x1, x2), 3.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(10.0,y1, y2, x1, x2), 3.0);
 }
 
 TEST_F(CalculateLinearValueTest, VerticalLine)
@@ -48,7 +50,7 @@ TEST_F(CalculateLinearValueTest, VerticalLine)
     constexpr double x1 = {2.0}, y1 = {1.0}, x2 = {2.0}, y2 = {5.0};
 
     // Vertical line: Undefined slope, should throw an exception
-    EXPECT_THROW(std::ignore= MainGridImageProvider_Test::calculateLinearValue(2.0,y1, y2, x1, x2),
+    EXPECT_THROW(std::ignore= MainGridImageProvider::calculateLinearValue(2.0,y1, y2, x1, x2),
                  std::invalid_argument);
 }
 
@@ -57,8 +59,8 @@ TEST_F(CalculateLinearValueTest, Interpolation)
     constexpr double x1{0.0}, y1{0.0}, x2{10.0}, y2{10.0};
 
     // Diagonal line: y = x
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(5.0,y1, y2, x1, x2), 5.0);
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(7.5,y1, y2, x1, x2), 7.5);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(5.0,y1, y2, x1, x2), 5.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(7.5,y1, y2, x1, x2), 7.5);
 }
 
 TEST_F(CalculateLinearValueTest, Extrapolation)
@@ -66,8 +68,8 @@ TEST_F(CalculateLinearValueTest, Extrapolation)
     constexpr double x1{2.0}, y1{4.0}, x2{4.0}, y2{8.0};
 
     // Line equation: y = 2x
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(1.0,y1, y2, x1, x2), 2.0); // Before x1
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(5.0,y1, y2, x1, x2), 10.0); // After x2
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(1.0,y1, y2, x1, x2), 2.0); // Before x1
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(5.0,y1, y2, x1, x2), 10.0); // After x2
 }
 
 TEST_F(CalculateLinearValueTest, LargeValues)
@@ -75,7 +77,7 @@ TEST_F(CalculateLinearValueTest, LargeValues)
     constexpr double x1 = {1e6}, y1{2e6}, x2{3e6}, y2{6e6};
 
     // Slope m = (y2 - y1) / (x2 - x1) = 2.0
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(2e6,y1, y2, x1, x2), 4e6);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(2e6,y1, y2, x1, x2), 4e6);
 }
 
 TEST_F(CalculateLinearValueTest, SmallAndNegativeValues)
@@ -83,8 +85,8 @@ TEST_F(CalculateLinearValueTest, SmallAndNegativeValues)
     constexpr double x1{-5.0}, y1{-10.0}, x2{0.0,}, y2{-5.0};
 
     // Line equation: y = x + -5.0
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(-2.5,y1, y2, x1, x2), -7.5);
-    EXPECT_DOUBLE_EQ(MainGridImageProvider_Test::calculateLinearValue(1.0,y1, y2, x1, x2 ), -4.0);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(-2.5,y1, y2, x1, x2), -7.5);
+    EXPECT_DOUBLE_EQ(MainGridImageProvider::calculateLinearValue(1.0,y1, y2, x1, x2 ), -4.0);
 }
 
 /****************************************  Tests Suite for set_zoomValue ***************************************/
@@ -95,7 +97,8 @@ TEST(SetZoomValue, CheckValue)
         std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON)
     };
     std::ignore = realGame->init();
-    auto provider{MainGridImageProvider_Test{realGame}};
+    QReadWriteLock tmpLock;
+    auto provider{MainGridImageProvider(realGame, tmpLock)};
 
     provider.set_zoomValue(0);
     EXPECT_DOUBLE_EQ(provider.get_zoomValue(), 0);
@@ -120,7 +123,8 @@ TEST(SetZoomValue, ValueUnchanged)
         std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON)
     };
     std::ignore = realGame->init();
-    auto provider{MainGridImageProvider_Test{realGame}};
+    QReadWriteLock tmpLock;
+    auto provider{MainGridImageProvider(realGame, tmpLock)};
 
     const auto valueBefore{provider.get_zoomValue()};
     const auto scaleBefore{provider.get_scaleFactor()};
@@ -136,13 +140,14 @@ class UpdateGridCountersTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 
@@ -150,26 +155,26 @@ TEST_F(UpdateGridCountersTest, NormalCase)
 {
     provider->updateGridCounters();
 
-    EXPECT_EQ(provider->_gridFirstRow, 122);
-    EXPECT_EQ(provider->_gridFirstColumn, 247);
+    EXPECT_EQ(provider->_gridFirstRow, 97);
+    EXPECT_EQ(provider->_gridFirstColumn, 197);
 
     realGame->updateBoard(UTILITIES::loafPattern);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 122);
-    EXPECT_EQ(provider->_gridFirstColumn, 247);
+    EXPECT_EQ(provider->_gridFirstRow, 97);
+    EXPECT_EQ(provider->_gridFirstColumn, 197);
 
     realGame->updateBoard(UTILITIES::beaconPatternG2);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 122);
-    EXPECT_EQ(provider->_gridFirstColumn, 247);
+    EXPECT_EQ(provider->_gridFirstRow, 97);
+    EXPECT_EQ(provider->_gridFirstColumn, 197);
 
     realGame->updateBoard(UTILITIES::zweiback);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->_gridFirstRow, 112);
-    EXPECT_EQ(provider->_gridFirstColumn, 228);
+    EXPECT_EQ(provider->_gridFirstRow, 87);
+    EXPECT_EQ(provider->_gridFirstColumn, 178);
 }
 
 TEST_F(UpdateGridCountersTest, ZeroDimensions)
@@ -200,7 +205,7 @@ TEST_F(UpdateGridCountersTest, EffectOnSubsequentCalculations)
 
     // Calculate a UI index
     constexpr Game::line_column backendIndex{1, 1};
-    constexpr Game::line_column expected{123, 248};
+    constexpr Game::line_column expected{98, 198};
     auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
     ASSERT_TRUE(uiIndex.has_value());
@@ -213,20 +218,21 @@ class CalculateIndexFromUIRowTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 
 TEST_F(CalculateIndexFromUIRowTest, ValidMapping)
 {
-    constexpr size_t uiRow{122};
-    constexpr size_t uiCol{247};
+    constexpr size_t uiRow{97};
+    constexpr size_t uiCol{197};
 
     const auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
@@ -236,8 +242,8 @@ TEST_F(CalculateIndexFromUIRowTest, ValidMapping)
 TEST_F(CalculateIndexFromUIRowTest, PatternsSampling)
 {
     realGame->updateBoard(UTILITIES::zweiback);
-    constexpr size_t uiRow{122};
-    constexpr size_t uiCol{247};
+    constexpr size_t uiRow{97};
+    constexpr size_t uiCol{197};
 
     auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
@@ -252,16 +258,16 @@ TEST_F(CalculateIndexFromUIRowTest, PatternsSampling)
 
 TEST_F(CalculateIndexFromUIRowTest, BoundaryConditions)
 {
-    size_t uiRow{124};
-    size_t uiCol{249};
+    size_t uiRow{99};
+    size_t uiCol{199};
 
     auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
     EXPECT_EQ(backendIndex.value(), 12);
 
 
-    uiRow = 126;
-    uiCol = 251;
+    uiRow = 101;
+    uiCol = 201;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_TRUE(backendIndex.has_value());
     EXPECT_EQ(backendIndex.value(), 24);
@@ -269,29 +275,29 @@ TEST_F(CalculateIndexFromUIRowTest, BoundaryConditions)
 
 TEST_F(CalculateIndexFromUIRowTest, OutOfBounds)
 {
-    size_t uiRow{127};
-    size_t uiCol{252};
+    size_t uiRow{102};
+    size_t uiCol{202};
 
     auto backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 127;
-    uiCol = 251;
+    uiRow = 102;
+    uiCol = 201;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 127;
-    uiCol = 247;
+    uiRow = 102;
+    uiCol = 197;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 127;
+    uiRow = 102;
     uiCol = 246;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
     uiRow = 121;
-    uiCol = 247;
+    uiCol = 197;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
@@ -301,16 +307,16 @@ TEST_F(CalculateIndexFromUIRowTest, OutOfBounds)
     ASSERT_FALSE(backendIndex.has_value());
 
     uiRow = 121;
-    uiCol = 251;
+    uiCol = 201;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
     uiRow = 121;
-    uiCol = 252;
+    uiCol = 202;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 122;
+    uiRow = 97;
     uiCol = 246;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
@@ -343,13 +349,14 @@ class ReDrawMainGridTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 
@@ -385,13 +392,14 @@ class ResetMainGridTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 
     void runIteration(int times = 1) const noexcept
@@ -419,13 +427,14 @@ class ClearMainGridTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 
@@ -458,20 +467,21 @@ class CalculateUIIndexFromBackIdTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 
 TEST_F(CalculateUIIndexFromBackIdTest, BasicMapping)
 {
     constexpr Game::line_column backendIndex{1, 1};
-    constexpr Game::line_column expectedUIIndex{123, 248};
+    constexpr Game::line_column expectedUIIndex{98, 198};
 
     const auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -483,7 +493,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 {
     realGame->updateBoard(UTILITIES::beaconPatternG1);
     Game::line_column backendIndex{5, 5};
-    Game::line_column expectedUIIndex{127, 252};
+    Game::line_column expectedUIIndex{102, 202};
 
     auto uiIndex{provider->calculateUIIndexFromBackId(backendIndex)};
 
@@ -493,7 +503,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 
     realGame->updateBoard(UTILITIES::washerwoman);
     backendIndex = {3, 30};
-    expectedUIIndex = {125, 277};
+    expectedUIIndex = {100, 227};
 
     uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -505,7 +515,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 TEST_F(CalculateUIIndexFromBackIdTest, BoundaryConditions)
 {
     constexpr Game::line_column backendIndex{0, 0};
-    constexpr Game::line_column expectedUIIndex{122, 247};
+    constexpr Game::line_column expectedUIIndex{97, 197};
 
     const auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -554,13 +564,14 @@ class PrintANewGridImageTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 
     void updateBoardAndGenerateNewImage(const board_data& inputGrid) const noexcept
@@ -669,13 +680,14 @@ class ChangeCellColorsTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 
     void updateBoardDataAtIndices(const std::vector<Game::indices_with_value>& indices) const noexcept
@@ -766,13 +778,14 @@ class ChangeMainGridWithPatternIndicesTest : public ::testing::Test
 {
 protected:
     std::shared_ptr<Game> realGame;
-    std::unique_ptr<MainGridImageProvider_Test> provider;
+    QReadWriteLock lock;
+    std::unique_ptr<MainGridImageProvider> provider;
 
     void SetUp() noexcept override
     {
         realGame = std::make_shared<Game>("../src/Front/assets/lexicon.txt", TypeOfFileToParse::LEXICON);
         std::ignore = realGame->init();
-        provider = std::make_unique<MainGridImageProvider_Test>(realGame);
+        provider = make_unique<MainGridImageProvider>(realGame, lock);
     }
 };
 

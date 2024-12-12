@@ -140,6 +140,7 @@ bool Board::isCellBeforeTheBorder(size_t line, size_t column) const noexcept
 // To expand the board, we have to add one line at beginning and end and for each line, add one column at beginning and end
 void Board::expandBoard() noexcept
 {
+    if (_lineLength + 2 > _gridMaxNbLine || _colLength + 2 > _gridMaxNbColumn) { return; }
     // Keep old length for math
     const size_t oldColumnSize{_colLength};
 
@@ -191,9 +192,9 @@ void Board::reduceBoard() noexcept
     // Reminder: erase is exclusive on the last iterator
     _grid.erase(_grid.begin() + ((oldLineLength * oldColLength) - oldColLength + 1), _grid.end());
 
-    // Loop through every lines and erase the columns
+    // Loop through every line and erase the columns
     // Erase at first the last elements to reduce the swapping time
-    // Stop at the frst line because we know we will delete it entirely
+    // Stop at the first line because we know we will delete it entirely
     for (size_t line = oldSize - oldColLength; line > oldColLength; line -= oldColLength)
     {
         // Remove 2 elements (last column of previous line + first colmun of current line)

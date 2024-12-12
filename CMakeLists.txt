@@ -214,11 +214,11 @@ if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     )
 
     if (MSVC)
-        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib GTest::gtest_main GTest::gtest Qt6::Quick Qt6::Test)
+        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib Qt6::Quick Qt6::Test GTest::gtest_main GTest::gtest)
     else ()
         #        TODO gcov shall be specific
-        #        target_link_libraries(GameOfLifeUnitTests PRIVATE GameLib BridgeLib GTest::gtest_main GTest::gtest gcov)
-        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib GTest::gtest_main GTest::gtest Qt6::Quick Qt6::Test)
+        #        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib Qt6::Quick Qt6::Test GTest::gtest_main GTest::gtest gcov)
+        target_link_libraries(GameOfLifeGUIUnitTests PRIVATE BridgeLib Qt6::Quick Qt6::Test GTest::gtest_main GTest::gtest)
     endif ()
 
     target_include_directories(GameOfLifeGUIUnitTests PUBLIC ${CMAKE_SOURCE_DIR}/src)

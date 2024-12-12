@@ -3,6 +3,7 @@
 
 #include <QQuickImageProvider>
 #include <QPainter>
+#include <QReadWriteLock>
 
 
 #include "Back/Game/Board.hpp"
@@ -17,7 +18,7 @@ static constexpr int CELL_SIZE{10};
 class MainGridImageProvider : public QQuickImageProvider
 {
 public:
-    MainGridImageProvider(std::shared_ptr<Game> backend);
+    MainGridImageProvider(std::shared_ptr<Game> backend, QReadWriteLock& lock);
 
     ~MainGridImageProvider() override
     {
@@ -73,6 +74,7 @@ public:
 #ifdef ENABLE_DEBUG
     void updateGridCounters() noexcept;
 #else
+
 private:
     void updateGridCounters() noexcept;
 #endif
@@ -112,13 +114,13 @@ private:
 
     QPen _gridPen{BORDER_COLOR};
     QPainter _gridPainter;
-    QImage _gridImage{
-        static_cast<int>(NB_UI_COLUMNS_AT_MAX * CELL_SIZE), NB_UI_LINES_AT_MAX * CELL_SIZE, QImage::Format_ARGB32
-    };
+    QImage _gridImage{NB_UI_COLUMNS_AT_MAX * CELL_SIZE, NB_UI_LINES_AT_MAX * CELL_SIZE, QImage::Format_ARGB32};
+
+    QReadWriteLock& _lockBackendRef;
 
 public:
-    static constexpr size_t NB_UI_COLUMNS_AT_MAX{500};
-    static constexpr size_t NB_UI_LINES_AT_MAX{250};
+    static constexpr size_t NB_UI_COLUMNS_AT_MAX{400};
+    static constexpr size_t NB_UI_LINES_AT_MAX{200};
     static constexpr size_t NB_UI_COLUMNS_AT_MIN{20};
     static constexpr size_t NB_UI_LINES_AT_MIN{10};
 

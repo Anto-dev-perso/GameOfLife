@@ -137,6 +137,9 @@ public:
         return {_grid, _lineLength, _colLength};
     }
 
+    void set_gridMaxNbLine(size_t maxLine) noexcept { _gridMaxNbLine = maxLine; }
+    void set_gridMaxNbColumn(size_t maxCol) noexcept { _gridMaxNbColumn = maxCol; }
+
 private:
     inline void set_colLength(size_t newLength) noexcept { _colLength = newLength; }
 
@@ -145,4 +148,6 @@ private:
     grid_of_cells _grid{};
     size_t _lineLength{0};
     size_t _colLength{0};
+    size_t _gridMaxNbLine{10000};
+    size_t _gridMaxNbColumn{10000};
 };

@@ -115,6 +115,7 @@ public:
         }
         if (reduce)
         {
+            _board->dumpGrid();
             _board->reduceBoard();
             return true;
         }
@@ -156,6 +157,12 @@ public:
     bool boardEmpty() const noexcept
     {
         return _board->get_grid_const().empty();
+    }
+
+    void set_maximumLineAndColumn(size_t maxLine, size_t maxColumn) const noexcept
+    {
+        _board->set_gridMaxNbLine(maxLine);
+        _board->set_gridMaxNbColumn(maxColumn);
     }
 
 private

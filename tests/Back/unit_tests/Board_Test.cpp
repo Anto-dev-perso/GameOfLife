@@ -323,3 +323,40 @@ TEST(UTChangeCellValue, ChangeCellValueTest)
             block);
     }
 }
+
+/****************************************  Tests Suite for changeCellValue ***************************************/
+
+
+TEST(UTMaxSize, LineAndColumnMaxSizeSet)
+{
+    boardToTest.update(UTILITIES::gosperGliderGunPattern);
+
+    EXPECT_EQ(boardToTest.get_lineLength(), UTILITIES::gosperGliderGunPattern.line);
+    EXPECT_EQ(boardToTest.get_colLength(), UTILITIES::gosperGliderGunPattern.column);
+
+    boardToTest.expandBoard();
+
+    EXPECT_EQ(boardToTest.get_lineLength(), UTILITIES::gosperGliderGunPattern.line+2);
+    EXPECT_EQ(boardToTest.get_colLength(), UTILITIES::gosperGliderGunPattern.column+2);
+
+    boardToTest.set_gridMaxNbLine(boardToTest.get_lineLength());
+    boardToTest.set_gridMaxNbColumn(boardToTest.get_colLength());
+    boardToTest.expandBoard();
+
+    EXPECT_EQ(boardToTest.get_lineLength(), UTILITIES::gosperGliderGunPattern.line+2);
+    EXPECT_EQ(boardToTest.get_colLength(), UTILITIES::gosperGliderGunPattern.column+2);
+
+    boardToTest.set_gridMaxNbLine(boardToTest.get_lineLength() + 1);
+    boardToTest.set_gridMaxNbColumn(boardToTest.get_colLength() + 1);
+    boardToTest.expandBoard();
+
+    EXPECT_EQ(boardToTest.get_lineLength(), UTILITIES::gosperGliderGunPattern.line+2);
+    EXPECT_EQ(boardToTest.get_colLength(), UTILITIES::gosperGliderGunPattern.column+2);
+
+    boardToTest.set_gridMaxNbLine(boardToTest.get_lineLength() + 2);
+    boardToTest.set_gridMaxNbColumn(boardToTest.get_colLength() + 2);
+    boardToTest.expandBoard();
+
+    EXPECT_EQ(boardToTest.get_lineLength(), UTILITIES::gosperGliderGunPattern.line+4);
+    EXPECT_EQ(boardToTest.get_colLength(), UTILITIES::gosperGliderGunPattern.column+4);
+}

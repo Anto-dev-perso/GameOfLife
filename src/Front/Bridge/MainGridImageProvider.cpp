@@ -3,9 +3,11 @@
 #include "Back/Game/Board.hpp"
 
 
-MainGridImageProvider::MainGridImageProvider(std::shared_ptr<Game> backend) :
-    QQuickImageProvider(QQuickImageProvider::Image), _backend(std::move(backend))
+MainGridImageProvider::MainGridImageProvider(std::shared_ptr<Game> backend, QReadWriteLock& lock) :
+    QQuickImageProvider(QQuickImageProvider::Image), _backend(std::move(backend)), _lockBackendRef(lock)
+
 {
+    _backend->set_maximumLineAndColumn(NB_UI_LINES_AT_MAX, NB_UI_COLUMNS_AT_MAX);
     updateGridCounters();
     _gridPainter.begin(&_gridImage);
 
@@ -18,6 +20,7 @@ MainGridImageProvider::MainGridImageProvider(std::shared_ptr<Game> backend) :
 void MainGridImageProvider::changeCellColors(const std::vector<Game::indices_with_value>& indicesToChanges)
 {
     bool changed{false};
+    QReadLocker lock{&_lockBackendRef};
     for (const auto& [idBack,newValue] : indicesToChanges)
     {
         const auto convertedIds{calculateUIIndexFromBackId(idBack)};
@@ -77,6 +80,7 @@ QImage MainGridImageProvider::requestImage(const QString& id, QSize* size, const
 std::optional<Game::line_column>
 MainGridImageProvider::calculateUIIndexFromBackId(const Game::line_column& pair) const noexcept
 {
+    // No need to lock here because this function is always called inside an already locked function
     if (_gridFirstRow < 0 || pair.line >= _backend->get_board_nbLine() || pair.column >= _backend->get_board_nbColumn()
         || _gridFirstColumn < 0)
     {
@@ -87,9 +91,10 @@ MainGridImageProvider::calculateUIIndexFromBackId(const Game::line_column& pair)
 
 void MainGridImageProvider::updateGridCounters() noexcept
 {
+    // No need to lock here because this function is always called inside an already locked function
     const auto backNbLine{_backend->get_board_nbLine()};
     const auto backNbCol{_backend->get_board_nbColumn()};
-    if (backNbLine > 0 && backNbCol > 0 && backNbLine < NB_UI_LINES_AT_MAX && backNbCol < NB_UI_COLUMNS_AT_MAX)
+    if (backNbLine > 0 && backNbCol > 0 && backNbLine <= NB_UI_LINES_AT_MAX && backNbCol <= NB_UI_COLUMNS_AT_MAX)
     {
         _gridFirstRow = (_UILineCount - _backend->get_board_nbLine()) / 2;
         _gridFirstColumn = (_UIColumnCount - _backend->get_board_nbColumn()) / 2;
@@ -103,6 +108,7 @@ void MainGridImageProvider::updateGridCounters() noexcept
 
 std::optional<size_t> MainGridImageProvider::calculateIndexFromUIRow(size_t row, size_t column) const noexcept
 {
+    // No need to lock here because this function is always called inside an already locked function
     if (_gridFirstRow < 0 || _gridFirstColumn < 0 || static_cast<int>(row) < _gridFirstRow || static_cast<int>(row) >=
         _gridFirstRow + static_cast<int>(
             _backend->get_board_nbLine()) ||
@@ -117,26 +123,28 @@ std::optional<size_t> MainGridImageProvider::calculateIndexFromUIRow(size_t row,
 
 void MainGridImageProvider::changeMainGridWithPatternIndices(int patternIndex, int gridIndex)
 {
-    // TODO data race here for _backend->board (line and column), add mutex
-    // Maybe use data in the index of the grid instead of the reset
-    _backend->changeBoard(patternIndex, gridIndex);
+    // TODO Maybe use data in the index of the grid instead of the reset
+    {
+        QWriteLocker lock{&_lockBackendRef};
+        _backend->changeBoard(patternIndex, gridIndex);
+    }
     reDrawMainGrid();
 }
 
 void MainGridImageProvider::reDrawMainGrid()
 {
-    // TODO data race here for _backend->board (line and column), add mutex
-    // Maybe use data in the index of the grid instead of the reset
+    // TODO Maybe use data in the index of the grid instead of the reset
+    QReadLocker lock{&_lockBackendRef};
     updateGridCounters();
     printANewGridImage();
 }
 
 void MainGridImageProvider::resetMainGrid()
 {
+    QWriteLocker lock{&_lockBackendRef};
     if (_backend->get_nbOfIterations() != 0)
     {
-        // TODO data race here for _backend->board (line and column), add mutex
-        // Maybe use data in the index of the grid instead of the reset
+        // TODO Maybe use data in the index of the grid instead of the reset
         _backend->resetBoard();
         updateGridCounters();
         printANewGridImage();
@@ -145,8 +153,8 @@ void MainGridImageProvider::resetMainGrid()
 
 void MainGridImageProvider::clearMainGrid()
 {
-    // TODO data race here for _backend->board (line and column), add mutex
-    // Maybe use data in the index of the grid instead of the reset
+    // TODO Maybe use data in the index of the grid instead of the reset
+    QWriteLocker lock{&_lockBackendRef}; // TODO double lock
     _backend->clearBoard();
     updateGridCounters();
     printANewGridImage();

@@ -3,14 +3,14 @@
 
 namespace UTILITIES
 {
-    QImage generateImage(const board_data& inputGrid, MainGridImageProvider_Test& provider) noexcept
+    QImage generateImage(const board_data& inputGrid, MainGridImageProvider& provider) noexcept
     {
         const auto firstGridCol{static_cast<column_size>(provider._gridFirstColumn)};
         const auto firstGridRow{static_cast<line_size>(provider._gridFirstRow)};
 
         QImage returnedImage{
-            static_cast<int>(MainGridImageProvider_Test::NB_UI_COLUMNS_AT_MAX * CELL_SIZE),
-            static_cast<int>(MainGridImageProvider_Test::NB_UI_LINES_AT_MAX * CELL_SIZE),
+            MainGridImageProvider::NB_UI_COLUMNS_AT_MAX * CELL_SIZE,
+            MainGridImageProvider::NB_UI_LINES_AT_MAX * CELL_SIZE,
             QImage::Format_ARGB32
         };
 
@@ -46,7 +46,7 @@ namespace UTILITIES
         return returnedImage;
     }
 
-    void compareQImage(const board_data& inputGrid, MainGridImageProvider_Test& provider)
+    void compareQImage(const board_data& inputGrid, MainGridImageProvider& provider)
     {
         const auto imageExpected{generateImage(inputGrid, provider)};
         QImage imageToTest{provider.requestImage("", nullptr, QSize())};

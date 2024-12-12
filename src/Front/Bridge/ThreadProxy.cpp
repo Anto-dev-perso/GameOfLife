@@ -42,11 +42,6 @@ void ThreadProxy::doWork() noexcept
             {
                 break;
             }
-            // In case we have clear the board, it makes no sense to run the processing
-            if (_backend->boardEmpty())
-            {
-                _gameRunning.store(false);
-            }
         }
         while (_gameRunning.load())
         {
@@ -75,8 +70,15 @@ void ThreadProxy::run() noexcept
 
 void ThreadProxy::processingIteration() noexcept
 {
+    QWriteLocker lock{&_lockBackend};
+    // In case we have clear the board, it makes no sense to run the processing
+    if (_backend->boardEmpty())
+    {
+        _gameRunning.store(false);
+        return;
+    }
     _backend->increment_nbOfIterations();
-    emit iterationNumberFinishedEditing();
+
     const auto [expand, reduce, idModified] = _backend->applyRulesToTheBoard();
     if (_backend->checkIfBoardNeedToBeResize(expand, reduce))
     {
@@ -86,6 +88,7 @@ void ThreadProxy::processingIteration() noexcept
     {
         requestDataChange(idModified);
     }
+    emit iterationNumberFinishedEditing();
 }
 
 void ThreadProxy::set_waitTimeMicro(std::chrono::microseconds time) noexcept

@@ -13,6 +13,7 @@
 
 // TODO click on main grid (inside and outside the backend grid)
 // TODO main grid at zoom min shall fill the entire rectangle
+// TODO force the backend grid to not became bigger than the UI Grid
 class UIBridge : public QObject
 {
     Q_OBJECT
@@ -122,7 +123,7 @@ private:
     MainGridImageProvider* _mainGridImageProvider{nullptr};
 
     static constexpr double WAIT_MAX{1.5}; // seconds
-    static constexpr double WAIT_MIN{0.001}; // seconds
+    static constexpr double WAIT_MIN{0.1}; // seconds
 
     const QString IMAGE_PROVIDER_NAME{"_mainGrid"};
     const QString QURL_IMAGE_PROVIDER{"image://" + IMAGE_PROVIDER_NAME + "/"};

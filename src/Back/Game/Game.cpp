@@ -56,7 +56,6 @@ std::tuple<bool, bool, std::vector<Game::indices_with_value>> Game::applyRulesTo
 {
     // macro this to appear only on the Qt part
     std::vector<indices_with_value> indicesModified;
-
     bool expandSizeOfGrid{false}; // Boolean to detect if the grid should be expanded
     bool reduceSizeOfGrid{true}; // Boolean to detect if the grid could be reduced
 
@@ -71,7 +70,12 @@ std::tuple<bool, bool, std::vector<Game::indices_with_value>> Game::applyRulesTo
         const auto& numColumn{_board->get_colLength()};
 
         // TODO have counter of alive cell ?
-        indicesModified.reserve(grid.size() / 4);
+        // patterns are not empty when using with GUI
+        // Otherwise, this vector is useless
+        if (!_patterns.get_list_const_ref().empty())
+        {
+            indicesModified.reserve(grid.size() / 4);
+        }
 
         for_each(grid.begin(), grid.end(), [&](Cell& cellToApply)
         {
@@ -92,7 +96,12 @@ std::tuple<bool, bool, std::vector<Game::indices_with_value>> Game::applyRulesTo
             if (cellToApply.get_isPreviouslyAlive() != resultOfRules)
             {
                 cellToApply.set_isCurrentlyAlive(resultOfRules);
-                indicesModified.emplace_back(line_column{line, column}, resultOfRules);
+                // patterns are not empty when using with GUI
+                // Otherwise, this vector is useless
+                if (!_patterns.get_list_const_ref().empty())
+                {
+                    indicesModified.emplace_back(line_column{line, column}, resultOfRules);
+                }
             }
 
             cellToApply.set_lastIterationWhichModif(onGoingIteration);
