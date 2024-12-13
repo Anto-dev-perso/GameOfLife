@@ -250,6 +250,58 @@ TEST(UTExpandBoard, TryToExpandTub)
     );
 }
 
+TEST(UTExpandBoard, ExpandMoreThanOne)
+{
+    board_data expected{
+        grid_of_cells{
+            {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
+            {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
+            {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'},
+            {'-'}, {'-'}, {'*'}, {'*'}, {'-'}, {'-'},
+            {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
+            {'-'}, {'-'}, {'-'}, {'-'}, {'-'}, {'-'},
+
+        },
+        6, 6
+    };
+    boardToTest.update({grid_of_cells(4, {'*'}), 2, 2});
+
+    boardToTest.expandBoard(2);
+    UTILITIES::compareGrid(boardToTest.get_board_data(), expected);
+
+    // expand 0 return the same board
+    boardToTest.expandBoard(0);
+    UTILITIES::compareGrid(boardToTest.get_board_data(), expected);
+
+    // Large grid
+    boardToTest.update({grid_of_cells(100, {'*'}), 10, 10});
+
+    expected.clear();
+    expected.line = 30;
+    expected.column = 30;
+    expected.grid.reserve(expected.line * expected.column);
+
+    expected.grid.insert(expected.grid.begin(), 10 * expected.column, '-'); // First 20 lines
+    for (size_t row = 10; row < 20; row++)
+    {
+        for (size_t col = 0; col < expected.column; col++)
+        {
+            if (col < 10 || col >= 20)
+            {
+                expected.grid.emplace_back('-');
+            }
+            else
+            {
+                expected.grid.emplace_back('*');
+            }
+        }
+    }
+    expected.grid.insert(expected.grid.end(), 10 * expected.column, '-'); // Last 10 lines
+
+    boardToTest.expandBoard(10);
+    UTILITIES::compareGrid(boardToTest.get_board_data(), expected);
+}
+
 /****************************************  Tests Suite for isCellAliveAtIndex ***************************************/
 
 TEST(UTCellAliveAtIndex, CellAliveAtIndexTest)
@@ -295,22 +347,18 @@ TEST(UTChangeCellValue, ChangeCellValueTest)
     boardToTest.update({UTILITIES::blockPattern});
 
     block.grid[0] = getAliveChar();
-    EXPECT_EQ(boardToTest.changeCellValue(0, true), true);
-    UTILITIES::compareGrid({boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()},
-                           block);
-
-    EXPECT_EQ(boardToTest.changeCellValue(0, true), false);
+    EXPECT_EQ(boardToTest.changeCellValue(0), true);
     UTILITIES::compareGrid({boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()},
                            block);
 
     block.grid[9] = getDeadChar();
-    EXPECT_EQ(boardToTest.changeCellValue(9, false), true);
+    EXPECT_EQ(boardToTest.changeCellValue(9), false);
     UTILITIES::compareGrid({boardToTest.get_grid_const(), boardToTest.get_lineLength(), boardToTest.get_colLength()},
                            block);
 
     try
     {
-        std::ignore = boardToTest.changeCellValue(boardToTest.get_grid().size(), true);
+        std::ignore = boardToTest.changeCellValue(boardToTest.get_grid().size());
         EXPECT_EQ(false, true) << "Exception expected";
     }
     catch (const std::out_of_range& e)

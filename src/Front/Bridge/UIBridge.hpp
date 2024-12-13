@@ -104,6 +104,12 @@ public slots:
         return _lexiconNameModel->get_descriptionModel()->checkIfGridIsntEmpty(patternId, gridId);
     }
 
+    void editCellOnPosition(double mouseX, double mouseY, unsigned int uiWidth, unsigned int uiHeight)
+    {
+        _mainGridImageProvider->editCell(mouseX, mouseY, uiWidth, uiHeight);
+        emit _imageUpdated();
+    }
+
 private:
     [[nodiscard]] constexpr std::chrono::microseconds calculateWaitTimeFromSlider() const noexcept
     {

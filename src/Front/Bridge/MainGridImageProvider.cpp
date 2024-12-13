@@ -148,11 +148,11 @@ void MainGridImageProvider::changeMainGridWithPatternIndices(int patternIndex, i
     {
         QWriteLocker lock{&_lockBackendRef};
         _backend->changeBoard(patternIndex, gridIndex);
+        reDrawTheEntireMainGrid();
     }
-    reDrawThenEntireMainGrid();
 }
 
-void MainGridImageProvider::reDrawThenEntireMainGrid() noexcept
+void MainGridImageProvider::reDrawTheEntireMainGrid() noexcept
 {
     updateGridCounters();
     printANewGridImage();
@@ -172,7 +172,7 @@ void MainGridImageProvider::resetMainGrid()
     {
         _backend->resetBoard();
         updateGridCounters();
-        reDrawThenEntireMainGrid();
+        reDrawTheEntireMainGrid();
     }
 }
 
@@ -180,5 +180,55 @@ void MainGridImageProvider::clearMainGrid()
 {
     QWriteLocker lock{&_lockBackendRef};
     _backend->clearBoard();
-    reDrawThenEntireMainGrid();
+    reDrawTheEntireMainGrid();
+}
+
+void MainGridImageProvider::editCell(double mouseX, double mouseY, unsigned int uiWidth, unsigned int uiHeight)
+{
+    const double cellWidth = uiWidth / static_cast<double>(_UIColumnCount);
+    const double cellHeight = uiHeight / static_cast<double>(_UILineCount);
+
+    const auto row = static_cast<line_size>(std::floor(mouseY / cellHeight));
+    const auto column = static_cast<column_size>(std::floor(mouseX / cellWidth));
+
+    if (auto optIndex{calculateIndexFromUIRow(row, column)}; optIndex.has_value())
+    {
+        const auto backIndex{optIndex.value()};
+        bool newValue;
+        {
+            QWriteLocker lock{&_lockBackendRef};
+            newValue = _backend->change_CellValue(backIndex);
+        }
+        changeCellInImage({row, column}, newValue);
+    }
+    else
+    {
+        const auto rowNb{_backend->get_board_nbLine()};
+        const auto colNb{_backend->get_board_nbColumn()};
+
+        size_t diffRow{0}, diffColumn{0};
+        if (row < static_cast<line_size>(_gridFirstRow)) { diffRow = _gridFirstRow - row; }
+        else if (row > static_cast<line_size>(_gridFirstRow) + rowNb) { diffRow = row - (_gridFirstRow + rowNb - 1); }
+
+        if (column < static_cast<line_size>(_gridFirstColumn)) { diffColumn = _gridFirstColumn - column; }
+        else if (column > static_cast<line_size>(_gridFirstColumn) + colNb)
+        {
+            diffColumn = column - (_gridFirstColumn + colNb - 1);
+        }
+
+        const auto expandNumber{std::max(diffRow, diffColumn)};
+
+
+        if (QWriteLocker lock{&_lockBackendRef}; _backend->expandBoard(expandNumber))
+        {
+            const auto rowToUpdate{expandNumber + row - _gridFirstRow};
+            const auto columnToUpdate{expandNumber + column - _gridFirstColumn};
+            const auto indexToUpdate{rowToUpdate * _backend->get_board_nbColumn() + columnToUpdate};
+
+            std::ignore = _backend->change_CellValue(indexToUpdate);
+            updateGridCounters();
+            updateImage();
+        }
+    }
+    _cacheBuster++;
 }

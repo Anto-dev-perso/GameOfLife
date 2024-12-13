@@ -8,8 +8,8 @@ import "./QMLComponents"
 ApplicationWindow {
     id: root
 
-    width: 1400
-    height: 800
+    width: 900
+    height: 900
     visible: true
 
     title: qsTr("Game of Life")
@@ -57,6 +57,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        // TODO can be cached
         id: topBar
 
         width: parent.width
@@ -93,6 +94,7 @@ ApplicationWindow {
         GameGrid {
         }
         GameSliders {
+            // TODO can be cached
         }
     }
 
@@ -106,6 +108,7 @@ ApplicationWindow {
     }
 
     Rectangle {
+        // TODO can be cached
         id: bottomBar
 
         width: parent.width

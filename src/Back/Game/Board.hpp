@@ -85,7 +85,7 @@ public:
 
     [[nodiscard]] bool isCellBeforeTheBorder(size_t line, size_t column) const noexcept;
 
-    void expandBoard() noexcept;
+    [[maybe_unused]] bool expandBoard(size_t expandNumber = 1) noexcept;
 
     void reduceBoard() noexcept;
 
@@ -102,20 +102,18 @@ public:
         return _grid.at(index).get_isCurrentlyAlive();
     };
 
-    [[nodiscard]] bool changeCellValue(size_t index, bool newValue)
+    [[nodiscard]] bool changeCellValue(size_t index)
     {
         if (index >= _grid.size())
         {
             throw std::out_of_range("Cell index out of bounds");
         }
-        if (_grid.at(index).get_isCurrentlyAlive() == newValue)
-        {
-            return false;
-        }
         auto& cell = _grid[index];
+        const bool newAlive = !cell.get_isCurrentlyAlive();
         cell.memorizePreviousAliveValue();
-        cell.set_isCurrentlyAlive(newValue);
-        return true;
+        cell.set_isCurrentlyAlive(newAlive);
+
+        return newAlive;
     };
 
     void update(const board_data& grid) noexcept

@@ -81,9 +81,9 @@ public:
         return _board->isCellAliveAtIndex(index);
     }
 
-    [[nodiscard]] inline bool change_CellValue(size_t index, bool newValue) const noexcept
+    [[nodiscard]] bool change_CellValue(size_t index) const noexcept
     {
-        return _board->changeCellValue(index, newValue);
+        return _board->changeCellValue(index);
     }
 
     [[nodiscard]] constexpr unsigned int get_nbOfIterations() const noexcept
@@ -119,6 +119,11 @@ public:
             return true;
         }
         return false;
+    }
+
+    bool expandBoard(size_t expandNumber) const noexcept
+    {
+        return _board->expandBoard(expandNumber);
     }
 
     [[nodiscard]] std::vector<pattern>& get_lexiconPatterns() noexcept

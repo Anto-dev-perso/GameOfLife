@@ -104,9 +104,9 @@ TEST(SetZoomValue, CheckValue)
     EXPECT_DOUBLE_EQ(provider.get_zoomValue(), 0);
     EXPECT_DOUBLE_EQ(provider.get_scaleFactor(), 1);
 
-    provider.set_zoomValue(100);
-    EXPECT_DOUBLE_EQ(provider.get_zoomValue(), 100);
-    EXPECT_DOUBLE_EQ(provider.get_scaleFactor(), 10);
+    provider.set_zoomValue(150);
+    EXPECT_DOUBLE_EQ(provider.get_zoomValue(), 150);
+    EXPECT_DOUBLE_EQ(provider.get_scaleFactor(), 14.5);
 
     provider.set_zoomValue(12.5);
     EXPECT_DOUBLE_EQ(provider.get_zoomValue(), 12.5);
@@ -155,26 +155,26 @@ TEST_F(UpdateGridCountersTest, NormalCase)
 {
     provider->updateGridCounters();
 
-    EXPECT_EQ(provider->get_gridFirstRow(), 97);
-    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 147);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 147);
 
     realGame->updateBoard(UTILITIES::loafPattern);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->get_gridFirstRow(), 97);
-    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 147);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 147);
 
     realGame->updateBoard(UTILITIES::beaconPatternG2);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->get_gridFirstRow(), 97);
-    EXPECT_EQ(provider->get_gridFirstColumn(), 197);
+    EXPECT_EQ(provider->get_gridFirstRow(), 147);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 147);
 
     realGame->updateBoard(UTILITIES::zweiback);
 
     provider->updateGridCounters();
-    EXPECT_EQ(provider->get_gridFirstRow(), 86);
-    EXPECT_EQ(provider->get_gridFirstColumn(), 178);
+    EXPECT_EQ(provider->get_gridFirstRow(), 136);
+    EXPECT_EQ(provider->get_gridFirstColumn(), 128);
 }
 
 TEST_F(UpdateGridCountersTest, ZeroDimensions)
@@ -205,7 +205,7 @@ TEST_F(UpdateGridCountersTest, EffectOnSubsequentCalculations)
 
     // Calculate a UI index
     constexpr Game::line_column backendIndex{1, 1};
-    constexpr Game::line_column expected{98, 198};
+    constexpr Game::line_column expected{148, 148};
     auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
     ASSERT_TRUE(uiIndex.has_value());
@@ -231,8 +231,8 @@ protected:
 
 TEST_F(CalculateIndexFromUIRowTest, ValidMapping)
 {
-    constexpr size_t uiRow{97};
-    constexpr size_t uiCol{197};
+    constexpr size_t uiRow{147};
+    constexpr size_t uiCol{147};
 
     const auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
@@ -242,8 +242,8 @@ TEST_F(CalculateIndexFromUIRowTest, ValidMapping)
 TEST_F(CalculateIndexFromUIRowTest, PatternsSampling)
 {
     realGame->updateBoard(UTILITIES::zweiback);
-    constexpr size_t uiRow{97};
-    constexpr size_t uiCol{197};
+    constexpr size_t uiRow{147};
+    constexpr size_t uiCol{147};
 
     auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
@@ -258,16 +258,16 @@ TEST_F(CalculateIndexFromUIRowTest, PatternsSampling)
 
 TEST_F(CalculateIndexFromUIRowTest, BoundaryConditions)
 {
-    size_t uiRow{99};
-    size_t uiCol{199};
+    size_t uiRow{149};
+    size_t uiCol{149};
 
     auto backendIndex{provider->calculateIndexFromUIRow(uiRow, uiCol)};
     ASSERT_TRUE(backendIndex.has_value());
     EXPECT_EQ(backendIndex.value(), 12);
 
 
-    uiRow = 101;
-    uiCol = 201;
+    uiRow = 151;
+    uiCol = 151;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_TRUE(backendIndex.has_value());
     EXPECT_EQ(backendIndex.value(), 24);
@@ -275,49 +275,49 @@ TEST_F(CalculateIndexFromUIRowTest, BoundaryConditions)
 
 TEST_F(CalculateIndexFromUIRowTest, OutOfBounds)
 {
-    size_t uiRow{102};
-    size_t uiCol{202};
+    size_t uiRow{152};
+    size_t uiCol{152};
 
     auto backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 102;
-    uiCol = 201;
+    uiRow = 152;
+    uiCol = 151;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 102;
-    uiCol = 197;
+    uiRow = 152;
+    uiCol = 147;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 102;
-    uiCol = 246;
+    uiRow = 152;
+    uiCol = 146;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 121;
-    uiCol = 197;
+    uiRow = 146;
+    uiCol = 152;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 121;
-    uiCol = 246;
+    uiRow = 147;
+    uiCol = 152;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 121;
-    uiCol = 201;
+    uiRow = 146;
+    uiCol = 146;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 121;
-    uiCol = 202;
+    uiRow = 152;
+    uiCol = 152;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 
-    uiRow = 97;
-    uiCol = 246;
+    uiRow = 147;
+    uiCol = 146;
     backendIndex = provider->calculateIndexFromUIRow(uiRow, uiCol);
     ASSERT_FALSE(backendIndex.has_value());
 }
@@ -363,17 +363,17 @@ protected:
 TEST_F(ReDrawMainGridTest, BasicRedraw)
 {
     realGame->updateBoard(UTILITIES::pulsarPatternG2);
-    provider->reDrawThenEntireMainGrid();
+    provider->reDrawTheEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::pulsarPatternG2, *provider);
 
     realGame->updateBoard(UTILITIES::tubPattern);
-    provider->reDrawThenEntireMainGrid();
+    provider->reDrawTheEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::tubPattern, *provider);
 
     realGame->updateBoard(UTILITIES::pentaDecathlonPatternG11);
-    provider->reDrawThenEntireMainGrid();
+    provider->reDrawTheEntireMainGrid();
 
     UTILITIES::compareQImage(UTILITIES::pentaDecathlonPatternG11, *provider);
 }
@@ -381,7 +381,7 @@ TEST_F(ReDrawMainGridTest, BasicRedraw)
 TEST_F(ReDrawMainGridTest, EmptyBackEnd)
 {
     realGame->updateBoard({});
-    provider->reDrawThenEntireMainGrid();
+    provider->reDrawTheEntireMainGrid();
 
     UTILITIES::compareQImage({}, *provider);
 }
@@ -415,7 +415,7 @@ protected:
 TEST_F(ResetMainGridTest, PatternsSampling)
 {
     realGame->changeBoard(1378, 0);
-    runIteration(100);
+    runIteration(150);
     provider->resetMainGrid();
     ASSERT_EQ(realGame->get_nbOfIterations(), 0);
     UTILITIES::compareGrid(realGame->get_board_data(), UTILITIES::zweiback);
@@ -481,7 +481,7 @@ protected:
 TEST_F(CalculateUIIndexFromBackIdTest, BasicMapping)
 {
     constexpr Game::line_column backendIndex{1, 1};
-    constexpr Game::line_column expectedUIIndex{98, 198};
+    constexpr Game::line_column expectedUIIndex{148, 148};
 
     const auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -493,7 +493,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 {
     realGame->updateBoard(UTILITIES::beaconPatternG1);
     Game::line_column backendIndex{5, 5};
-    Game::line_column expectedUIIndex{102, 202};
+    Game::line_column expectedUIIndex{152, 152};
 
     auto uiIndex{provider->calculateUIIndexFromBackId(backendIndex)};
 
@@ -503,7 +503,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 
     realGame->updateBoard(UTILITIES::washerwoman);
     backendIndex = {3, 30};
-    expectedUIIndex = {100, 227};
+    expectedUIIndex = {150, 177};
 
     uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -515,7 +515,7 @@ TEST_F(CalculateUIIndexFromBackIdTest, RealPatterns)
 TEST_F(CalculateUIIndexFromBackIdTest, BoundaryConditions)
 {
     constexpr Game::line_column backendIndex{0, 0};
-    constexpr Game::line_column expectedUIIndex{97, 197};
+    constexpr Game::line_column expectedUIIndex{147, 147};
 
     const auto uiIndex = provider->calculateUIIndexFromBackId(backendIndex);
 
@@ -609,8 +609,8 @@ TEST_F(PrintANewGridImageTest, MinimumGridSize)
 
 TEST_F(PrintANewGridImageTest, LargeGridSize)
 {
-    constexpr line_size rows{100};
-    constexpr column_size cols{100};
+    constexpr line_size rows{150};
+    constexpr column_size cols{150};
     grid_of_cells toTest{};
     toTest.reserve(rows * cols);
     for (size_t id = 0; id < rows * cols; ++id)
@@ -622,7 +622,7 @@ TEST_F(PrintANewGridImageTest, LargeGridSize)
 
     realGame->updateBoard(testGrid);
 
-    provider->reDrawThenEntireMainGrid();
+    provider->reDrawTheEntireMainGrid();
 
     EXPECT_EQ(provider->_cacheBuster, 2);
     UTILITIES::compareQImage(testGrid, *provider);
@@ -695,8 +695,7 @@ protected:
         auto backBoard{realGame->get_board()};
         for (const auto& [indices,newValue] : indices)
         {
-            std::ignore = backBoard->changeCellValue(indices.line * backBoard->get_colLength() + indices.column,
-                                                     newValue);
+            std::ignore = backBoard->changeCellValue(indices.line * backBoard->get_colLength() + indices.column);
         }
     }
 
@@ -756,10 +755,6 @@ TEST_F(ChangeCellColorsTest, StressTest)
 
     updateDatas(updates);
     EXPECT_EQ(provider->_cacheBuster, 2);
-    UTILITIES::compareQImage(realGame->get_board_data(), *provider);
-
-    updateDatas(updates);
-    EXPECT_EQ(provider->_cacheBuster, 3);
     UTILITIES::compareQImage(realGame->get_board_data(), *provider);
 }
 

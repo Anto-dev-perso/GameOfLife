@@ -138,38 +138,39 @@ bool Board::isCellBeforeTheBorder(size_t line, size_t column) const noexcept
 }
 
 // To expand the board, we have to add one line at beginning and end and for each line, add one column at beginning and end
-void Board::expandBoard() noexcept
+bool Board::expandBoard(size_t expandNumber) noexcept
 {
-    if (_lineLength + 2 > _gridMaxNbLine || _colLength + 2 > _gridMaxNbColumn) { return; }
-    // Keep old length for math
+    if (expandNumber == 0 || _lineLength + 2 * expandNumber > _gridMaxNbLine || _colLength + 2 * expandNumber >
+        _gridMaxNbColumn) { return false; }
+
     const size_t oldColumnSize{_colLength};
 
-    set_lineLength(_lineLength + 2);
-    set_colLength(_colLength + 2);
+    set_lineLength(_lineLength + 2 * expandNumber);
+    set_colLength(_colLength + 2 * expandNumber);
 
     const size_t newSize{_lineLength * _colLength};
 
     // Reserve the new size needed (may cause re-allocation)
     _grid.reserve(newSize);
 
-    // Insert at the beginning first because vector will have to move all elements so avoid to move the new element insert in the back
-    // Insert 1 line + 1 column of the second line because we know we have to add it right after
-    _grid.insert(_grid.begin(), _colLength + 1, getDeadChar());
+    // Insert at the beginning first because vector will have to move all elements so avoid to move the new element inserted at the back
+    // Insert (1 line - 1 column)expand
+    const auto createdUntilIndex{expandNumber * _colLength + expandNumber};
+    _grid.insert(_grid.begin(), createdUntilIndex, getDeadChar());
 
-    // Loop through every lines (except first and last one) and add the new column
-    // Because we inserted the new first line before, the begin() has been moved 1 line + 1 column after
-    // Go directly at the second line by adding the old number of elements per line
-    for (size_t line = _colLength + oldColumnSize; line < newSize - (2 * _colLength); line += _colLength)
+    // Loop through every line (except first and last one) and add the new columns
+    // Because we inserted the new first line before, the begin() has been moved (1 line - 1 column)expand
+    // for (size_t index = createdUntilIndex + oldColumnSize; index < newSize - (2 * expandNumber * _colLength); index +=
+    for (size_t index = createdUntilIndex + oldColumnSize; index <= _grid.size(); index +=
+         _colLength)
     {
         // Insert last column of previous line and first column of current line
-        _grid.insert(_grid.begin() + line, 2, getDeadChar());
+        _grid.insert(_grid.begin() + index, 2 * expandNumber, getDeadChar());
     }
 
     // Insert penultimate line last column and last line entirely
-    for (size_t i = 0; i < _colLength + 1; i++)
-    {
-        _grid.emplace_back(getDeadChar());
-    }
+    _grid.insert(_grid.end(), newSize - _grid.size(), getDeadChar());
+    return true;
 }
 
 // To reduce the board, we have to remove one line at beginning and end and for each line, reùove one column at beginning and end

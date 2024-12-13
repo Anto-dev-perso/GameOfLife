@@ -10,9 +10,9 @@
 #include "Back/Game/Game.hpp"
 #include "Front/Bridge/MainGridImageProvider.hpp"
 
-const QColor BORDER_COLOR{"#989898"};
-const QColor CELL_ALIVE_COLOR{"#ffff00"};
-const QColor CELL_DEAD_COLOR{"#7e7e7e"};
+static const QColor BORDER_COLOR{"#989898"};
+static const QColor CELL_ALIVE_COLOR{"#ffff00"};
+static const QColor CELL_DEAD_COLOR{"#7e7e7e"};
 static constexpr int CELL_SIZE{10};
 
 class MainGridImageProvider : public QQuickImageProvider
@@ -55,7 +55,7 @@ public:
     }
 
     void changeMainGridWithPatternIndices(int patternIndex, int gridIndex);
-    void reDrawThenEntireMainGrid() noexcept;
+    void reDrawTheEntireMainGrid() noexcept;
     void reDrawGrid();
     void resetMainGrid();
     void clearMainGrid();
@@ -73,14 +73,19 @@ public:
 
     void changeCellColors(const std::vector<Game::indices_with_value>& indicesToChanges);
 
+    void editCell(double mouseX, double mouseY, unsigned int uiWidth, unsigned int uiHeight);
+
 #ifdef ENABLE_DEBUG
 
-    [[nodiscard]] int get_gridFirstColumn() const noexcept { return _gridFirstColumn; }
+    [[nodiscard]]
+    int get_gridFirstColumn() const noexcept { return _gridFirstColumn; }
+
     [[nodiscard]] int get_gridFirstRow() const noexcept { return _gridFirstRow; }
 
     void set_gridFirstColumn(int firstCol) noexcept { _gridFirstColumn = firstCol; }
     void set_gridFirstRow(int firstRow) noexcept { _gridFirstRow = firstRow; }
-
+#else
+private:
 #endif
 
     void updateGridCounters() noexcept;
@@ -132,8 +137,8 @@ private:
     QReadWriteLock& _lockBackendRef;
 
 public:
-    static constexpr size_t NB_UI_COLUMNS_AT_MAX{400};
-    static constexpr size_t NB_UI_LINES_AT_MAX{200};
+    static constexpr size_t NB_UI_COLUMNS_AT_MAX{300};
+    static constexpr size_t NB_UI_LINES_AT_MAX{300};
     static constexpr size_t NB_UI_COLUMNS_AT_MIN{20};
     static constexpr size_t NB_UI_LINES_AT_MIN{10};
 

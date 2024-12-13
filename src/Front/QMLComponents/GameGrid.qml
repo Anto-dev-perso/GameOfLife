@@ -8,20 +8,23 @@ Rectangle {
 
     width: parent.width - root.gameSlidersMargins
     height: parent.height - root.gameSlidersMargins
+
     Item {
         id: zoomItem
         anchors.fill: parent
 
         scale: uiBridge._scaleFactor
         transformOrigin: Item.Center
-        Image {
+        Image { // TODO customImage ?
             id: mainGrid
-            width: parent.width
-            height: parent.height
+            anchors.fill: parent
 
             // Call directly the Image Provider that will convert the backend grid to an Image
             source: uiBridge.getMainGridImage()
-            fillMode: Image.PreserveAspectFit
+            MouseArea {
+                anchors.fill: parent
+                onClicked: uiBridge.editCellOnPosition(mouseX, mouseY, width, height)
+            }
         }
         Connections {
             target: uiBridge
