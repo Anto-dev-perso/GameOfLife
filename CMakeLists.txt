@@ -77,10 +77,9 @@ add_executable(generatePatternsSvg src/Back/SvgGenerator/generatePatternsSvg.cpp
 target_link_libraries(generatePatternsSvg PRIVATE Qt6::Core Qt6::Svg GameLib)
 target_include_directories(generatePatternsSvg PRIVATE ${CMAKE_SOURCE_DIR}/src/Back/Game)
 
-# TODO uncomment me
-#add_custom_target(RunGeneratePatterns ALL
-#        COMMAND generatePatternsSvg
-#        COMMENT "Generating all the SVG files of the lexicon ...")
+add_custom_target(RunGeneratePatterns ALL
+       COMMAND generatePatternsSvg
+       COMMENT "Generating all the SVG files of the lexicon ...")
 
 
 set(GENERATED_SVGS_DIR ${CMAKE_SOURCE_DIR}/src/Front/assets/svg/lexicon)
@@ -132,16 +131,25 @@ set_target_properties(appQtGameOfLife PROPERTIES
         WIN32_EXECUTABLE TRUE
 )
 
+
 target_link_libraries(appQtGameOfLife PRIVATE Qt6::Quick BridgeLib)
 
 target_include_directories(appQtGameOfLife PRIVATE ${CMAKE_SOURCE_DIR}/src)
 
-include(GNUInstallDirs)
 install(TARGETS appQtGameOfLife
         BUNDLE DESTINATION .
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_BINARY_DIR}/lib
+        RUNTIME DESTINATION ${CMAKE_BINARY_DIR}/bin
 )
+
+qt_generate_deploy_qml_app_script(
+    TARGET appQtGameOfLife
+    OUTPUT_SCRIPT deploy_script
+    MACOS_BUNDLE_POST_BUILD
+    NO_UNSUPPORTED_PLATFORM_ERROR
+    DEPLOY_USER_QML_MODULES_ON_UNSUPPORTED_PLATFORM
+)
+install(SCRIPT ${deploy_script})
 
 
 option(ENABLE_ASAN "Enable AddressSanitizer with ON" OFF)
@@ -235,6 +243,7 @@ if (ENABLE_ASAN STREQUAL "ON" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BU
     endif ()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${SANITIZE_FLAGS}")
 endif ()
+
 
 if (CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     option(PROFILING_TYPE "Select which profiler to use (none, cpu, heap)" "none")

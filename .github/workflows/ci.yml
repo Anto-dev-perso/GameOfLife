@@ -37,7 +37,11 @@ jobs:
           ./build.sh -c Debug  -a 
 
       - name: Compress build-debug directory into tar.gz
-        run: tar -czf build-debug-unix.tar.gz build-debug
+        run: |
+          cd build-debug
+          rm -rf *_autogen CMakeFies meta_types qmltypes
+          cd ..
+          tar -czf build-debug-unix.tar.gz build-debug
 
       - name: Upload build-debug directory as artifact
         uses: actions/upload-artifact@v4
@@ -51,6 +55,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.5.*'
+          cache: 'true'
 
       - name: Download build-debug artifact
         uses: actions/download-artifact@v4
@@ -182,7 +192,11 @@ jobs:
           ./build.sh -c RelWithDebInfo
 
       - name: Compress build-relwithdebinfo directory into tar.gz
-        run: tar -czf build-relwithdebinfo-unix.tar.gz build-relwithdebinfo
+        run: |
+          cd build-relwithdebinfo
+          rm -rf *_autogen CMakeFies meta_types qmltypes
+          cd ..
+          tar -czf build-relwithdebinfo-unix.tar.gz build-relwithdebinfo
 
       - name: Upload build-relwithdebinfo directory as artifact
         uses: actions/upload-artifact@v4
@@ -203,7 +217,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-        # TODO use conan ?
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
 
@@ -257,7 +270,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-        # TODO use conan ?
       - name: Install gperftools
         run: sudo apt-get install google-perftools libunwind-dev libgoogle-perftools-dev
 
@@ -317,7 +329,11 @@ jobs:
           ./build.sh
 
       - name: Compress build-release directory into tar.gz
-        run: tar -czf build-release-unix.tar.gz build-release
+        run: |
+          cd build-release
+          rm -rf *_autogen CMakeFies meta_types qmltypes
+          cd ..
+          tar -czf build-release-unix.tar.gz build-release
 
       - name: Upload build-release directory as artifact
         uses: actions/upload-artifact@v4
@@ -357,19 +373,17 @@ jobs:
           ctest -C Debug --output-on-failure
 
       - name: Compress build-debug directory into zip
-        shell: pwsh
-        run: |
-          Compress-Archive -Path build-debug -DestinationPath build-debug-windows.zip
+        run: mv build-debug/Debug .
 
       - name: Upload build directory as artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-debug-windows.zip
-          path: build-debug-windows.zip
+          path: Debug
 
   build-release-windows:
     runs-on: windows-latest
-    needs: build-debug-windows
+    # needs: build-debug-windows
     steps:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -391,12 +405,14 @@ jobs:
           .\build.ps1
 
       - name: Compress build-release directory into zip
-        shell: pwsh
+        run: mv build-release/Release .
+
+      - name: Package the Release version
         run: |
-          Compress-Archive -Path build-release -DestinationPath build-release-windows.zip
+          windeployqt --qmldir=src/Front/QMLComponents --release Release/appQtGameOfLife.exe
 
       - name: Upload build-release directory as artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-release-windows.zip
-          path: build-release-windows.zip
+          path: Release

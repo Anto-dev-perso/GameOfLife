@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
+// TODO theme on Windows (light) breaks the colors
 
 import "./QMLComponents"
 
