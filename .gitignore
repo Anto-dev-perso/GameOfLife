@@ -4,3 +4,4 @@
 venv
 CMakeUserPresets.json
 .idea/*
+/CMakeLists.txt.user
